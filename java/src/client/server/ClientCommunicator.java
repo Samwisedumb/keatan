@@ -123,7 +123,6 @@ public class ClientCommunicator {
 	  * @throws ServerException when the ClientCommunicator cannot connect to the server for any reason
 	  */
 	public <T> T send(String command, Object data, Type classOfReturnObject) throws ServerException {
-		System.out.println("Warning! You are using the NewClientServer, which does not work with the TA swagger server");
 		try {
 			URL url = new URL("http://" + serverUrl + command);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

@@ -9,14 +9,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import shared.json.Converter;
 import client.exceptions.ServerException;
 
 /**
- * This is a temporary communicator class until we can take control of the server and work the cookies
- * the way we want to
+ * This class sends commands to a server specified by the server
+ * url.
  * @author djoshuac
  *
  */
@@ -34,9 +38,6 @@ public class ClientCommunicator {
 	 */
 	private static final int DEFAULT_TIMEOUT = 5000;
 	
-	private String urlEncodedUserCookie;
-	private String urlEncodedGameCookie;
-	
 	/**
 	 * Constructs a ClientCommunicator object
 	 * @pre severUrl must be a valid url for a server.
@@ -46,27 +47,48 @@ public class ClientCommunicator {
 	public ClientCommunicator(String serverUrl) {
 		this.serverUrl = serverUrl;
 		this.timeOut = DEFAULT_TIMEOUT;
+		this.requestHeaders = new HashMap<String, List<String>>();
+		this.lastResponseHeaders = new HashMap<String, List<String>>();
 	}
 	
+	/**
+	 * The headers added to requests in future send calls
+	 */
+	private Map<String, List<String>> requestHeaders;
 	
-	// getters and setters
-	public void setServerUrl(String serverUrl) {
-		this.serverUrl = serverUrl;
-	}
-	public void setTimeOut(int timeOut) {
-		this.timeOut = timeOut;
-	}
-	public String getServerUrl() {
-		return this.serverUrl;
-	}
-	public int getTimeOut() {
-		return this.timeOut;
-	}
-	public void createCookie(){
-		
+	/**
+	 * The headers retrieved from the response in the last send call
+	 */
+	private Map<String, List<String>> lastResponseHeaders;
+	
+	/**
+	 * Adds a request header to the server request in the next send call
+	 * @param header - the name of the header to add
+	 * @param value - the value of the header to add
+	 * @pre none
+	 * @post The given header is added to the server request.
+	 * If the given header was a previously set header, then the value
+	 * is added as a another property in that header
+	 */
+	public void addRequestHeader(String header, String value) {
+		if (requestHeaders.get(header) == null) {
+			requestHeaders.put(header, new ArrayList<String>());
+		}
+		requestHeaders.get(header).add(value);
 	}
 	
-	// utility functions
+	/**
+	 * Retrieves the last response headers from the previous send operation
+	 * @return A mapping of response headers to response values. This will
+	 * return an empty map if no response headers were received or no send
+	 * operation was called.
+	 * @pre send must have been called, the serverUrl must be for a valid working server
+	 * @post see return
+	 */
+	public Map<String, List<String>> getResponseHeadersForLastSend() {
+		return lastResponseHeaders;
+	}
+	
 	 /**
 	  * Sends an Http Post request to the specified server. This class encapsulates all errors
 	  * into one ServerException which is useful for avoiding multi-catch blocks.
@@ -101,6 +123,7 @@ public class ClientCommunicator {
 	  * @throws ServerException when the ClientCommunicator cannot connect to the server for any reason
 	  */
 	public <T> T send(String command, Object data, Type classOfReturnObject) throws ServerException {
+		System.out.println("Warning! You are using the NewClientServer, which does not work with the TA swagger server");
 		try {
 			URL url = new URL("http://" + serverUrl + command);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -108,7 +131,9 @@ public class ClientCommunicator {
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(timeOut);
-			connection  = addHeaders(connection);
+			
+			addRequestHeaders(connection);
+			
 			connection.connect();
 			connection.setReadTimeout(timeOut);
 			OutputStream requestBody = connection.getOutputStream();
@@ -127,7 +152,7 @@ public class ClientCommunicator {
 //			    
 //				responseBody = new ByteArrayInputStream(joe.getBytes(StandardCharsets.UTF_8));
 				
-				handleCookie(command, connection);
+				setLastResponseHeaders(connection.getHeaderFields());
 				return Converter.fromJson(responseBody, classOfReturnObject);
 			}
 			else {
@@ -157,30 +182,25 @@ public class ClientCommunicator {
 			throw new ServerException("An IOException occurred");
 		}
 	}
-
-	private HttpURLConnection addHeaders(HttpURLConnection connection) {
-		String cookieString = "";
-		if (urlEncodedUserCookie != null){
-			cookieString += "catan.user=" + urlEncodedUserCookie;
+	
+	/**
+	 * Adds the set request headers to the connection
+	 * @pre call this right before calling connection.conect
+	 * @post the headers are added to the request in connection
+	 * @param connection - the connection to add the request headers to
+	 */
+	private void addRequestHeaders(HttpURLConnection connection) {
+		for (String header : requestHeaders.keySet()) {
+			for (String value : requestHeaders.get(header)) {
+				connection.setRequestProperty(header, value);
+			}
 		}
-		if (urlEncodedGameCookie != null){
-			cookieString += "; catan.game=" + urlEncodedGameCookie;
-		}
-		connection.setRequestProperty("Cookie", cookieString);
-		return connection;
 	}
 	
-	private void handleCookie(String command, HttpURLConnection connection) {
-		if (command.equals("/user/login")){
-			urlEncodedUserCookie = connection.getHeaderField("Set-cookie");
-			urlEncodedUserCookie = urlEncodedUserCookie.replace("catan.user=", "");
-			urlEncodedUserCookie = urlEncodedUserCookie.replace(";Path=/;", "");
-		} else if (command.equals("/games/join")) {
-			urlEncodedGameCookie = connection.getHeaderField("Set-cookie");
-			System.out.println(urlEncodedGameCookie);
-			urlEncodedGameCookie = urlEncodedGameCookie.replace("catan.game=", "");
-			urlEncodedGameCookie = urlEncodedGameCookie.replace(";Path=/;", "");
-		}
-		
+	/**
+	 * Sets the last response headers for the last send request.
+	 */
+	private void setLastResponseHeaders(Map<String, List<String>> headers) {
+		lastResponseHeaders = headers;
 	}
 }

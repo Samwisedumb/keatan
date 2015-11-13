@@ -1,13 +1,13 @@
 import server.ServerCommunicator;
 import shared.transferClasses.UserCredentials;
 import client.exceptions.ServerException;
-import client.server.NewClientServer;
+import client.server.ClientServer;
 import client.server.ServerProxy;
 
 
 public class TestingMain {
 	public static void main(String[] args) {		
-		ServerProxy.initialize(new NewClientServer("localhost", "8081"));
+		ServerProxy.initialize(new ClientServer("localhost", "8081"));
 		ServerCommunicator server = new ServerCommunicator(8081);
 		
 		UserCredentials fox = new UserCredentials("Star_Fox", "WhereYouGoing");

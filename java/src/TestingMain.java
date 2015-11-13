@@ -16,14 +16,15 @@ public class TestingMain {
 			ServerProxy.register(fox);
 		}
 		catch (ServerException e) {
-			System.out.println("Fox is already registered");
+			System.out.print("Failed to register: ");
+			System.out.println(e.getReason());
 		}
 		try {
 			ServerProxy.login(fox);
 			System.out.println("Success!!");
 		}
 		catch (ServerException e) {
-			System.out.println("Fail!!");
+			System.out.print("Failed to login: ");
 			System.err.println(e.getReason());
 		}
 		System.out.println("HEY");

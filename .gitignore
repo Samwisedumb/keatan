@@ -1,2 +1,4 @@
 /bin/*
 /demo/*
+/java/build/*
+/java/dist/*

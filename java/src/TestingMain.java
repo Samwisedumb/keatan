@@ -27,6 +27,7 @@ public class TestingMain {
 			System.err.println(e.getReason());
 		}
 		System.out.println("HEY");
+		System.out.println("HEY");
 //		
 //		ServerProxy.initialize(new MockServer());
 //		//ServerProxy.initialize(new ClientServer("localhost", "8081"));

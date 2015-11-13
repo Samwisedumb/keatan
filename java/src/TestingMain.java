@@ -5,8 +5,6 @@ import client.server.NewClientServer;
 import client.server.ServerProxy;
 
 
-
-
 public class TestingMain {
 	public static void main(String[] args) {		
 		ServerProxy.initialize(new NewClientServer("localhost", "8081"));

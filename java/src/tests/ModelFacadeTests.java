@@ -1,9 +1,6 @@
-package client.tests;
+package tests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,13 +14,10 @@ import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.UserCredentials;
 import client.exceptions.ServerException;
-import client.model.DevCardList;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
-import client.model.MessageList;
 import client.model.ModelFacade;
 import client.model.Player;
-import client.model.Port;
 import client.model.ResourceList;
 import client.model.Road;
 import client.model.TradeOffer;
@@ -33,7 +27,7 @@ import client.model.VertexObject;
 import client.server.ClientServer;
 import client.server.ServerProxy;
 
-public class ModelFacadeUnitTests {
+public class ModelFacadeTests {
 
 	@Before
 	public void setup() {

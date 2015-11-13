@@ -26,8 +26,6 @@ public class ServerGamesFacade implements IGamesFacade {
 	 * Creates a singleton of ServerGamesFacade
 	 * @return the singleton
 	 */
-	
-	//SINGLETON BRO!
 	public static ServerGamesFacade getInstance() {
 		if(instance == null) {
 			instance = new ServerGamesFacade();
@@ -47,17 +45,12 @@ public class ServerGamesFacade implements IGamesFacade {
 	 * @
 	 */
 	@Override
-	public boolean login(String username, String password) throws ServerException {
-		// TODO Auto-generated method stub
-		
+	public boolean login(String username, String password) throws ServerException {		
 		UserCredentials loginUser = users.get(username);
 		
-		//If the username doesn't exist in the map
 		if(loginUser == null) {
 			throw new ServerException("User doesn't exist");
 		}
-		
-		//If the password doesn't match the UserCredentials password
 		else if(password.equals(loginUser.getPassword())) {
 			return true;
 		}
@@ -72,7 +65,6 @@ public class ServerGamesFacade implements IGamesFacade {
 	 */
 	@Override
 	public boolean register(String newUsername, String newPassword) {
-		// TODO Auto-generated method stub
 		UserCredentials newUser = new UserCredentials(newUsername, newPassword);
 		
 		if(newUser.validate() == false) {

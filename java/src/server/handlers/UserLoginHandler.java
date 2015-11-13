@@ -31,19 +31,20 @@ public class UserLoginHandler extends IHandler {
 		
 		exchange.getResponseHeaders().add("Set-cookie", "Your Cookie");
 		exchange.getResponseHeaders().add("Set-cookie", "WEEEE");
-		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 		
 		boolean success;
 		try {
 			success = ServerGamesFacade.getInstance().login(userCredentials.getUsername(), userCredentials.getPassword());
 			if(success == true) {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 				exchange.getResponseBody().write(Converter.toJson("Success").getBytes());
 			}
 			else {
+				exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 				exchange.getResponseBody().write(Converter.toJson("Wrong Password").getBytes());
 			}
 		} catch (ServerException e) {
-			// TODO Auto-generated catch block
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}
 		

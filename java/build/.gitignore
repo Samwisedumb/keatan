@@ -1,0 +1,16 @@
+/client/
+/exceptions/
+/locations/
+/message/
+/pieces/
+/shared/
+/DevCardList.class
+/Direction.class
+/EdgeValue.class
+/Hex.class
+/PlayerColor.class
+/Port.class
+/Status.class
+/TestingMain.class
+/TurnTracker.class
+/VertexValue.class

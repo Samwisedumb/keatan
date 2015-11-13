@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="catana">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="../../../../../../usr/share/eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar"/>
+        <pathelement location="../../../../../../usr/share/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+    </path>
+    <path id="catana.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="Utilities/gson-2.3.1.jar"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="catana.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="Converter">
+        <java classname="shared.json.Converter" failonerror="true" fork="yes">
+            <classpath refid="catana.classpath"/>
+        </java>
+    </target>
+    <target name="ServerPoller">
+        <java classname="clientSide.server.ServerPoller" failonerror="true" fork="yes">
+            <classpath refid="catana.classpath"/>
+        </java>
+    </target>
+    <target name="ClientCommunicator">
+        <java classname="clientSide.server.ClientCommunicator" failonerror="true" fork="yes">
+            <classpath refid="catana.classpath"/>
+        </java>
+    </target>
+    <target name="TestingMain">
+        <java classname="TestingMain" failonerror="true" fork="yes">
+            <classpath refid="catana.classpath"/>
+        </java>
+    </target>
+    <target name="Phase1UnitTests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="clientSide.tests.Phase1UnitTests" todir="${junit.output.dir}"/>
+            <classpath refid="catana.classpath"/>
+        </junit>
+    </target>
+    <target name="ServerProxyUnitTests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="clientSide.tests.ServerProxyUnitTests" todir="${junit.output.dir}"/>
+            <classpath refid="catana.classpath"/>
+        </junit>
+    </target>
+    <target name="ServerPollerUnitTests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="clientSide.tests.ServerPollerUnitTests" todir="${junit.output.dir}"/>
+            <classpath refid="catana.classpath"/>
+        </junit>
+    </target>
+    <target name="CanDoTests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="clientSide.tests.CanDoTests" todir="${junit.output.dir}"/>
+            <classpath refid="catana.classpath"/>
+        </junit>
+    </target>
+    <target name="ModelUnitTests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="clientSide.tests.ModelUnitTests" todir="${junit.output.dir}"/>
+            <classpath refid="catana.classpath"/>
+        </junit>
+    </target>
+    <target name="test">
+        <java classname="clientSide.tests.Phase1UnitTests" failonerror="true" fork="yes">
+            <classpath refid="catana.classpath"/>
+        </java>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>

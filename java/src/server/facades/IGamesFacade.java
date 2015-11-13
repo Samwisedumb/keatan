@@ -2,6 +2,7 @@ package server.facades;
 
 import java.util.List;
 
+import client.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
@@ -19,9 +20,10 @@ public interface IGamesFacade {
 	 * @param username presented username for verification
 	 * @param password presented password to be associated with that username
 	 * @return true if username and accompanying password are validated
+	 * @throws ServerException 
 	 * @post either the client must make another attempt to log in,
 	 */
-	public boolean login(String username, String password);
+	public boolean login(String username, String password) throws ServerException;
 	
 	/**
 	 * @pre the application has just been started and is waiting for a login or a new user registration 

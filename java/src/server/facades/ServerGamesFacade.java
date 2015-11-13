@@ -1,12 +1,15 @@
 package server.facades;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import client.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
-
+import shared.transferClasses.UserCredentials;
 
 /**
  * A facade that executes commands associated with user login and registration
@@ -15,16 +18,71 @@ import shared.transferClasses.JoinGameRequest;
  */
 public class ServerGamesFacade implements IGamesFacade {
 
+	private static ServerGamesFacade instance = null;
+	
+	private Map<String, UserCredentials> users;
+	
+	/**
+	 * Creates a singleton of ServerGamesFacade
+	 * @return the singleton
+	 */
+	
+	//SINGLETON BRO!
+	public static ServerGamesFacade getInstance() {
+		if(instance == null) {
+			instance = new ServerGamesFacade();
+		}
+		
+		return instance;
+	}
+	
+	public ServerGamesFacade() {
+		users = new TreeMap<String, UserCredentials>();
+	}
+	
+	/**
+	 * Log in to game client
+	 * @param username the suggested username
+	 * @param password the suggested password
+	 * @
+	 */
 	@Override
-	public boolean login(String username, String password) {
+	public boolean login(String username, String password) throws ServerException {
 		// TODO Auto-generated method stub
+		
+		UserCredentials loginUser = users.get(username);
+		
+		//If the username doesn't exist in the map
+		if(loginUser == null) {
+			throw new ServerException("User doesn't exist");
+		}
+		
+		//If the password doesn't match the UserCredentials password
+		else if(password.equals(loginUser.getPassword())) {
+			return true;
+		}
+		
 		return false;
 	}
-
+	
+	/**
+	 * Register a user, adding it to the map
+	 * @param newUsername the new username
+	 * @param newPassword the new password
+	 */
 	@Override
 	public boolean register(String newUsername, String newPassword) {
 		// TODO Auto-generated method stub
-		return false;
+		UserCredentials newUser = new UserCredentials(newUsername, newPassword);
+		
+		if(newUser.validate() == false) {
+			return false;
+		}
+		else
+		{
+			users.put(newUsername, newUser);
+			return true;
+		}
 	}
 
 	@Override

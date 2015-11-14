@@ -30,9 +30,10 @@ public interface IGamesFacade {
 	 * @param newUsername the new username
 	 * @param newPassword the new password associated with that username
 	 * @return true if the username and password are in acceptable format and the new user has successfully registered, false if otherwise
+	 * @throws ServerException 
 	 * @post either the new user is created and logged in, or the client must try a new username or password to register
 	 */
-	public boolean register(String newUsername, String newPassword);
+	public boolean register(String newUsername, String newPassword) throws ServerException;
 	
 	/**
 	 * @pre the client has logged in and is looking for a game to join or create

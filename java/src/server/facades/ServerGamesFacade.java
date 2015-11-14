@@ -1,5 +1,6 @@
 package server.facades;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,7 +36,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	}
 	
 	public ServerGamesFacade() {
-		users = new TreeMap<String, UserCredentials>();
+		users = new HashMap<String, UserCredentials>();
 	}
 	
 	/**
@@ -64,7 +65,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	 * @param newPassword the new password
 	 */
 	@Override
-	public boolean register(String newUsername, String newPassword) {
+	public boolean register(String newUsername, String newPassword) throws ServerException {
 		UserCredentials newUser = new UserCredentials(newUsername, newPassword);
 		
 		if(newUser.validate() == false) {
@@ -72,6 +73,10 @@ public class ServerGamesFacade implements IGamesFacade {
 		}
 		else
 		{
+			if(users.get(newUsername) != null) {
+				throw new ServerException("User already exists");
+			}
+			
 			users.put(newUsername, newUser);
 			return true;
 		}

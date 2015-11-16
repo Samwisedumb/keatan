@@ -6,7 +6,6 @@ package client.exceptions;
  * We may make this so that each possible error for the server is an enum.
  * @author willvdb
  * @author djoshuac
- *
  */
 @SuppressWarnings("serial")
 public class ServerException extends Throwable {

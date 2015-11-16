@@ -4,139 +4,70 @@ import client.exceptions.ServerException;
 import client.server.ClientServer;
 import client.server.ServerProxy;
 
-
 public class TestingMain {
+	private static void registerTest(UserCredentials creds, String exceptionReason) {	
+		try {
+			ServerProxy.register(creds);
+			
+			if (!exceptionReason.equals("none")) {
+				System.err.println(exceptionReason);
+			}
+		}
+		catch (ServerException serverSide) {
+			if (!exceptionReason.equals(serverSide.getReason())) {
+				System.err.println(serverSide.getReason() + " != " + exceptionReason);
+			}
+		}
+	}
+	private static void loginTest(UserCredentials creds, String exceptionReason) {	
+		try {
+			ServerProxy.login(creds);
+			
+			if (!exceptionReason.equals("none")) {
+				System.err.println(exceptionReason);
+			}
+		}
+		catch (ServerException serverSide) {
+			if (!exceptionReason.equals(serverSide.getReason())) {
+				System.err.println(serverSide.getReason() + " != " + exceptionReason);
+			}
+		}
+	}
+	
 	public static void main(String[] args) {		
 		ServerProxy.initialize(new ClientServer("localhost", "8081"));
-		ServerCommunicator server = new ServerCommunicator(8081);
-		
-		UserCredentials fox = new UserCredentials("StarFox", "WhereYouGoing");
 
-		try {
-			ServerProxy.register(fox);
-		}
-		catch (ServerException e) {
-			System.out.print("Failed to register: ");
-			System.out.println(e.getReason());
-		}
-		try {
-			ServerProxy.register(fox);
-			System.out.println("failed to fail to register");
-		}
-		catch (ServerException e) {
-			System.out.print("Good: ");
-			System.out.println(e.getReason());
-		}
-		try {
-			ServerProxy.login(fox);
-			System.out.println("Success!!");
-		}
-		catch (ServerException e) {
-			System.out.print("Failed to login: ");
-			System.err.println(e.getReason());
-		}
-//		
-//		ServerProxy.initialize(new MockServer());
-//		//ServerProxy.initialize(new ClientServer("localhost", "8081"));
-//		
-//		try {
-//			TransferModel modeling = ServerProxy.getModel(-1);
-//			System.out.println(Converter.toJson(modeling));
-//		}
-//		catch (ServerException e1) {
-//			System.err.println(e1.getReason());
-//		}
-//		
-//		
-//		UserCredentials fox = new UserCredentials("Star_Fox", "WhereYouGoing");
-//		UserCredentials peppy = new UserCredentials("Harey_Mentor", "DoABarrelRoll");
-//		UserCredentials falco = new UserCredentials("Bird_Rival", "GeezeFox");
-//		UserCredentials slippy = new UserCredentials("Frog_Mechanic", "HELPMEIAMBEINGSHOT");
-//		
-//		UserCredentials wolf = new UserCredentials("Wolf", "CantLetYouDoThat");
-//		UserCredentials leon = new UserCredentials("Leon", "AnnoyingBirdIAmTheGreatLeon");
-//		UserCredentials pigma = new UserCredentials("Pigma", "DaddyScreamedRealGood");
-//		UserCredentials andrew = new UserCredentials("Andrew", "UNCLEANDROOOOOOOOSS");
-//		
-//		
-//		try {
-//			ServerProxy.register(wolf);
-//			ServerProxy.register(leon);
-//			ServerProxy.register(pigma);
-//			ServerProxy.register(andrew);
-//			ServerProxy.register(fox);
-//			ServerProxy.register(peppy);
-//			ServerProxy.register(falco);
-//			ServerProxy.register(slippy);
-//		}
-//		catch (ServerException e) {
-//			System.out.println("The squad is already registered.");
-//		}
-//		
-//		try {
-//			ServerProxy.login(fox);
-//			ServerProxy.login(peppy);
-//			ServerProxy.login(falco);
-//			ServerProxy.login(slippy);
-//			
-//			Game[] games = ServerProxy.getGamesList();
-//			CreateGameResponse cgr = ServerProxy.createGame(new CreateGameRequest(true, true, true, "Slippy's Game " + games.length));
-//			System.out.println(games[0].getTitle());
-//			
-//			ServerProxy.joinGame(new JoinGameRequest(cgr.getId(), CatanColor.GREEN));
-//			
-//			TransferModel model = ServerProxy.getModel(-1);
-//			System.out.println(Converter.toJson(model.getBank()));
-//			System.out.println(Converter.toJson(model.getMap()));
-//			
-//			ServerProxy.login(wolf);
-//			ServerProxy.joinGame(new JoinGameRequest(cgr.getId(), CatanColor.YELLOW));
-//			ServerProxy.login(peppy);
-//			ServerProxy.joinGame(new JoinGameRequest(cgr.getId(), CatanColor.RED));
-//			ServerProxy.login(falco);
-//			ServerProxy.joinGame(new JoinGameRequest(cgr.getId(), CatanColor.BLUE));
-//			
-//			model = ServerProxy.getModel(-1);
-//			ModelFacade.updateModel(model);
-//			System.out.println(Converter.toJson(model));
-//			System.out.println(Converter.toJson(model.getBank()));
-//			System.out.println(Converter.toJson(model.getMap()));
-//			
-//			ServerProxy.sendChat(new SendChat(0, "HEYOU"));
-//			model = ServerProxy.sendChat(new SendChat(0, "Guys"));
-//			
-//			List<MessageLine> lines = model.getChat().getLines();
-//			for (int i = 0; i < lines.size(); i++) {
-//				System.out.println(lines.get(i).getSource() + lines.get(i).getMessage());
-//			}
-//			
-//			ServerProxy.sendChat(new SendChat(1, "What Slippy!!!??"));
-//			model = ServerProxy.sendChat(new SendChat(0, "I uh..."));
-//			
-//			lines = model.getChat().getLines();
-//			for (int i = 0; i < lines.size(); i++) {
-//				System.out.println(lines.get(i).getSource() + " " + lines.get(i).getMessage());
-//			}
-//			
-//			List<Port> ports = model.getMap().getPorts();
-//			for (Port p : ports) {
-//				System.out.println(p.getLocation().getX() + " " + p.getLocation().getY() + " " + p.getDirection());
-//			}
-//			
-//			
-//			System.out.println(lines.size());
-//			
-//			
-//			ServerPoller.start();
-//			
-//			
-//			for (PlayerInfo player : ModelFacade.getJoinedPlayersInfo()) {
-//				System.out.println(player.getName());
-//			}
-//			
-//		}
-//		catch (ServerException e) {
-//			System.err.println("Bad stuff: " + e.getReason());
-//		}
+		registerTest(new UserCredentials("Stew8", "password-_"), "failed to connect to server");
+		
+		ServerCommunicator server = new ServerCommunicator(8081);
+
+		// Register Tests
+		registerTest(new UserCredentials("St", "password-_"), "username is not within 3 and 7 characters");
+		registerTest(new UserCredentials("Stew1_Fish-y", "password-_"), "username is not within 3 and 7 characters");
+		registerTest(new UserCredentials("St\\/\\/", "password-_"), "username contains invalid characters");
+		registerTest(new UserCredentials("I8Stew", "pass"), "password is shorter than 5 characters");
+		registerTest(new UserCredentials("I8Stew", "pass\\/\\/ord"), "password contains invalid characters");
+
+		registerTest(new UserCredentials("I8StewZ", "55555"), "none");
+		registerTest(new UserCredentials("333", "password"), "none");
+		registerTest(new UserCredentials("7777777", "password"), "none");
+		registerTest(new UserCredentials("_____", "password"), "none");
+		registerTest(new UserCredentials("-----", "password"), "none");
+		registerTest(new UserCredentials("I8StewZ", "HIJKLMNOPa1b2QRSc3dTUV4e5f6g7h8i9j0klmnop_qrWXYZstu-vwxy-z_ABCDEFG-_"), "none");
+		
+		// Login Tests
+		loginTest(new UserCredentials("St", "password-_"), "username is not within 3 and 7 characters");
+		loginTest(new UserCredentials("Stew1_Fish-y", "password-_"), "username is not within 3 and 7 characters");
+		loginTest(new UserCredentials("St\\/\\/", "password-_"), "username contains invalid characters");
+		loginTest(new UserCredentials("I8Stew", "pass"), "password is shorter than 5 characters");
+		loginTest(new UserCredentials("I8Stew", "pass\\/\\/ord"), "password contains invalid characters");
+
+		loginTest(new UserCredentials("I8StewZ", "55555"), "none");
+		loginTest(new UserCredentials("333", "password"), "none");
+		loginTest(new UserCredentials("7777777", "password"), "none");
+		loginTest(new UserCredentials("_____", "password"), "none");
+		loginTest(new UserCredentials("-----", "password"), "none");
+		loginTest(new UserCredentials("I8StewZ", "HIJKLMNOPa1b2QRSc3dTUV4e5f6g7h8i9j0klmnop_qrWXYZstu-vwxy-z_ABCDEFG-_"), "none");
+		
 	}
 }

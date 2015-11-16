@@ -92,13 +92,21 @@ public class ServerGamesFacade implements IGamesFacade {
 	@Override
 	public CreateGameResponse create(CreateGameRequest makeGame) {
 		// TODO Auto-generated method stub
-		return null;
+		CreateGameResponse gameMade = ServerMovesFacade.getInstance().addGame(makeGame);
+		
+		return gameMade;
 	}
 
 	@Override
 	public boolean joinGame(JoinGameRequest requestJoin) {
 		// TODO Auto-generated method stub
-		return false;
+		
+		//GET INFO FROM COOKIES (THIS WON'T WORK)
+		
+		String playerName = "Stave";
+		int playerID = -74;
+		
+		return ServerMovesFacade.getInstance().addPlayerToGame(requestJoin, playerName, playerID);
 	}
 	
 }

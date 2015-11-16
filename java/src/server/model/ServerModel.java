@@ -60,6 +60,11 @@ public class ServerModel {
 			
 		setUpPorts(randomPorts);
 		
+		transfer = new TransferModel();
+	}
+	
+	public TransferModel getTransfer() {
+		return transfer;
 	}
 	
 	/**

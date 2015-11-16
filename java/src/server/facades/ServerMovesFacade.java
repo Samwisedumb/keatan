@@ -1,12 +1,18 @@
 package server.facades;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import server.model.ServerModel;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.BuyDevCard;
+import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.DiscardCards;
 import shared.transferClasses.FinishTurn;
+import shared.transferClasses.Game;
 import shared.transferClasses.MaritimeTrade;
 import shared.transferClasses.Monopoly;
 import shared.transferClasses.Monument;
@@ -22,7 +28,36 @@ import shared.transferClasses.YearOfPlenty;
  * Server Facade that handles all "moves" commands for all games
  */
 public class ServerMovesFacade implements IMovesFacade {
-
+	
+	private static ServerMovesFacade instance = null;
+	
+	private List<ServerModel> games;
+	private List<Game> gameTags;
+	
+	/**
+	 * returns a singleton of ServerMovesFacade
+	 */
+	public static ServerMovesFacade getInstance() {
+		if(instance == null) {
+			instance = new ServerMovesFacade();
+		}
+		
+		return instance;
+	}
+	
+	public ServerMovesFacade() {
+		games = new ArrayList<ServerModel>();
+		gameTags = new ArrayList<Game>();
+	}
+	
+	public List<Game> getGameTags() {
+		return gameTags;
+	}
+	
+	public void addGame(CreateGameRequest gameMaker) {
+		Game newGame = new Game(gameMaker.getName(), gameTags.size()+1);
+	}
+	
 	@Override
 	public void acceptTrade(int gameID, AcceptTrade accept) {
 		// TODO Auto-generated method stub

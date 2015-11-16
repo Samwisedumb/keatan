@@ -376,7 +376,7 @@ public class ModelFacade {
 						if (ratio == 4 && port.getRatio() == 3) {
 							ratio = 3;
 						}
-						else if (tradeResource == port.getResource()){
+						else if (tradeResource == port.getPortResource()){
 							return 2;
 						}
 					}
@@ -387,7 +387,7 @@ public class ModelFacade {
 						if (ratio == 4 && port.getRatio() == 3) {
 							ratio = 3;
 						}
-						else if (tradeResource == port.getResource()){
+						else if (tradeResource == port.getPortResource()){
 							return 2;
 						}
 					}

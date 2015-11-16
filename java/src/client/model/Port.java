@@ -1,26 +1,49 @@
 package client.model;
 
 import shared.definitions.EdgeDirection;
+import shared.definitions.PortType;
 import shared.definitions.ResourceType;
 
 public class Port {
-	private ResourceType resource;
+	private PortType resource;
 	private HexLocation location;
 	private EdgeDirection direction;
 	private int ratio;
 
-	public Port(ResourceType resource, HexLocation location, EdgeDirection direction, int ratio) {
+	public Port(PortType resource, HexLocation location, EdgeDirection direction) {
 		setResource(resource);
 		setLocation(location);
 		setDirection(direction);
-		setRatio(ratio);
+		if(resource == PortType.THREE) {
+			ratio = 3;
+		}
+		else {
+			ratio = 2;
+		}
 	}
 
-	public ResourceType getResource() {
+	public PortType getResource() {
 		return resource;
 	}
 
-	public void setResource(ResourceType resource) {
+	public ResourceType getPortResource() {
+		switch(resource) {
+		case WOOD:
+			return ResourceType.WOOD;
+		case SHEEP:
+			return ResourceType.SHEEP;
+		case ORE:
+			return ResourceType.ORE;
+		case WHEAT:
+			return ResourceType.WHEAT;
+		case BRICK:
+			return ResourceType.BRICK;
+		default:
+			return null;
+		}
+	}
+	
+	public void setResource(PortType resource) {
 		this.resource = resource;
 	}
 

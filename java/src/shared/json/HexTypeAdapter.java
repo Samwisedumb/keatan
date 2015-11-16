@@ -33,8 +33,8 @@ public class HexTypeAdapter implements JsonSerializer<Hex>, JsonDeserializer<Hex
 	public Hex deserialize(JsonElement element, Type type,
 			JsonDeserializationContext jdc) throws JsonParseException {
 		JsonObject jsonHex = element.getAsJsonObject();
-		Hex hex = new Hex();
-		hex.setHexLocation((HexLocation) jdc.deserialize(jsonHex.get("location"), HexLocation.class));
+		Hex hex = new Hex(null);
+		hex.setLocation((HexLocation) jdc.deserialize(jsonHex.get("location"), HexLocation.class));
 		
 		JsonElement resource = jsonHex.get("resource");
 		if (resource != null && !(resource instanceof JsonNull) && HexType.fromString(resource.getAsString()) != null) {

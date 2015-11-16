@@ -12,8 +12,8 @@ public class Hex {
 	private HexType resource;
 	private int number;
 	
-	public void setHexLocation(HexLocation location) {
-		this.location = location;
+	public Hex(HexType type) {
+		this.resource = type;
 	}
 	
 	public void setType(HexType type) {
@@ -24,6 +24,10 @@ public class Hex {
 		this.number = chitNumber;
 	}
 
+	public void setLocation(HexLocation newLocation) {
+		this.location = newLocation;
+	}
+	
 	public HexLocation getLocation() {
 		return this.location;
 	}

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import client.exceptions.ServerException;
+import server.model.ServerModel;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
@@ -77,7 +78,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	@Override
 	public List<Game> list() {
 		// TODO Auto-generated method stub
-		return null;
+		return ServerMovesFacade.getInstance().getGameTags();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package server;
 import java.net.InetSocketAddress;
 
 import server.handlers.UserLoginHandler;
+import server.handlers.UserRegisterHandler;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -23,7 +24,8 @@ public class ServerCommunicator {
 		}
 		
 		server.setExecutor(null); //this gives us the default executer
-		
+
+		server.createContext("/user/register", new UserRegisterHandler());
 		server.createContext("/user/login", new UserLoginHandler());
 		
 		server.start();

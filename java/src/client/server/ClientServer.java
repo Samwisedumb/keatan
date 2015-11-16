@@ -41,7 +41,7 @@ public class ClientServer implements IServer {
 		
 		communicator.addRequestHeader("User", "Joe");
 		communicator.addRequestHeader("Game", "Joe's Game");
-		communicator.send("/user/login", userCredentials);
+		System.out.println(communicator.send("/user/login", userCredentials));
 
 		Map<String, List<String>> headers = communicator.getResponseHeadersForLastSend();
 		System.out.println("\n\nResponse Headers");
@@ -57,7 +57,8 @@ public class ClientServer implements IServer {
 	@Override
 	public void register(UserCredentials userCredentials)
 			throws ServerException {
-		communicator.send("/user/register", userCredentials);	
+		communicator.send("/user/register", userCredentials);
+		System.out.println("User was registered");
 	}
 
 	@Override

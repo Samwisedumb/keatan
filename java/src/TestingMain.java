@@ -10,13 +10,21 @@ public class TestingMain {
 		ServerProxy.initialize(new ClientServer("localhost", "8081"));
 		ServerCommunicator server = new ServerCommunicator(8081);
 		
-		UserCredentials fox = new UserCredentials("Star_Fox", "WhereYouGoing");
+		UserCredentials fox = new UserCredentials("StarFox", "WhereYouGoing");
 
 		try {
 			ServerProxy.register(fox);
 		}
 		catch (ServerException e) {
 			System.out.print("Failed to register: ");
+			System.out.println(e.getReason());
+		}
+		try {
+			ServerProxy.register(fox);
+			System.out.println("failed to fail to register");
+		}
+		catch (ServerException e) {
+			System.out.print("Good: ");
 			System.out.println(e.getReason());
 		}
 		try {
@@ -27,8 +35,6 @@ public class TestingMain {
 			System.out.print("Failed to login: ");
 			System.err.println(e.getReason());
 		}
-		System.out.println("HEY");
-		System.out.println("HEY");
 //		
 //		ServerProxy.initialize(new MockServer());
 //		//ServerProxy.initialize(new ClientServer("localhost", "8081"));

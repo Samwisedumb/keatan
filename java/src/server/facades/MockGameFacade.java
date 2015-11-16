@@ -16,9 +16,8 @@ public class MockGameFacade implements IGamesFacade{
 	}
 
 	@Override
-	public boolean register(String newUsername, String newPassword) {
+	public void register(String newUsername, String newPassword) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

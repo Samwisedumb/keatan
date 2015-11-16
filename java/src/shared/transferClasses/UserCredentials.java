@@ -1,5 +1,7 @@
 package shared.transferClasses;
 
+import client.exceptions.InvalidObjectException;
+
 /**
  * A transfer object for registering and logging in a user.
  * @author djoshuac
@@ -31,36 +33,33 @@ public class UserCredentials {
 	
 	/**
 	 * Validates a UserCredentials object
-	 * @return true if the object is valid<br>
-	 * false if otherwise
-	 * @pre none
-	 * @post If true, the username is guaranteed to be of 3 to 7 characters in
-	 * length containing only letters, numbers, underscores, and hyphens.<br>
-	 * The password is guaranteed to be 5 or more characters in length containing 
-	 * only letters, numbers, underscores, and hyphens.<br>
-	 * If false, you are guaranteed that at least one of the above conditions is false.
-	 * 3 and 7 characters
+	 * @post An InvalidObjectException will be thrown if the preconditions are not met.
+	 * An English description of which precondition was not met is given in the exception's reason.
+	 * @pre The username must be 3 to 7 characters in length containing only letters,
+	 * numbers, underscores, and hyphens.<br>
+	 * The password must 5 or more characters in length containing only letters, numbers,
+	 * underscores, and hyphens.
+	 * @throws InvalidObjectException is thrown if one of the preconditions is violated.
 	 */
-	public boolean validate() {
+	public void validate() throws InvalidObjectException {
 		if (username == null || password == null) {
-			return false;
+			throw new InvalidObjectException("username or password were null");
 		}
 		if (username.length() < 3 || username.length() > 7) {
-			return false;
+			throw new InvalidObjectException("username is not within 3 and 7 characters");
 		}
 		for (char c : username.toCharArray()) {
             if (!Character.isLetterOrDigit(c) && c != '_' && c != '-') {
-                return false;
+    			throw new InvalidObjectException("username contains invalid characters");
             }
         }
 		if (password.length() < 5) {
-			return false;
+			throw new InvalidObjectException("password is shorter than 5 characters");
 		}
 		for (char c : password.toCharArray()) {
             if (!Character.isLetterOrDigit(c) && c != '_' && c != '-') {
-                return false;
+    			throw new InvalidObjectException("password contains invalid characters");
             }
         }
-		return true;
 	}
 }

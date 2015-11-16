@@ -55,10 +55,8 @@ public class ClientServer implements IServer {
 	}
 
 	@Override
-	public void register(UserCredentials userCredentials)
-			throws ServerException {
+	public void register(UserCredentials userCredentials) throws ServerException {
 		communicator.send("/user/register", userCredentials);
-		System.out.println("User was registered");
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public interface IGamesFacade {
 	 * @throws ServerException 
 	 * @post either the new user is created and logged in, or the client must try a new username or password to register
 	 */
-	public boolean register(String newUsername, String newPassword) throws ServerException;
+	public void register(String newUsername, String newPassword) throws ServerException;
 	
 	/**
 	 * @pre the client has logged in and is looking for a game to join or create

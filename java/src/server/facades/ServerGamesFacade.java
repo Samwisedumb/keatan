@@ -65,20 +65,12 @@ public class ServerGamesFacade implements IGamesFacade {
 	 * @param newPassword the new password
 	 */
 	@Override
-	public boolean register(String newUsername, String newPassword) throws ServerException {
-		UserCredentials newUser = new UserCredentials(newUsername, newPassword);
-		
-		if(newUser.validate() == false) {
-			return false;
+	public void register(String username, String password) throws ServerException {
+		if (users.get(username) != null) {
+			throw new ServerException("User already exists");
 		}
-		else
-		{
-			if(users.get(newUsername) != null) {
-				throw new ServerException("User already exists");
-			}
+		else {
 			
-			users.put(newUsername, newUser);
-			return true;
 		}
 	}
 

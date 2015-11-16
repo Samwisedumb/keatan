@@ -164,7 +164,7 @@ public class ClientCommunicator {
 						errorMessage += scan.nextLine();
 					}
 					scan.close();
-					throw new ServerException(errorMessage);
+					throw new ServerException(errorMessage.substring(1, errorMessage.length() -1 ));
 				}
 				catch(Exception e) {
 					throw new ServerException("Could not read error stream from server");
@@ -178,7 +178,7 @@ public class ClientCommunicator {
 			throw new ServerException("Connection timed out after " + timeOut + " miliseconds");
 		}
 		catch (IOException ioe) {
-			throw new ServerException("An IOException occurred");
+			throw new ServerException("failed to connect to server");
 		}
 	}
 	

@@ -20,7 +20,7 @@ public class UserInfo {
 		setPassword(password);
 		setUserID(userID);
 	}
-
+	
 	public Username getUsername() {
 		return username;
 	}

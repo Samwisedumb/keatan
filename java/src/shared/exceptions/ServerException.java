@@ -3,9 +3,7 @@ package shared.exceptions;
 /**
  * Happens when the client cannot connect to the server or the server has an error.
  * It has a property called reason that elaborates on why the connection could not be made.
- * We may make this so that each possible error for the server is an enum.
  * @author willvdb
- * @author djoshuac
  */
 @SuppressWarnings("serial")
 public class ServerException extends Throwable {

@@ -11,6 +11,10 @@ import sun.net.www.protocol.http.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;
 
+/**
+ * A handler to handle registering a user
+ * @author djoshuac
+ */
 public class UserRegisterHandler extends IHandler {
 
 	@Override
@@ -20,9 +24,7 @@ public class UserRegisterHandler extends IHandler {
 		try {
 			userCredentials.validate();
 			
-			//UserInfo user = new UserInfo(userCredentials.getUsername(), userCredentials.getPassword(), );
-			
-			ServerGamesFacade.getInstance().register(userCredentials.getUsername(), userCredentials.getPassword());
+			ServerGamesFacade.getInstance().registerUser(userCredentials.getUsername(), userCredentials.getPassword());
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 			exchange.getResponseBody().write(Converter.toJson("Success").getBytes());
 		}

@@ -3,16 +3,15 @@ package server.facades;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-import server.model.ServerModel;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
-import shared.transferClasses.UserCredentials;
+import shared.transferClasses.Password;
 import shared.transferClasses.UserInfo;
+import shared.transferClasses.Username;
 
 /**
  * A facade that executes commands associated with user login and registration
@@ -20,10 +19,11 @@ import shared.transferClasses.UserInfo;
  * @author djoshuac
  */
 public class ServerGamesFacade implements IGamesFacade {
-
 	private static ServerGamesFacade instance = null;
+	private static int nextUserID;
+	private static int nextGameID;
 	
-	private Map<UserCredentials, UserInfo> users;
+	private Map<Username, UserInfo> users;
 	
 	/**
 	 * Creates a singleton of ServerGamesFacade
@@ -31,6 +31,8 @@ public class ServerGamesFacade implements IGamesFacade {
 	 */
 	public static ServerGamesFacade getInstance() {
 		if(instance == null) {
+			nextUserID = 0;
+			nextGameID = 0;
 			instance = new ServerGamesFacade();
 		}
 		
@@ -38,41 +40,39 @@ public class ServerGamesFacade implements IGamesFacade {
 	}
 	
 	public ServerGamesFacade() {
-		users = new HashMap<UserCredentials, UserInfo>();
+		users = new HashMap<Username, UserInfo>();
 	}
 	
-	/**
-	 * Log in to game client
-	 * @param username the suggested username
-	 * @param password the suggested password
-	 * @
-	 */
 	@Override
-	public boolean login(UserCredentials userCredentials) throws ServerException {		
-		UserCredentials loginUser = users.get(username);
+	public void verifyUserInformation(UserInfo user) throws ServerException {
+		UserInfo registeredUser = users.get(user.getUsername());
 		
-		if(loginUser == null) {
+		if (registeredUser.equals(user)) {
+			throw new ServerException("Invalid user information");
+		}
+	}
+	
+	@Override
+	public UserInfo loginUser(Username username, Password password) throws ServerException {
+		UserInfo user = users.get(username);
+		
+		if (user == null) {
 			throw new ServerException("User doesn't exist");
 		}
-		else if(password.equals(loginUser.getPassword())) {
-			return true;
+		else if (!user.getPassword().equals(password)) {
+			throw new ServerException("Incorrect password");
 		}
 		
-		return false;
+		return user;
 	}
 	
-	/**
-	 * Register a user, adding it to the map
-	 * @param newUsername the new username
-	 * @param newPassword the new password
-	 */
 	@Override
-	public void register(String username, String password) throws ServerException {
-		if (users.get(username) != null) {
-			throw new ServerException("User already exists");
+	public void registerUser(Username username, Password password) throws ServerException {
+		if (users.containsKey(username)) {
+			throw new ServerException("Username is already in use");
 		}
 		else {
-			
+			users.put(username, new UserInfo(username, password, nextUserID++));
 		}
 	}
 

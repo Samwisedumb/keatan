@@ -7,6 +7,10 @@ import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
+import shared.transferClasses.Password;
+import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
+import shared.transferClasses.Username;
 
 /**
  * A facade that executes commands associated with user login and registration
@@ -14,26 +18,37 @@ import shared.transferClasses.JoinGameRequest;
  * @author djoshuac
  */
 public interface IGamesFacade {
-
 	/**
-	 * @pre the application has just been started and is waiting for a login
-	 * @param username presented username for verification
-	 * @param password presented password to be associated with that username
-	 * @return true if username and accompanying password are validated
-	 * @throws ServerException 
-	 * @post either the client must make another attempt to log in,
+	 * Verifies the given user information is correct
+	 * @param user - the user information to verify
+	 * @pre the user must be registered, the user's password must be what it is
+	 * registered to be, the userID must match what it is registered to be
+	 * @post The user information is verified to be correct.
+	 * @throws ServerException when one of the preconditions is violated
 	 */
-	public boolean login(String username, String password) throws ServerException;
+	public void verifyUserInformation(UserInfo user) throws ServerException;
 	
 	/**
-	 * @pre the application has just been started and is waiting for a login or a new user registration 
-	 * @param newUsername the new username
-	 * @param newPassword the new password associated with that username
-	 * @return true if the username and password are in acceptable format and the new user has successfully registered, false if otherwise
-	 * @throws ServerException 
-	 * @post either the new user is created and logged in, or the client must try a new username or password to register
+	 * Logs in a user
+	 * @param username - the username to validate
+	 * @param password - the password to validate
+	 * @return 
+	 * @pre The user with the given username must be registered<br>
+	 * The password must be the correct password for the given username
+	 * @post The preconditions are guaranteed, and the user is logged in
+	 * @throws ServerException when the user is not registered or when the password is incorrect
 	 */
-	public void register(String newUsername, String newPassword) throws ServerException;
+	public UserInfo loginUser(Username username, Password password) throws ServerException;
+	
+	/**
+	 * Registers the user so the user may login
+	 * @param username - the username the user wishes to use
+	 * @param password - the password the user wishes to use
+	 * @pre username cannot already be in use
+	 * @post the user may now use the username and password to login
+	 * @throws ServerException when the username is already taken
+	 */
+	public void registerUser(Username username, Password password) throws ServerException;
 	
 	/**
 	 * @pre the client has logged in and is looking for a game to join or create
@@ -57,4 +72,5 @@ public interface IGamesFacade {
 	 * @post the client either joins the game or is returned to the choose games menu.
 	 */
 	public boolean joinGame(JoinGameRequest requestJoin);
+
 }

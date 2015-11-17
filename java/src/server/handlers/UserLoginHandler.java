@@ -16,23 +16,14 @@ public class UserLoginHandler extends IHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {		
 		UserCredentials userCredentials = Converter.fromJson(exchange.getRequestBody(), UserCredentials.class);
-		System.out.println(userCredentials.getUsername() + " : " + userCredentials.getPassword());
 		
-		//UserInfo user = //
-		//exchange.getResponseHeaders().add("Set-cookie", Converter.toJson(user));
-		
-		boolean success;
 		try {
-			success = ServerGamesFacade.getInstance().login(userCredentials.getUsername(), userCredentials.getPassword());
-			if(success == true) {
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-				exchange.getResponseBody().write(Converter.toJson("Success").getBytes());
-			}
-			else {
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-				exchange.getResponseBody().write(Converter.toJson("Wrong Password").getBytes());
-			}
-		} catch (ServerException e) {
+			UserInfo user = ServerGamesFacade.getInstance().loginUser(userCredentials.getUsername(), userCredentials.getPassword());
+			exchange.getResponseHeaders().add("Set-user", Converter.toJson(user));
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+			exchange.getResponseBody().write(Converter.toJson("Success").getBytes());
+		}
+		catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}

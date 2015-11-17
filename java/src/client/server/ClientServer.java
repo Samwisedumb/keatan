@@ -26,31 +26,79 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
 public class ClientServer implements IServer {
 	private ClientCommunicator communicator;
 	
+	private String userCookie;
+	private String gameCookie;
+	
 	public ClientServer (String host, String port) {
 		communicator = new ClientCommunicator(host + ":" + port);
 	}
 	
-	@Override
-	public void login(UserCredentials userCredentials) throws ServerException {
+	/**
+	 * Sets the userCookie
+	 * @throws ServerException when the userCookie does not exist in communicator's response headers
+	 */
+	private void setUserCookie() throws ServerException {
+		List<String> cookie = communicator.getResponseHeadersForLastSend().get("Set-user");
 		
-		communicator.addRequestHeader("User", "Joe");
-		communicator.addRequestHeader("Game", "Joe's Game");
-		System.out.println(communicator.send("/user/login", userCredentials));
-
-		Map<String, List<String>> headers = communicator.getResponseHeadersForLastSend();
-		System.out.println("\n\nResponse Headers");
-		for (String field : headers.keySet()) {
-			System.out.print(field + ": [");
-			for (String value : headers.get(field)) {
-				System.out.print(value + ", ");
-			}
-			System.out.println("]");
+		System.out.println("User cookie set");
+		
+		if (cookie == null || cookie.size() < 1) {
+			throw new ServerException("Server failed to give user cookie");
+		}
+		else {
+			userCookie = cookie.get(0);
+		}
+	}
+	
+	/**
+	 * Sets the gameCookie
+	 * @throws ServerException when the gameCookie does not exist in communicator's response headers
+	 */
+	private void setGameCookie() throws ServerException {
+		List<String> cookie = communicator.getResponseHeadersForLastSend().get("Set-game");
+		
+		if (cookie == null || cookie.size() < 1) {
+			throw new ServerException("Server failed to give game cookie");
+		}
+		else {
+			gameCookie = cookie.get(0);
+		}
+	}
+	
+	/**
+	 * Adds the userCookie to the next server request
+	 * @pre userCookie must not be null
+	 * @post the userCookie is set to the user header
+	 * @throws ServerException if userCookie is null
+	 */
+	private void addUserCookieToNextRequest() throws ServerException {
+		if (userCookie != null) {
+			communicator.addRequestHeader("user", userCookie);
+		}
+		else {
+			throw new ServerException("User cookie is null");
+		}
+	}
+	
+	/**
+	 * Adds the gameCookie to the next server request
+	 * @pre gameCookie must not be null
+	 * @post the gameCookie is set to the game header
+	 * @throws ServerException if gameCookie is null
+	 */
+	private void addGameCookieToNextRequest() throws ServerException {
+		if (gameCookie != null) {
+			communicator.addRequestHeader("user", gameCookie);
+		}
+		else {
+			throw new ServerException("Game cookie is null");
 		}
 	}
 
@@ -58,21 +106,28 @@ public class ClientServer implements IServer {
 	public void register(UserCredentials userCredentials) throws ServerException {
 		communicator.send("/user/register", userCredentials);
 	}
+	
+	@Override
+	public void login(UserCredentials userCredentials) throws ServerException {
+		communicator.send("/user/login", userCredentials);
+		setUserCookie();
+	}
 
 	@Override
 	public Game[] getGamesList() throws ServerException {
+		addUserCookieToNextRequest();
 		return communicator.send("/games/list", null, Game[].class);
 	}
 
 	@Override
-	public CreateGameResponse createGame(CreateGameRequest createGameRequest)
-			throws ServerException {
+	public CreateGameResponse createGame(CreateGameRequest createGameRequest) throws ServerException {
+		addUserCookieToNextRequest();
 		return communicator.send("/games/create", createGameRequest, CreateGameResponse.class);
 	}
 
 	@Override
-	public void joinGame(JoinGameRequest joinGameRequest)
-			throws ServerException {
+	public void joinGame(JoinGameRequest joinGameRequest) throws ServerException {
+		addUserCookieToNextRequest();
 		communicator.send("/games/join", joinGameRequest);
 	}
 

@@ -26,14 +26,14 @@ public class Password implements ITransferClass {
 	@Override
 	public void validate() throws InvalidObjectException {
 		if (password == null) {
-			throw new InvalidObjectException("The password was null.");
+			throw new InvalidObjectException("The password is null");
 		}
 		if (password.length() < 5) {
-			throw new InvalidObjectException("The password is shorter than 5 characters.");
+			throw new InvalidObjectException("The password is shorter than 5 characters");
 		}
 		for (char c : password.toCharArray()) {
             if (!Character.isLetterOrDigit(c) && c != '_' && c != '-') {
-    			throw new InvalidObjectException("The password contains invalid characters.");
+    			throw new InvalidObjectException("The password contains invalid characters");
             }
         }
 	}

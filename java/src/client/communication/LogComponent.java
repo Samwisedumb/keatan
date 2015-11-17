@@ -137,46 +137,46 @@ public class LogComponent extends JComponent
 		
 		List<String> result = new ArrayList<String>();
 		
-		try(Scanner scanner = new Scanner(text))
-		{			
-			scanner.useDelimiter("\\s+");
+		Scanner scanner = new Scanner(text);
+					
+		scanner.useDelimiter("\\s+");
 			
-			String line = "";
+		String line = "";
+		
+		while(scanner.hasNext())
+		{				
+			String word = scanner.next();
 			
-			while(scanner.hasNext())
-			{				
-				String word = scanner.next();
+			if(line.length() == 0)
+			{
+				// Each line must have at least one word (even if
+				// it doesn't fit)
+				line = word;
+			}
+			else
+			{
+				// Check to see if the line can fit another word
+				String newLine = line + " " + word;
 				
-				if(line.length() == 0)
+				Rectangle2D bounds = font.getStringBounds(newLine, context);
+				if(bounds.getWidth() <= MAX_WIDTH)
 				{
-					// Each line must have at least one word (even if
-					// it doesn't fit)
-					line = word;
+					line = newLine;
 				}
 				else
 				{
-					// Check to see if the line can fit another word
-					String newLine = line + " " + word;
-					
-					Rectangle2D bounds = font.getStringBounds(newLine, context);
-					if(bounds.getWidth() <= MAX_WIDTH)
-					{
-						line = newLine;
-					}
-					else
-					{
-						result.add(line);
-						line = word;
-					}
+					result.add(line);
+					line = word;
 				}
 			}
+		}
 			
-			if(line.length() > 0)
-			{
-				result.add(line.toString());
-			}
+		if(line.length() > 0)
+		{
+			result.add(line.toString());
 		}
 		
+		scanner.close();
 		return result;
 	}
 	

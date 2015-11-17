@@ -137,8 +137,8 @@ public class ResourceBarView extends PanelView implements IResourceBarView
 	
 	private void initializeResources()
 	{
-		resources = new HashMap<>();
-		resourceElementList = new ArrayList<>();
+		resources = new HashMap<ResourceBarElement, ResourceElement>();
+		resourceElementList = new ArrayList<ResourceBarElement>();
 		
 		// These resources are not clickable
 		ResourceElement brick = new ResourceElement(ResourceBarElement.BRICK, false);

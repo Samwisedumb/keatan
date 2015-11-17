@@ -110,8 +110,8 @@ public class DiscardView extends OverlayView implements IDiscardView
 	
 	private void initializeResources()
 	{
-		resources = new HashMap<>();
-		resourceList = new ArrayList<>();
+		resources = new HashMap<ResourceType, Resource>();
+		resourceList = new ArrayList<ResourceType>();
 		
 		Resource brick = new Resource(ResourceType.BRICK);
 		brick.setResourceImage(brickImage);

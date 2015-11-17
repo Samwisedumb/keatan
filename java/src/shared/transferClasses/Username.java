@@ -40,4 +40,9 @@ public class Username implements ITransferClass {
             }
         }
 	}
+	
+	@Override
+	public String toString() {
+		return username;
+	}
 }

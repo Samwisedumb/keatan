@@ -37,4 +37,8 @@ public class Password implements ITransferClass {
             }
         }
 	}
+	@Override
+	public String toString() {
+		return password;
+	}
 }

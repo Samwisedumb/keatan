@@ -5,7 +5,7 @@ import client.server.ClientServer;
 import client.server.ServerProxy;
 
 public class TestingMain {	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		ServerCommunicator server = new ServerCommunicator(8081);
 		ServerProxy.initialize(new ClientServer("localhost", "8081"));
 		
@@ -23,6 +23,13 @@ public class TestingMain {
 		}
 		catch (ServerException e) {
 			System.err.println("failed to login: " + e.getReason());
+		}
+		
+		try {
+			ServerProxy.getGamesList();
+		}
+		catch (ServerException e) {
+			System.err.println("failed to getGames: " + e.getReason());
 		}
 	}
 }

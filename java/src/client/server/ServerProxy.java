@@ -38,6 +38,19 @@ public class ServerProxy {
 	private static IServer server = null;
 	
 	/**
+	 * @return true if the server is initialized<br>
+	 * false if otherwise
+	 */
+	public static boolean isInitialized() {
+		if (server == null) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	/**
 	 * Initializes this ServerProxy to target the given server.
 	 * @pre targetServer must specify a valid server
 	 * @param targetServer - the IServer to target

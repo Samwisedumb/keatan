@@ -3,10 +3,10 @@ package server.handlers;
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
-import shared.definitions.UserInfo;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;

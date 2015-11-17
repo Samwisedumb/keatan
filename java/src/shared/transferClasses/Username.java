@@ -3,7 +3,12 @@ package shared.transferClasses;
 import shared.exceptions.InvalidObjectException;
 
 /**
- * A dumb data holder for a username
+ * A dumb data holder for a username<br>
+ * <h6>Validate</h6><ul>
+ * <li>A username must be at least 3 characters long</li>
+ * <li>A username must be no longer than 7 characters<li>
+ * <li>A username may contain only letters, digits, underscores, and hyphens</li>
+ * </ul>
  * @author djoshuac
  */
 public class Username implements ITransferClass {

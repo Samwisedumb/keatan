@@ -42,24 +42,6 @@ public class UserCredentials {
 	 * @throws InvalidObjectException is thrown if one of the preconditions is violated.
 	 */
 	public void validate() throws InvalidObjectException {
-		if (username == null || password == null) {
-			throw new InvalidObjectException("username or password were null");
-		}
-		if (username.length() < 3 || username.length() > 7) {
-			throw new InvalidObjectException("username is not within 3 and 7 characters");
-		}
-		for (char c : username.toCharArray()) {
-            if (!Character.isLetterOrDigit(c) && c != '_' && c != '-') {
-    			throw new InvalidObjectException("username contains invalid characters");
-            }
-        }
-		if (password.length() < 5) {
-			throw new InvalidObjectException("password is shorter than 5 characters");
-		}
-		for (char c : password.toCharArray()) {
-            if (!Character.isLetterOrDigit(c) && c != '_' && c != '-') {
-    			throw new InvalidObjectException("password contains invalid characters");
-            }
-        }
+		
 	}
 }

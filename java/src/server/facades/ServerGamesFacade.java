@@ -12,6 +12,7 @@ import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 
 /**
  * A facade that executes commands associated with user login and registration
@@ -22,7 +23,7 @@ public class ServerGamesFacade implements IGamesFacade {
 
 	private static ServerGamesFacade instance = null;
 	
-	private Map<String, UserCredentials> users;
+	private Map<UserCredentials, UserInfo> users;
 	
 	/**
 	 * Creates a singleton of ServerGamesFacade
@@ -37,7 +38,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	}
 	
 	public ServerGamesFacade() {
-		users = new HashMap<String, UserCredentials>();
+		users = new HashMap<UserCredentials, UserInfo>();
 	}
 	
 	/**
@@ -47,7 +48,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	 * @
 	 */
 	@Override
-	public boolean login(String username, String password) throws ServerException {		
+	public boolean login(UserCredentials userCredentials) throws ServerException {		
 		UserCredentials loginUser = users.get(username);
 		
 		if(loginUser == null) {

@@ -1,9 +1,9 @@
 package client.join;
 
+import shared.exceptions.ServerException;
 import shared.transferClasses.AddAIRequest;
 import client.base.Controller;
 import client.data.PlayerInfo;
-import client.exceptions.ServerException;
 import client.model.ModelFacade;
 import client.server.ServerProxy;
 

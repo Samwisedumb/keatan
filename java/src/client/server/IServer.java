@@ -1,4 +1,6 @@
 package client.server;
+import shared.exceptions.IllegalActionException;
+import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.AddAIRequest;
 import shared.transferClasses.BuildCity;
@@ -22,8 +24,6 @@ import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
 import shared.transferClasses.YearOfPlenty;
-import client.exceptions.IllegalActionException;
-import client.exceptions.ServerException;
 import client.model.TransferModel;
 
 /**

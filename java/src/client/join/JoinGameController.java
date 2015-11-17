@@ -1,6 +1,7 @@
 package client.join;
 
 import shared.definitions.CatanColor;
+import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
@@ -8,7 +9,6 @@ import client.base.Controller;
 import client.base.IAction;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
-import client.exceptions.ServerException;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
 import client.server.ServerPoller;

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import client.exceptions.ServerException;
 import server.model.ServerModel;
+import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;

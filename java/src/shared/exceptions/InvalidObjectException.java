@@ -1,4 +1,4 @@
-package client.exceptions;
+package shared.exceptions;
 
 /**
  * An exception to be thrown for an objects validate method

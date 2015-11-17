@@ -1,4 +1,4 @@
-package client.exceptions;
+package shared.exceptions;
 
 /**
  * Thrown when the user tries to login or register as a current user

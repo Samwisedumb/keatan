@@ -1,11 +1,11 @@
 package client.map.states;
 
 import shared.definitions.PieceType;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import client.data.RobPlayerInfo;
-import client.exceptions.ServerException;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;

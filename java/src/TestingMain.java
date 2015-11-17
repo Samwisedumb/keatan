@@ -1,6 +1,9 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import server.ServerCommunicator;
+import shared.exceptions.ServerException;
 import shared.transferClasses.UserCredentials;
-import client.exceptions.ServerException;
 import client.server.ClientServer;
 import client.server.ServerProxy;
 
@@ -68,6 +71,11 @@ public class TestingMain {
 		loginTest(new UserCredentials("_____", "password"), "none");
 		loginTest(new UserCredentials("-----", "password"), "none");
 		loginTest(new UserCredentials("I8StewZ", "HIJKLMNOPa1b2QRSc3dTUV4e5f6g7h8i9j0klmnop_qrWXYZstu-vwxy-z_ABCDEFG-_"), "none");
+		
+		
+		List<String> list = new ArrayList<String>();
+		
+		System.out.println(list.getClass());
 		
 	}
 }

@@ -1,4 +1,4 @@
-package client.exceptions;
+package shared.exceptions;
 
 /**
  * General exception for when a players action is against the rules

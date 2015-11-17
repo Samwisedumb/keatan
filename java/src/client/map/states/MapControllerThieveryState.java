@@ -1,9 +1,9 @@
 package client.map.states;
 
 import shared.definitions.PieceType;
+import shared.exceptions.ServerException;
 import shared.transferClasses.RobPlayer;
 import client.data.RobPlayerInfo;
-import client.exceptions.ServerException;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;

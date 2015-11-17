@@ -1,6 +1,6 @@
 package shared.transferClasses;
 
-import client.exceptions.InvalidObjectException;
+import shared.exceptions.InvalidObjectException;
 
 /**
  * A transfer object for registering and logging in a user.

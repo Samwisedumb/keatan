@@ -2,7 +2,7 @@ package server.facades;
 
 import java.util.List;
 
-import client.exceptions.ServerException;
+import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;

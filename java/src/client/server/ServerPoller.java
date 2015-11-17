@@ -3,8 +3,8 @@ package client.server;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import shared.exceptions.ServerException;
 import shared.json.Converter;
-import client.exceptions.ServerException;
 import client.model.ModelFacade;
 import client.model.TransferModel;
 

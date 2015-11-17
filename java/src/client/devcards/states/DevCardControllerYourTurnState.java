@@ -1,13 +1,13 @@
 package client.devcards.states;
 
 import shared.definitions.ResourceType;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuyDevCard;
 import shared.transferClasses.Monopoly;
 import shared.transferClasses.Monument;
 import shared.transferClasses.RoadBuilding;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
-import client.exceptions.ServerException;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;

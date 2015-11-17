@@ -3,6 +3,7 @@ package client.server;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.AddAIRequest;
@@ -27,7 +28,6 @@ import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
 import shared.transferClasses.YearOfPlenty;
-import client.exceptions.ServerException;
 import client.model.TransferModel;
 
 public class MockServer implements IServer  {

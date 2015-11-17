@@ -3,11 +3,11 @@ package server.handlers;
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
+import shared.exceptions.InvalidObjectException;
+import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.UserCredentials;
 import sun.net.www.protocol.http.HttpURLConnection;
-import client.exceptions.InvalidObjectException;
-import client.exceptions.ServerException;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -19,6 +19,8 @@ public class UserRegisterHandler extends IHandler {
 
 		try {
 			userCredentials.validate();
+			
+			//UserInfo user = new UserInfo(userCredentials.getUsername(), userCredentials.getPassword(), );
 			
 			ServerGamesFacade.getInstance().register(userCredentials.getUsername(), userCredentials.getPassword());
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);

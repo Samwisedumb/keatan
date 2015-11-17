@@ -1,4 +1,4 @@
-package client.exceptions;
+package shared.exceptions;
 
 /**
  * Thrown when the game is not succesfully stored

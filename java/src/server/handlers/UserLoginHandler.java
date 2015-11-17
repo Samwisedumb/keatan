@@ -1,14 +1,13 @@
 package server.handlers;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import server.facades.ServerGamesFacade;
+import shared.definitions.UserInfo;
+import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.UserCredentials;
 import sun.net.www.protocol.http.HttpURLConnection;
-import client.exceptions.ServerException;
 
 import com.sun.net.httpserver.HttpExchange;
 
@@ -19,7 +18,8 @@ public class UserLoginHandler extends IHandler {
 		UserCredentials userCredentials = Converter.fromJson(exchange.getRequestBody(), UserCredentials.class);
 		System.out.println(userCredentials.getUsername() + " : " + userCredentials.getPassword());
 		
-		exchange.getResponseHeaders().add("Set-cookie", "user:");
+		//UserInfo user = //
+		//exchange.getResponseHeaders().add("Set-cookie", Converter.toJson(user));
 		
 		boolean success;
 		try {

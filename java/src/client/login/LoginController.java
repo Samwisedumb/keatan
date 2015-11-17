@@ -2,11 +2,11 @@ package client.login;
 
 import java.util.Observable;
 
+import shared.exceptions.ServerException;
 import shared.transferClasses.UserCredentials;
 import client.base.Controller;
 import client.base.IAction;
 import client.data.PlayerInfo;
-import client.exceptions.ServerException;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
 import client.server.ServerProxy;

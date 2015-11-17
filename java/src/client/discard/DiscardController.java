@@ -3,9 +3,9 @@ package client.discard;
 import java.util.Observable;
 
 import shared.definitions.ResourceType;
+import shared.exceptions.ServerException;
 import shared.transferClasses.DiscardCards;
 import client.base.Controller;
-import client.exceptions.ServerException;
 import client.misc.IWaitView;
 import client.model.ModelFacade;
 import client.model.ResourceList;

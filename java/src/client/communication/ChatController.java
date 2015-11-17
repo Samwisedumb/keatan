@@ -1,8 +1,8 @@
 package client.communication;
 
+import shared.exceptions.ServerException;
 import shared.transferClasses.SendChat;
 import client.base.Controller;
-import client.exceptions.ServerException;
 import client.model.ModelFacade;
 import client.server.ServerProxy;
 

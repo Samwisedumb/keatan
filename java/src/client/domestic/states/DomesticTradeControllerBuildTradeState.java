@@ -1,8 +1,8 @@
 package client.domestic.states;
 
 import shared.definitions.ResourceType;
+import shared.exceptions.ServerException;
 import shared.transferClasses.OfferTrade;
-import client.exceptions.ServerException;
 import client.model.ModelFacade;
 import client.model.ResourceList;
 import client.server.ServerProxy;

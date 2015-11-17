@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import shared.exceptions.ServerException;
 import shared.json.Converter;
-import client.exceptions.ServerException;
 
 /**
  * This class sends commands to a server specified by the server

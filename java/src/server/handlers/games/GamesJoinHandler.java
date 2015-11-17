@@ -1,8 +1,9 @@
-package server.handlers;
+package server.handlers.games;
 
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
+import server.handlers.IHandler;
 import shared.json.Converter;
 import shared.transferClasses.JoinGameRequest;
 import sun.net.www.protocol.http.HttpURLConnection;

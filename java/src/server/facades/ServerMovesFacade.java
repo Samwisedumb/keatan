@@ -95,23 +95,23 @@ public class ServerMovesFacade implements IMovesFacade {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void buildCity(int gameID, BuildCity build) {
 		// TODO Auto-generated method stub
-		
+		games.get(gameID).placeCity(build.getSpotOne(), build.getPlayerIndex());
 	}
 
 	@Override
 	public void buildRoad(int gameID, BuildRoad build) {
 		// TODO Auto-generated method stub
-		
+		games.get(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
 	}
 
 	@Override
 	public void buildSettlement(int gameID, BuildSettlement build) {
 		// TODO Auto-generated method stub
-		
+		games.get(gameID).placeSettlement(build.getSpotOne(), build.getPlayerIndex());
 	}
 
 	@Override

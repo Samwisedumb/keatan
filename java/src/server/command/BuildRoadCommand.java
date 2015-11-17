@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.BuildRoad;
 
 /**
@@ -13,9 +14,19 @@ public class BuildRoadCommand implements Command {
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public BuildRoadCommand(int gameID, BuildRoad transferObject) {}
+	
+	int game;
+	BuildRoad buildCommand;
+	
+	public BuildRoadCommand(int gameID, BuildRoad transferObject)
+	{
+		game = gameID;
+		buildCommand = transferObject;
+	}
 
 	@Override
-	public void execute() {}
+	public void execute() {
+		ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
+	}
 
 }

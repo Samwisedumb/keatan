@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.BuildSettlement;
 
 /**
@@ -13,9 +14,18 @@ public class BuildSettlementCommand implements Command {
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public BuildSettlementCommand(int gameID, BuildSettlement transferObject) {}
+	
+	int game;
+	BuildSettlement buildCommand;
+	
+	public BuildSettlementCommand(int gameID, BuildSettlement transferObject) {
+		game = gameID;
+		buildCommand = transferObject;
+	}
 
 	@Override
-	public void execute() {}
+	public void execute() {
+		ServerMovesFacade.getInstance().buildSettlement(game, buildCommand);
+	}
 
 }

@@ -13,12 +13,14 @@ import shared.exceptions.InvalidObjectException;
 public class Password implements ITransferClass {
 	private String password;
 	
-	public Password() {}
+	public Password(String password) {
+		setPassword(password);
+	}
 	
 	public String getPassword() {
 		return password;
 	}
-	public void setPassword(String password) {
+	private void setPassword(String password) {
 		this.password = password;
 	}
 	@Override

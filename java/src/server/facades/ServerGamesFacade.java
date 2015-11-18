@@ -1,5 +1,6 @@
 package server.facades;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +21,29 @@ import shared.transferClasses.Username;
  */
 public class ServerGamesFacade implements IGamesFacade {
 	private static ServerGamesFacade instance = null;
+
 	private static int nextUserID;
+	/**
+	 * @return the next unique user id
+	 * @pre none
+	 * @post the returned user id is a unique id
+	 */
+	private int getNextUserID() {
+		return nextUserID++;
+	}
+	
 	private static int nextGameID;
+	/**
+	 * @return the next unique game id
+	 * @pre none
+	 * @post the returned game id is a unique id
+	 */
+	private int getNextGameID() {
+		return nextGameID++;
+	}
 	
 	private Map<Username, UserInfo> users;
+	private List<Game> games;
 	
 	/**
 	 * Creates a singleton of ServerGamesFacade
@@ -41,13 +61,15 @@ public class ServerGamesFacade implements IGamesFacade {
 	
 	public ServerGamesFacade() {
 		users = new HashMap<Username, UserInfo>();
+		games = new ArrayList<Game>();
+		games.add(new Game("Already Made Game", getNextGameID()));
 	}
 	
 	@Override
 	public void verifyUserInformation(UserInfo user) throws ServerException {
 		UserInfo registeredUser = users.get(user.getUsername());
 		
-		if (registeredUser.equals(user)) {
+		if (!registeredUser.equals(user)) {
 			throw new ServerException("Invalid user information");
 		}
 	}
@@ -72,22 +94,22 @@ public class ServerGamesFacade implements IGamesFacade {
 			throw new ServerException("Username is already in use");
 		}
 		else {
-			users.put(username, new UserInfo(username, password, nextUserID++));
+			users.put(username, new UserInfo(username, password, getNextUserID()));
 		}
 	}
 
 	@Override
-	public List<Game> list() {
-		// TODO Auto-generated method stub
-		return ServerMovesFacade.getInstance().getGameTags();
+	public List<Game> listGames() {
+		return games;
 	}
 
 	@Override
-	public CreateGameResponse create(CreateGameRequest makeGame) {
-		// TODO Auto-generated method stub
-		CreateGameResponse gameMade = ServerMovesFacade.getInstance().addGame(makeGame);
+	public CreateGameResponse createGame(String gameName) {
+		Game game = new Game(gameName, getNextGameID());
 		
-		return gameMade;
+		games.add(game);
+		
+		return new CreateGameResponse(game.getTitle(), game.getId());
 	}
 
 	@Override

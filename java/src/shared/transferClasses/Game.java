@@ -3,6 +3,10 @@ package shared.transferClasses;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A dumb data holder for a game object
+ * @author djoshuac
+ */
 public class Game {
 	private String title;
 	private int id;
@@ -44,5 +48,11 @@ public class Game {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		return "Game [title=" + title + ", id=" + id + ", players=" + players
+				+ "]";
 	}
 }

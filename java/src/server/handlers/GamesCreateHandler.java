@@ -3,6 +3,7 @@ package server.handlers;
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
+import server.facades.ServerMovesFacade;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.CreateGameRequest;
@@ -23,12 +24,11 @@ public class GamesCreateHandler extends IHandler {
 			UserInfo user = getUserCookie(exchange);
 			ServerGamesFacade.getInstance().verifyUserInformation(user);
 			
-			CreateGameResponse response = ServerGamesFacade.getInstance().create(createGameRequest);
+			CreateGameResponse response = ServerGamesFacade.getInstance().createGame(createGameRequest.getName());
+			ServerMovesFacade.getInstance().addGame(createGameRequest);
 		
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 			exchange.getResponseBody().write(Converter.toJson(response).getBytes());
-			
-			exchange.getResponseBody().close();
 		}
 		catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);

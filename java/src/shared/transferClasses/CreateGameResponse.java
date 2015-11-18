@@ -1,18 +1,13 @@
 package shared.transferClasses;
 
-import java.util.List;
-
-import shared.definitions.EmptyObject;
 
 public class CreateGameResponse {
 	private String title;
 	private int id;
-	private List<EmptyObject> players;
 	
-	public CreateGameResponse(String title, int id, List<EmptyObject> emptyPlayers) {
+	public CreateGameResponse(String title, int id) {
 		setTitle(title);
 		setId(id);
-		setPlayers(emptyPlayers);
 	}
 	
 	public String getTitle() {
@@ -29,13 +24,5 @@ public class CreateGameResponse {
 	
 	public void setId(int id) {
 		this.id = id;
-	}
-	
-	public List<EmptyObject> getPlayers() {
-		return players;
-	}
-	
-	public void setPlayers(List<EmptyObject> players) {
-		this.players = players;
 	}
 }

@@ -50,27 +50,26 @@ public interface IGamesFacade {
 	 */
 	public void registerUser(Username username, Password password) throws ServerException;
 	
-	/**
-	 * @pre the client has logged in and is looking for a game to join or create
-	 * @return a list of available games
-	 * @post the client is able to see the games on their GUI
-	 */
-	public List<Game> list();
+//	/**
+//	 * @pre the client has logged in and is looking for a game to join or create
+//	 * @return a list of available games
+//	 * @post the client is able to see the games on their GUI
+//	 */
+	public List<Game> listGames();
 	
-	/**
-	 * @pre the client has logged in and wants to make a game
-	 * @param makeGame the information for the game the player wants to make (the name, whether the hexes, ports and numbers should be randomized)
-	 * @return the information for the game
-	 * @post the game is created and the client (and other players) can join it
-	 */
-	public CreateGameResponse create(CreateGameRequest makeGame);
+//	/**
+//	 * @pre the client has logged in and wants to make a game
+//	 * @param makeGame the information for the game the player wants to make (the name, whether the hexes, ports and numbers should be randomized)
+//	 * @return the information for the game
+//	 * @post the game is created and the client (and other players) can join it
+//	 */
+	public CreateGameResponse createGame(String gameTitle);
 	
-	/**
-	 * @pre the client has picked a game to join and what color they want to be
-	 * @param requestJoin the information for joining the game (its GameID and the requested color)
-	 * @return true if the game was successfully joined, else false
-	 * @post the client either joins the game or is returned to the choose games menu.
-	 */
+//	/**
+//	 * @pre the client has picked a game to join and what color they want to be
+//	 * @param requestJoin the information for joining the game (its GameID and the requested color)
+//	 * @return true if the game was successfully joined, else false
+//	 * @post the client either joins the game or is returned to the choose games menu.
+//	 */
 	public boolean joinGame(JoinGameRequest requestJoin);
-
 }

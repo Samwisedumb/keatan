@@ -15,6 +15,10 @@ import sun.net.www.protocol.http.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;
 
+/**
+ * A hanler to handle the list games request
+ * @author djoshuac
+ */
 public class GamesListHandler extends IHandler {
 
 	@Override
@@ -23,9 +27,9 @@ public class GamesListHandler extends IHandler {
 			UserInfo user = getUserCookie(exchange);
 			ServerGamesFacade.getInstance().verifyUserInformation(user);
 			
-			List<Game> games = ServerGamesFacade.getInstance().list();
+			List<Game> games = ServerGamesFacade.getInstance().listGames();
 			
-			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);			
 			exchange.getResponseBody().write(Converter.toJson(games).getBytes());
 		}
 		catch (ServerException e) {

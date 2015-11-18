@@ -116,7 +116,7 @@ public class ClientServer implements IServer {
 	@Override
 	public Game[] getGamesList() throws ServerException {
 		addUserCookieToNextRequest();
-		return communicator.send("/user/login", null, Game[].class);
+		return communicator.send("/games/list", null, Game[].class);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 import server.ServerCommunicator;
 import shared.exceptions.ServerException;
+import shared.transferClasses.Game;
 import shared.transferClasses.UserCredentials;
 import client.server.ClientServer;
 import client.server.ServerProxy;
@@ -26,7 +27,9 @@ public class TestingMain {
 		}
 		
 		try {
-			ServerProxy.getGamesList();
+			Game[] games = ServerProxy.getGamesList();
+			System.out.println(games.length);
+			System.out.println(games[0].toString());
 		}
 		catch (ServerException e) {
 			System.err.println("failed to getGames: " + e.getReason());

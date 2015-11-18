@@ -68,4 +68,9 @@ public class UserInfo {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "UserInfo [username=" + username + ", password=" + password
+				+ ", userID=" + userID + "]";
+	}
 }

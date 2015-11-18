@@ -3,6 +3,7 @@ package server;
 import java.net.InetSocketAddress;
 
 import server.handlers.GamesCreateHandler;
+import server.handlers.GamesListHandler;
 import server.handlers.UserLoginHandler;
 import server.handlers.UserRegisterHandler;
 
@@ -29,7 +30,7 @@ public class ServerCommunicator {
 		server.createContext("/user/register", new UserRegisterHandler());
 		server.createContext("/user/login", new UserLoginHandler());
 		server.createContext("/games/create", new GamesCreateHandler());
-		server.createContext("/games/list", new GamesCreateHandler());
+		server.createContext("/games/list", new GamesListHandler());
 		
 		server.start();
 	}

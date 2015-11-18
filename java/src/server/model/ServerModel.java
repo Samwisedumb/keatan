@@ -3,12 +3,15 @@ package server.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Map.Entry;
 
 import shared.definitions.HexType;
 import shared.definitions.PortType;
 import shared.definitions.EdgeDirection;
+import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import client.model.City;
 import client.model.Port;
@@ -16,8 +19,10 @@ import client.model.EdgeLocation;
 import client.model.EdgeValue;
 import client.model.Hex;
 import client.model.HexLocation;
+import client.model.ResourceList;
 import client.model.Road;
 import client.model.Settlement;
+import client.model.Status;
 import client.model.TransferModel;
 import client.model.VertexLocation;
 import client.model.VertexObject;
@@ -415,6 +420,79 @@ public class ServerModel {
 		return newVertices;
 	}
 
+	public void getResources(int numberRoll) {
+		
+		if(numberRoll == 7) {
+			transfer.getTurnTracker().setStatus(Status.Robbing);
+			return;
+		}
+		
+		List<ResourceList> spoils = new ArrayList<ResourceList>();
+		
+		ResourceList bankToll = new ResourceList(0,0,0,0,0);
+		
+		for(int i = 0; i < 4; i++) {
+			spoils.add(new ResourceList(0,0,0,0,0));
+		}
+
+		List<HexLocation> chitLocs = new ArrayList<HexLocation>();
+		
+		for(Hex theHex : hexes.values()) {
+			if(theHex.getChitNumber() == numberRoll) {
+				chitLocs.add(theHex.getLocation());
+			}
+		}
+		
+		List<VertexLocation> chitVertices = new ArrayList<VertexLocation>();
+		
+		for(HexLocation coordinates : chitLocs) {
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.West));
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.NorthWest));
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.NorthEast));
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.East));
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.SouthEast));
+			chitVertices.add(new VertexLocation(coordinates.getX(), coordinates.getY(), VertexDirection.SouthWest));
+		}
+		
+		for(VertexLocation vertex : chitVertices) {
+			VertexValue spoilVertex = vertices.get(vertex);
+			if(spoilVertex.hasMunicipality() == true) {
+				
+				ResourceType spoilResource = hexes.get(new HexLocation(vertex.getX(), vertex.getY())).getResourceType();
+				
+				if(spoilVertex.getCity() == null) {
+					spoils.get(spoilVertex.getSettlement().getOwner()).changeResourceAmount(spoilResource, 1);
+					bankToll.changeResourceAmount(spoilResource, 1);
+				}
+				else {
+					spoils.get(spoilVertex.getCity().getOwner()).changeResourceAmount(spoilResource, 2);
+					bankToll.changeResourceAmount(spoilResource, 2);
+				}
+			}
+		}
+		
+		handOutSpoils(bankToll, spoils);
+		
+		transfer.getTurnTracker().setStatus(Status.Playing);
+	}
+
+	private void handOutSpoils(ResourceList bankToll, List<ResourceList> spoils) {
+		
+		boolean canBrick = transfer.getBank().hasResource(ResourceType.BRICK, bankToll.getBrick());
+		boolean canOre = transfer.getBank().hasResource(ResourceType.ORE, bankToll.getOre());
+		boolean canSheep = transfer.getBank().hasResource(ResourceType.SHEEP, bankToll.getSheep());
+		boolean canWheat = transfer.getBank().hasResource(ResourceType.WHEAT, bankToll.getWheat());
+		boolean canWood = transfer.getBank().hasResource(ResourceType.WOOD, bankToll.getWood());
+		
+		for(int i = 0; i < 4; i++) {
+			if(canBrick) {transfer.getPlayers().get(i).addResource(ResourceType.BRICK, spoils.get(i).getBrick());}
+			if(canOre) {transfer.getPlayers().get(i).addResource(ResourceType.ORE, spoils.get(i).getOre());}
+			if(canSheep) {transfer.getPlayers().get(i).addResource(ResourceType.SHEEP, spoils.get(i).getSheep());}
+			if(canWheat) {transfer.getPlayers().get(i).addResource(ResourceType.WHEAT, spoils.get(i).getWheat());}
+			if(canWood) {transfer.getPlayers().get(i).addResource(ResourceType.WOOD, spoils.get(i).getWood());}
+		}
+		
+	}
 	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
 		edges.get(place).setRoad(new Road(playerIndex, place));

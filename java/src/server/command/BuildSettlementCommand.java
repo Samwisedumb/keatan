@@ -9,15 +9,15 @@ import shared.transferClasses.BuildSettlement;
  *
  */
 public class BuildSettlementCommand implements Command {
+	
+	int game;
+	BuildSettlement buildCommand;
+	
 	/**
 	 * Creates a command that, when executed, will attempt to build a settlement.
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	
-	int game;
-	BuildSettlement buildCommand;
-	
 	public BuildSettlementCommand(int gameID, BuildSettlement transferObject) {
 		game = gameID;
 		buildCommand = transferObject;

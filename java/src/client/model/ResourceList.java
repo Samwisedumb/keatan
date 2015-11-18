@@ -81,6 +81,28 @@ public class ResourceList {
 		}
 	}
 
+	public void changeResourceAmount(ResourceType resource, int amount) {
+		switch(resource) {
+		case BRICK:
+			brick = brick + amount;
+			break;
+		case ORE:
+			ore = ore + amount;
+			break;
+		case SHEEP:
+			sheep = sheep + amount;
+			break;
+		case WHEAT:
+			wheat = wheat + amount;
+			break;
+		case WOOD:
+			wood = wood + amount;
+			break;
+		default:
+			break;
+		}
+	}
+	
 	public boolean validate() {
 		if (brick < 0 || brick > 24) return false;
 		if (ore < 0 || ore > 24) return false;

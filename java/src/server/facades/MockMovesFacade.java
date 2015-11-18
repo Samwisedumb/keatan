@@ -5,6 +5,8 @@ import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.BuyDevCard;
+import shared.transferClasses.CreateGameRequest;
+import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.DiscardCards;
 import shared.transferClasses.FinishTurn;
 import shared.transferClasses.MaritimeTrade;
@@ -120,6 +122,12 @@ public class MockMovesFacade implements IMovesFacade {
 	public void yearOfPlenty(int gameID, YearOfPlenty plenty) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CreateGameResponse createGame(CreateGameRequest createGame) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

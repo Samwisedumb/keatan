@@ -20,12 +20,15 @@ public class GamesCreateHandler extends IHandler {
 	public void handle(HttpExchange exchange) throws IOException {
 		CreateGameRequest createGameRequest = Converter.fromJson(exchange.getRequestBody(), CreateGameRequest.class);
 		
+
+		//GET INFO FROM COOKIES (THIS WON'T WORK)
+		
 		try {
 			UserInfo user = getUserCookie(exchange);
 			ServerGamesFacade.getInstance().verifyUserInformation(user);
 			
 			CreateGameResponse response = ServerGamesFacade.getInstance().createGame(createGameRequest.getName());
-			ServerMovesFacade.getInstance().addGame(createGameRequest);
+			ServerMovesFacade.getInstance().createGame(createGameRequest);
 		
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 			exchange.getResponseBody().write(Converter.toJson(response).getBytes());

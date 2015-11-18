@@ -58,7 +58,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		return gameTags;
 	}
 	
-	public CreateGameResponse addGame(CreateGameRequest gameMaker) {
+	public CreateGameResponse createGame(CreateGameRequest gameMaker) {
 		Game newGame = new Game(gameMaker.getName(), gameTags.size());
 		
 		gameTags.add(newGame);

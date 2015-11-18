@@ -73,4 +73,7 @@ public class UserInfo {
 		return "UserInfo [username=" + username + ", password=" + password
 				+ ", userID=" + userID + "]";
 	}
+	public String getUsernameString() {
+		return getUsername().toString();
+	}
 }

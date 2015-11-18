@@ -5,6 +5,8 @@ import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.BuyDevCard;
+import shared.transferClasses.CreateGameRequest;
+import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.DiscardCards;
 import shared.transferClasses.FinishTurn;
 import shared.transferClasses.MaritimeTrade;
@@ -17,12 +19,15 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
+import client.data.GameInfo;
 
 /**
  * Server Facade that handles all "moves" commands for all games
  */
 public interface IMovesFacade {
 
+	public CreateGameResponse createGame(CreateGameRequest createGame);
+	
 	/**
 	 * @pre Somebody has accepted a trade
 	 * @param gameID the ID of the game

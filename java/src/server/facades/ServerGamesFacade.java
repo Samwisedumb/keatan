@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import shared.exceptions.ServerException;
-import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
+import shared.transferClasses.GetPlayer;
 import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.Password;
 import shared.transferClasses.UserInfo;
@@ -22,24 +22,22 @@ import shared.transferClasses.Username;
 public class ServerGamesFacade implements IGamesFacade {
 	private static ServerGamesFacade instance = null;
 
-	private static int nextUserID;
 	/**
 	 * @return the next unique user id
 	 * @pre none
 	 * @post the returned user id is a unique id
 	 */
 	private int getNextUserID() {
-		return nextUserID++;
+		return users.size();
 	}
 	
-	private static int nextGameID;
 	/**
 	 * @return the next unique game id
 	 * @pre none
 	 * @post the returned game id is a unique id
 	 */
 	private int getNextGameID() {
-		return nextGameID++;
+		return games.size();
 	}
 	
 	private Map<Username, UserInfo> users;
@@ -51,8 +49,6 @@ public class ServerGamesFacade implements IGamesFacade {
 	 */
 	public static ServerGamesFacade getInstance() {
 		if(instance == null) {
-			nextUserID = 0;
-			nextGameID = 0;
 			instance = new ServerGamesFacade();
 		}
 		
@@ -73,7 +69,7 @@ public class ServerGamesFacade implements IGamesFacade {
 			throw new ServerException("Invalid user information");
 		}
 	}
-	
+
 	@Override
 	public UserInfo loginUser(Username username, Password password) throws ServerException {
 		UserInfo user = users.get(username);
@@ -113,15 +109,16 @@ public class ServerGamesFacade implements IGamesFacade {
 	}
 
 	@Override
-	public boolean joinGame(JoinGameRequest requestJoin) {
-		// TODO Auto-generated method stub
+	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException{
+		if (requestJoin.getId() >= games.size() || requestJoin.getId() < 0) {
+			throw new ServerException("Invalid Game ID");
+		}
 		
-		//GET INFO FROM COOKIES (THIS WON'T WORK)
+		List<GetPlayer> players = games.get(requestJoin.getId()).getPlayers();
+		if (players.size() >= 4) {
+			throw new ServerException("Game is full");
+		}
 		
-		String playerName = "Stave";
-		int playerID = -74;
-		
-		return ServerMovesFacade.getInstance().addPlayerToGame(requestJoin, playerName, playerID);
+		players.add(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
 	}
-	
 }

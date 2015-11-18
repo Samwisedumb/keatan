@@ -2,10 +2,10 @@ package server;
 
 import java.net.InetSocketAddress;
 
-import server.handlers.GamesCreateHandler;
-import server.handlers.GamesListHandler;
-import server.handlers.UserLoginHandler;
-import server.handlers.UserRegisterHandler;
+import server.handlers.games.GamesCreateHandler;
+import server.handlers.games.GamesListHandler;
+import server.handlers.user.UserLoginHandler;
+import server.handlers.user.UserRegisterHandler;
 
 import com.sun.net.httpserver.HttpServer;
 

@@ -10,12 +10,14 @@ import shared.definitions.HexType;
 import shared.definitions.PortType;
 import shared.definitions.EdgeDirection;
 import shared.definitions.VertexDirection;
+import client.model.City;
 import client.model.Port;
 import client.model.EdgeLocation;
 import client.model.EdgeValue;
 import client.model.Hex;
 import client.model.HexLocation;
 import client.model.Road;
+import client.model.Settlement;
 import client.model.TransferModel;
 import client.model.VertexLocation;
 import client.model.VertexObject;
@@ -31,8 +33,8 @@ public class ServerModel {
 	
 	private HashMap<HexLocation, Hex> hexes;
 	private HashMap<EdgeLocation, Road> roads;
-	private HashMap<VertexLocation, VertexObject> settlements;
-	private HashMap<VertexLocation, VertexObject> cities;
+	private HashMap<VertexLocation, Settlement> settlements;
+	private HashMap<VertexLocation, City> cities;
 
 	private HashMap<EdgeLocation, EdgeValue> edges;
 	private HashMap<VertexLocation, VertexValue> vertices;
@@ -43,7 +45,7 @@ public class ServerModel {
 	
 	private int radius;
 	
-	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL!
+	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
 	private TransferModel transfer;
 	
 	public void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts, String newName) {
@@ -409,6 +411,19 @@ public class ServerModel {
 		newVertices.put(VertexDirection.SouthWest, vertices.get(southwestLocation.getNormalizedLocation()));
 		
 		return newVertices;
+	}
+
+	
+	public void placeRoad(EdgeLocation place, int playerIndex) {
+		edges.get(place).setRoad(new Road(playerIndex, place));
+	}
+
+	public void placeSettlement(VertexLocation place, int playerIndex) {
+		vertices.get(place).setSettlement(new Settlement(playerIndex));
+	}
+	
+	public void placeCity(VertexLocation place, int playerIndex) {
+		vertices.get(place).setCity(new City(playerIndex));
 	}
 }
 

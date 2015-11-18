@@ -1,8 +1,9 @@
-package server.handlers;
+package server.handlers.user;
 
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
+import server.handlers.IHandler;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.UserCredentials;

@@ -9,8 +9,8 @@ import client.model.VertexObject; //MAKE CITY CLASS, MAKE SETTLEMENT CLASS
 public class VertexValue {
 
 	private VertexLocation location;
-	private VertexObject settlement; //MAKE THIS A SETTLEMENT!
-	private VertexObject city; //MAKE THIS A CITY!
+	private Settlement settlement; //MAKE THIS A SETTLEMENT!
+	private City city; //MAKE THIS A CITY!
 
 	/**
 	 * @pre owner must be in the range [-1,3], and location must be a valid EdgeLocation
@@ -29,15 +29,15 @@ public class VertexValue {
 		return location;
 	}
 
-	public VertexObject getSettlement() {
+	public Settlement getSettlement() {
 		return settlement;
 	}
 
-	public void setSettlement(VertexObject settlement) {
+	public void setSettlement(Settlement settlement) {
 		this.settlement = settlement;
 	}
 
-	public VertexObject getCity() {
+	public City getCity() {
 		return city;
 	}
 
@@ -46,7 +46,7 @@ public class VertexValue {
 	 * @param city The new city to place
 	 * @post The old settlement is removed and the new city is placed
 	 */
-	public void setCity(VertexObject city) {
+	public void setCity(City city) {
 		this.settlement = null;
 		this.city = city;
 	}

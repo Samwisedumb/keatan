@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.BuildCity;
 
 /**
@@ -13,9 +14,17 @@ public class BuildCityCommand implements Command {
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public BuildCityCommand(int gameID, BuildCity transferObject){}
+	int game;
+	BuildCity buildCommand;
+	
+	public BuildCityCommand(int gameID, BuildCity transferObject){
+		game = gameID;
+		buildCommand = transferObject;
+	}
 
 	@Override
-	public void execute() {}
+	public void execute() {
+		ServerMovesFacade.getInstance().buildCity(game, buildCommand);
+	}
 
 }

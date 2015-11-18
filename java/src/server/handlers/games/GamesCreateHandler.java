@@ -1,14 +1,14 @@
-package server.handlers;
+package server.handlers.games;
 
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
 import server.facades.ServerMovesFacade;
+import server.handlers.IHandler;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
-import shared.transferClasses.UserCredentials;
 import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 

@@ -63,7 +63,7 @@ public interface IGamesFacade {
 //	 * @return the information for the game
 //	 * @post the game is created and the client (and other players) can join it
 //	 */
-	public CreateGameResponse createGame(String gameTitle);
+	public CreateGameResponse createGame(CreateGameRequest gameMaker);
 	
 //	/**
 //	 * @pre the client has picked a game to join and what color they want to be

@@ -1,22 +1,24 @@
 package shared.transferClasses;
 
 /**
- * This class is used to fulfil a create game request to the server
- * @author djoshuac
- *
+ * This class is used to fulfill a create game request to the server
+ * <li>boolean randomTiles</li>
+ * <li>boolean randomNumbers</li>
+ * <li>boolean randomPorts</li>
+ * <li>String gameName</li>
  */
 public class CreateGameRequest {
 	private boolean randomTiles;
 	private boolean randomNumbers;
 	private boolean randomPorts;
-	private String name;
+	private String gameName;
 	
 	public CreateGameRequest(boolean randomTiles, boolean randomNumbers,
 			boolean randomPorts, String name) {
 		this.randomTiles = randomTiles;
 		this.randomNumbers = randomNumbers;
 		this.randomPorts = randomPorts;
-		this.name = name;
+		this.gameName = name;
 	}
 
 	public boolean isRandomTiles() {
@@ -43,11 +45,11 @@ public class CreateGameRequest {
 		this.randomPorts = randomPorts;
 	}
 
-	public String getName() {
-		return name;
+	public String getGameName() {
+		return gameName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setGameName(String name) {
+		this.gameName = name;
 	}	
 }

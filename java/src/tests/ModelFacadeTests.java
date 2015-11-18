@@ -55,16 +55,16 @@ public class ModelFacadeTests {
 			CreateGameRequest brickRequest = new CreateGameRequest(false, false, false, "Kagemusha");
 			CreateGameResponse brickResponse = ServerProxy.createGame(brickRequest);
 
-			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getId(), CatanColor.BLUE));
+			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getID(), CatanColor.BLUE));
 			
 			ServerProxy.login(rin);
-			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getId(), CatanColor.GREEN));
+			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getID(), CatanColor.GREEN));
 			
 			ServerProxy.login(ka);
-			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getId(), CatanColor.RED));
+			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getID(), CatanColor.RED));
 			
 			ServerProxy.login(zan);
-			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getId(), CatanColor.PURPLE));
+			ServerProxy.joinGame(new JoinGameRequest(brickResponse.getID(), CatanColor.PURPLE));
 
 			ModelFacade.forceUpdateModel(ServerProxy.getModel(-1));
 			

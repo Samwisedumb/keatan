@@ -11,7 +11,7 @@ import shared.exceptions.InvalidObjectException;
  * </ul>
  * @author djoshuac
  */
-public class Username implements ITransferClass {
+public class Username extends ValidatableObject {
 	private String username;
 	
 	public Username(String username) {

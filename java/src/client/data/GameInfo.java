@@ -34,7 +34,7 @@ public class GameInfo
 	}
 	
 	public GameInfo(Game game) {
-		setId(game.getId());
+		setId(game.getID());
 		setTitle(game.getTitle());
 		List<GetPlayer> playerList = game.getPlayers();
 		players = new ArrayList<PlayerInfo>();

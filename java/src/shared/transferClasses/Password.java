@@ -10,7 +10,7 @@ import shared.exceptions.InvalidObjectException;
  * </ul>
  * @author mr399
  */
-public class Password implements ITransferClass {
+public class Password extends ValidatableObject {
 	private String password;
 	
 	public Password(String password) {

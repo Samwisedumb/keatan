@@ -1,21 +1,20 @@
 package server.facades;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import server.model.ServerModel;
+import shared.transferClasses.Game;
 import shared.transferClasses.Password;
 import shared.transferClasses.UserInfo;
 import shared.transferClasses.Username;
 
 /**
- * A singleton for storing server side data.<br>
- * <h6>Data</h6>
+ * A singleton for storing server side data such as:<br>
  * <li>User info</li>
  * <li>Game info</li>
- * @author djoshuac
- *
  */
 public class ServerData {
 	private static ServerData instance;
@@ -29,6 +28,9 @@ public class ServerData {
 
 	private ServerData() {
 		users = new HashMap<Username, UserInfo>();
+
+		games = new ArrayList<ServerModel>();
+		gameTags = new ArrayList<Game>();
 	}
 	
 	// Users
@@ -36,7 +38,7 @@ public class ServerData {
 	/**
 	 * @return the next unique user id
 	 * @pre none
-	 * @post the returned user id is a unique id
+	 * @post the returned user id is is unique from all other users
 	 */
 	private int getNextUserID() {
 		return users.size();
@@ -59,9 +61,9 @@ public class ServerData {
 	 * @param password - the password for the user
 	 * @return user info for the given username, null if username is already in use
 	 * @pre none
-	 * @post see return
+	 * @post the user is assigned a unique userID
 	 */
-	public UserInfo getAddInfo(Username username, Password password) {
+	public UserInfo addUser(Username username, Password password) {
 		if (getUserInfo(username) != null) {
 			UserInfo user = new UserInfo(username, password, getNextUserID());
 			users.put(username, user);
@@ -74,12 +76,55 @@ public class ServerData {
 
 	// Games
 	private List<ServerModel> games;
+	private List<Game> gameTags;
+	
 	/**
 	 * @return the next unique game id
 	 * @pre none
-	 * @post the returned game id is a unique id
+	 * @post the returned game id is unique from all other games
 	 */
 	private int getNextGameID() {
 		return games.size();
+	}
+
+	/**
+	 * Adds a game's information and model to the server data
+	 * @param gameName - the name of the game to add
+	 * @param gameModel - the model of the game to add
+	 * @return the game id assigned to the added game
+	 * @pre gameModel and gameName must not be null
+	 * @post the returned gameID is a unique game id
+	 */
+	public int addGame(String gameName, ServerModel gameModel) {
+		int gameID = getNextGameID();
+		
+		gameTags.add(new Game(gameName, gameID));
+		games.add(gameModel);
+		
+		return gameID;
+	}
+	
+	/**
+	 * Returns the game information for the requested game
+	 * @pre none
+	 * @post see return
+	 * @return The game information associated with the given gameID.
+	 * Null if the given gameID is not associated with a game
+	 */
+	public Game getGameInfo(int gameID) {
+		if (gameID < 0 || gameID > gameTags.size()) {
+			return null;
+		}
+		return gameTags.get(gameID);
+	}
+
+	/**
+	 * Returns a list of game information added to the server
+	 * @return a list of game information
+	 * @pre none
+	 * @post see return, list can be empty
+	 */
+	public List<Game> getGameInfoList() {
+		return gameTags;
 	}
 }

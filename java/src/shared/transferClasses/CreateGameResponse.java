@@ -1,28 +1,43 @@
 package shared.transferClasses;
 
+import shared.exceptions.InvalidObjectException;
 
-public class CreateGameResponse {
-	private String title;
+/**
+ * A transfer class to respond to a create game request<br>
+ * <li>GameTitle title - the title of the created game : must be valid</li>
+ * <li>int gameID - the ID of the created game</li>
+ * @author djoshuac
+ *
+ */
+public class CreateGameResponse extends ValidatableObject {
+	private GameTitle title;
 	private int id;
 	
-	public CreateGameResponse(String title, int id) {
+	public CreateGameResponse(String title, int gameID) {
 		setTitle(title);
-		setId(id);
+		setID(gameID);
 	}
 	
-	public String getTitle() {
-		return title;
+	public String getTitleString() {
+		return title.toString();
 	}
 	
 	public void setTitle(String title) {
-		this.title = title;
+		this.title = new GameTitle(title);
 	}
 	
-	public int getId() {
+	public int getID() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setID(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public void validate() throws InvalidObjectException {
+		if (title == null) {
+			throw new InvalidObjectException("Game title is null");
+		}
 	}
 }

@@ -27,11 +27,11 @@ public class GamesCreateHandler extends IHandler {
 			UserInfo user = getUserCookie(exchange);
 			ServerGamesFacade.getInstance().verifyUserInformation(user);
 			
-			CreateGameResponse response = ServerGamesFacade.getInstance().createGame(createGameRequest.getName());
+			//CreateGameResponse response = ServerGamesFacade.getInstance().createGame(createGameRequest.getGameName());
 			ServerMovesFacade.getInstance().createGame(createGameRequest);
 		
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-			exchange.getResponseBody().write(Converter.toJson(response).getBytes());
+			//exchange.getResponseBody().write(Converter.toJson(response).getBytes());
 		}
 		catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);

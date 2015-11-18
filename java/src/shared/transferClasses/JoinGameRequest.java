@@ -5,8 +5,9 @@ import shared.definitions.CatanColor;
 
 /**
  * This transfer object is used for the join game request to the server
+ * <li>int id - the gameID</li>
+ * <li>CatanColor color - the color of the player trying to join</li>
  * @author djoshuac
- *
  */
 public class JoinGameRequest {
 	private int id;

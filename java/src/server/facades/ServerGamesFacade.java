@@ -1,11 +1,10 @@
 package server.facades;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import server.model.ServerModel;
 import shared.exceptions.ServerException;
+import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
 import shared.transferClasses.GetPlayer;
@@ -21,27 +20,6 @@ import shared.transferClasses.Username;
  */
 public class ServerGamesFacade implements IGamesFacade {
 	private static ServerGamesFacade instance = null;
-
-	/**
-	 * @return the next unique user id
-	 * @pre none
-	 * @post the returned user id is a unique id
-	 */
-	private int getNextUserID() {
-		return users.size();
-	}
-	
-	/**
-	 * @return the next unique game id
-	 * @pre none
-	 * @post the returned game id is a unique id
-	 */
-	private int getNextGameID() {
-		return games.size();
-	}
-	
-	private Map<Username, UserInfo> users;
-	private List<Game> games;
 	
 	/**
 	 * Creates a singleton of ServerGamesFacade
@@ -55,15 +33,16 @@ public class ServerGamesFacade implements IGamesFacade {
 		return instance;
 	}
 	
-	public ServerGamesFacade() {
-		users = new HashMap<Username, UserInfo>();
-		games = new ArrayList<Game>();
-		games.add(new Game("Already Made Game", getNextGameID()));
+	/**
+	 * A private constructor for the ServerGamesFacade singleton
+	 */
+	private ServerGamesFacade() {
+		
 	}
 	
 	@Override
 	public void verifyUserInformation(UserInfo user) throws ServerException {
-		UserInfo registeredUser = users.get(user.getUsername());
+		UserInfo registeredUser = ServerData.getInstance().getUserInfo(user.getUsername());
 		
 		if (!registeredUser.equals(user)) {
 			throw new ServerException("Invalid user information");
@@ -72,7 +51,7 @@ public class ServerGamesFacade implements IGamesFacade {
 
 	@Override
 	public UserInfo loginUser(Username username, Password password) throws ServerException {
-		UserInfo user = users.get(username);
+		UserInfo user = ServerData.getInstance().getUserInfo(username);
 		
 		if (user == null) {
 			throw new ServerException("User doesn't exist");
@@ -86,39 +65,42 @@ public class ServerGamesFacade implements IGamesFacade {
 	
 	@Override
 	public void registerUser(Username username, Password password) throws ServerException {
-		if (users.containsKey(username)) {
+		UserInfo user = ServerData.getInstance().getUserInfo(username);
+		
+		if (user != null) {
 			throw new ServerException("Username is already in use");
 		}
 		else {
-			users.put(username, new UserInfo(username, password, getNextUserID()));
+			ServerData.getInstance().addUser(username, password);
 		}
 	}
 
 	@Override
 	public List<Game> listGames() {
-		return games;
+		return ServerData.getInstance().getGameInfoList();
 	}
 
 	@Override
-	public CreateGameResponse createGame(String gameName) {
-		Game game = new Game(gameName, getNextGameID());
+	public CreateGameResponse createGame(CreateGameRequest gameMaker) {
+		ServerModel gameModel = new ServerModel(gameMaker.isRandomTiles(),gameMaker.isRandomNumbers(),
+				gameMaker.isRandomPorts(), gameMaker.getGameName());
 		
-		games.add(game);
+		int gameID = ServerData.getInstance().addGame(gameMaker.getGameName(), gameModel);
 		
-		return new CreateGameResponse(game.getTitle(), game.getId());
+		return new CreateGameResponse(gameMaker.getGameName(), gameID);
 	}
 
 	@Override
 	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException{
-		if (requestJoin.getId() >= games.size() || requestJoin.getId() < 0) {
-			throw new ServerException("Invalid Game ID");
+		Game game = ServerData.getInstance().getGameInfo(requestJoin.getId());
+		
+		if (game == null) {
+			throw new ServerException("Invalid gameID");
+		}
+		if (game.isFull()) {
+			throw new ServerException("Requsted game is full");
 		}
 		
-		List<GetPlayer> players = games.get(requestJoin.getId()).getPlayers();
-		if (players.size() >= 4) {
-			throw new ServerException("Game is full");
-		}
-		
-		players.add(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
+		game.addPlayer(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
 	}
 }

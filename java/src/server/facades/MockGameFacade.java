@@ -31,12 +31,6 @@ public class MockGameFacade implements IGamesFacade{
 	}
 
 	@Override
-	public CreateGameResponse createGame(String gameTitle) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void joinGame(UserInfo user, JoinGameRequest requestJoin) {
 		// TODO Auto-generated method stub
 	}
@@ -45,6 +39,12 @@ public class MockGameFacade implements IGamesFacade{
 	public void verifyUserInformation(UserInfo user) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CreateGameResponse createGame(CreateGameRequest gameMaker) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

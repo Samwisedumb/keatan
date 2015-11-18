@@ -3,9 +3,7 @@ package server.facades;
 import java.util.ArrayList;
 import java.util.List;
 
-import client.model.Player;
 import server.model.ServerModel;
-import shared.definitions.EmptyObject;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
@@ -27,6 +25,7 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
+import client.model.Player;
 
 /**
  * Server Facade that handles all "moves" commands for all games
@@ -58,22 +57,6 @@ public class ServerMovesFacade implements IMovesFacade {
 		return gameTags;
 	}
 	
-	public CreateGameResponse createGame(CreateGameRequest gameMaker) {
-		Game newGame = new Game(gameMaker.getName(), gameTags.size());
-		
-		gameTags.add(newGame);
-		
-		ServerModel newModel = new ServerModel();
-		
-		newModel.createMap(gameMaker.isRandomTiles(), gameMaker.isRandomNumbers(), gameMaker.isRandomPorts(), gameMaker.getName());
-		
-		games.add(newModel);
-		
-		CreateGameResponse gameMade = new CreateGameResponse(gameMaker.getName(), gameTags.size());
-		
-		return gameMade;
-		
-	}
 	
 	public boolean addPlayerToGame(JoinGameRequest request, String playerName, int playerID) {
 		
@@ -190,6 +173,12 @@ public class ServerMovesFacade implements IMovesFacade {
 	public void yearOfPlenty(int gameID, YearOfPlenty plenty) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CreateGameResponse createGame(CreateGameRequest createGame) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

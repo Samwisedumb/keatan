@@ -45,15 +45,17 @@ public class ServerModel {
 	
 	private int radius;
 	
+	public ServerModel(boolean randomHexes, boolean randomChits, boolean randomPorts, String gameName) {
+		this.radius = 2;
+		this.gameName = gameName;
+		
+		createMap(randomHexes, randomChits, randomPorts);
+	}
+	
 	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
 	private TransferModel transfer;
 	
-	public void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts, String newName) {
-	
-		radius = 2;
-		
-		gameName = newName;
-		
+	private void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts) {		
 		List<Hex> theHexes = initializeHexList(randomHexes);
 			
 		List<Integer> theChits = initializeChitList(randomChits);

@@ -25,13 +25,13 @@ public class MockGameFacade implements IGamesFacade{
 	}
 
 	@Override
-	public List<Game> list() {
+	public List<Game> listGames() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CreateGameResponse create(CreateGameRequest makeGame) {
+	public CreateGameResponse createGame(String gameTitle) {
 		// TODO Auto-generated method stub
 		return null;
 	}

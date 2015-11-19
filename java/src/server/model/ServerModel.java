@@ -494,12 +494,29 @@ public class ServerModel {
 		
 	}
 	
+	public void payForRoad(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WOOD, 1);
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
+	}
+	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
 		edges.get(place).setRoad(new Road(playerIndex, place));
 	}
 
+	public void payForSettlement(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WOOD, 1);
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.SHEEP, 1);
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WHEAT, 1);
+	}
+	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
 		vertices.get(place).setSettlement(new Settlement(playerIndex));
+	}
+	
+	public void payForCity(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WHEAT, 2);
+		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.ORE, 3);
 	}
 	
 	public void placeCity(VertexLocation place, int playerIndex) {

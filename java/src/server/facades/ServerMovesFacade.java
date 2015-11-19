@@ -82,18 +82,30 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void buildCity(int gameID, BuildCity build) {
 		// TODO Auto-generated method stub
+		if(build.getFree() == false) {
+			games.get(gameID).payForCity(build.getPlayerIndex());
+		}
+		
 		games.get(gameID).placeCity(build.getSpotOne(), build.getPlayerIndex());
 	}
 
 	@Override
 	public void buildRoad(int gameID, BuildRoad build) {
 		// TODO Auto-generated method stub
+		if(build.getFree() == false) {
+			games.get(gameID).payForRoad(build.getPlayerIndex());
+		}
+		
 		games.get(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
 	}
 
 	@Override
 	public void buildSettlement(int gameID, BuildSettlement build) {
 		// TODO Auto-generated method stub
+		if(build.getFree() == false) {
+			games.get(gameID).payForSettlement(build.getPlayerIndex());
+		}
+		
 		games.get(gameID).placeSettlement(build.getSpotOne(), build.getPlayerIndex());
 	}
 

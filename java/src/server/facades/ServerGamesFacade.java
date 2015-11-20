@@ -65,13 +65,8 @@ public class ServerGamesFacade implements IGamesFacade {
 	
 	@Override
 	public void registerUser(Username username, Password password) throws ServerException {
-		UserInfo user = ServerData.getInstance().getUserInfo(username);
-		
-		if (user != null) {
+		if (ServerData.getInstance().addUser(username, password) == null) {
 			throw new ServerException("Username is already in use");
-		}
-		else {
-			ServerData.getInstance().addUser(username, password);
 		}
 	}
 
@@ -104,3 +99,6 @@ public class ServerGamesFacade implements IGamesFacade {
 		game.addPlayer(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
 	}
 }
+
+
+

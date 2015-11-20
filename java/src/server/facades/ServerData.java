@@ -64,7 +64,7 @@ public class ServerData {
 	 * @post the user is assigned a unique userID
 	 */
 	public UserInfo addUser(Username username, Password password) {
-		if (getUserInfo(username) != null) {
+		if (getUserInfo(username) == null) {
 			UserInfo user = new UserInfo(username, password, getNextUserID());
 			users.put(username, user);
 			return user;

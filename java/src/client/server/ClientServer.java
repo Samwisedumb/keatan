@@ -1,7 +1,6 @@
 package client.server;
 
 import java.util.List;
-import java.util.Map;
 
 import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
@@ -26,7 +25,6 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
-import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
@@ -69,6 +67,7 @@ public class ClientServer implements IServer {
 		}
 		else {
 			gameCookie = cookie.get(0);
+			System.out.println("Game cookie set.");
 		}
 	}
 	
@@ -129,107 +128,146 @@ public class ClientServer implements IServer {
 	public void joinGame(JoinGameRequest joinGameRequest) throws ServerException {
 		addUserCookieToNextRequest();
 		communicator.send("/games/join", joinGameRequest);
+		setGameCookie();
 	}
 
 	@Override
 	public TransferModel getModel(int version) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/game/model", version, TransferModel.class);
 	}
 
 	@Override
 	public void addAI(AddAIRequest addAIRequest) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		communicator.send("/game/addAI", addAIRequest);
 	}
 
 	@Override
 	public String[] listAITypes() throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/game/listAI", null, String[].class);
 	}
 
 	@Override
 	public TransferModel sendChat(SendChat sendChat) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/sendChat", sendChat, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel rollDice(RollNumber rollNumber) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/rollDice", rollNumber, TransferModel.class);		
 	}
 
 	@Override
 	public TransferModel robPlayer(RobPlayer robPlayer) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/robPlayer", robPlayer, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel finishTurn(FinishTurn finishTurn) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/finishTurn", finishTurn, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel buyDevCard(BuyDevCard buyDevCard) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/buyDevCard", buyDevCard, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel yearOfPlenty(YearOfPlenty yearOfPlenty) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/yearOfPlenty", yearOfPlenty, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel roadBuilding(RoadBuilding roadBuilding) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/Road_Building", roadBuilding, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel soldier(Soldier soldier) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/Soldier", soldier, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel monopoly(Monopoly monopoly) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/Monopoly", monopoly, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel monument(Monument monument) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/Monument", monument, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel buildRoad(BuildRoad buildRoad) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/buildRoad", buildRoad, TransferModel.class);
 	}
 
 	@Override
-	public TransferModel buildSettlement(BuildSettlement buildSettlement)
-			throws ServerException {
+	public TransferModel buildSettlement(BuildSettlement buildSettlement) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/buildSettlement", buildSettlement, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel buildCity(BuildCity buildCity) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/buildCity", buildCity, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel offerTrade(OfferTrade offer) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/offerTrade", offer, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel respondToTrade(AcceptTrade acceptTrade) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/acceptTrade", acceptTrade, TransferModel.class);
 	}
 
 	@Override
-	public TransferModel maritimeTrade(MaritimeTrade maritimeTrade)
-			throws ServerException {
+	public TransferModel maritimeTrade(MaritimeTrade maritimeTrade) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/maritimeTrade", maritimeTrade, TransferModel.class);
 	}
 
 	@Override
 	public TransferModel discardCards(DiscardCards discardCards) throws ServerException {
+		addUserCookieToNextRequest();
+		addGameCookieToNextRequest();
 		return communicator.send("/moves/discardCards", discardCards, TransferModel.class);
 	}
 

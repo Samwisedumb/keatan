@@ -3,7 +3,6 @@ package server.handlers.games;
 import java.io.IOException;
 
 import server.facades.ServerGamesFacade;
-import server.facades.ServerMovesFacade;
 import server.handlers.IHandler;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
@@ -27,23 +26,15 @@ public class GamesJoinHandler extends IHandler {
 			
 			ServerGamesFacade.getInstance().joinGame(user, requestJoin);
 			
-			boolean success = ServerMovesFacade.getInstance().addPlayerToGame(requestJoin, user.getUsernameString(), user.getUserID());
+			exchange.getResponseHeaders().add("Set-game", Converter.toJson(requestJoin.getId()));
 			
-			if(success == true) {	
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-				exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());
-			}
-			else {
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
-				exchange.getResponseBody().write(Converter.toJson("Game is full").getBytes());
-			}
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+			exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());
 		}
 		catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}
-		
-		
 		
 		exchange.getResponseBody().close();
 	}

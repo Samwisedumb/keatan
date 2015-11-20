@@ -1,17 +1,15 @@
 package tests;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import client.server.ClientServer;
-import client.server.ServerProxy;
 import server.ServerCommunicator;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.UserCredentials;
+import client.server.ClientServer;
+import client.server.ServerProxy;
 
 public class NetworkTests {
 	public static boolean setupDone = false;
@@ -127,24 +125,24 @@ public class NetworkTests {
 			gameResponse = ServerProxy.createGame(gameRequest);
 		} catch (ServerException e) {
 		}
-		assert(gameResponse.getTitle().equals("test1"));
-		assert(gameResponse.getId() == 0);
+		assert(gameResponse.getTitleString().equals("test1"));
+		assert(gameResponse.getID() == 0);
 		
 		gameRequest = new CreateGameRequest(false,false,false,"test2");
 		try {
 			gameResponse = ServerProxy.createGame(gameRequest);
 		} catch (ServerException e) {
 		}
-		assert(gameResponse.getTitle().equals("test2"));
-		assert(gameResponse.getId() == 1);
+		assert(gameResponse.getTitleString().equals("test2"));
+		assert(gameResponse.getID() == 1);
 		
 		gameRequest = new CreateGameRequest(true,true,true,"test3");
 		try {
 			gameResponse = ServerProxy.createGame(gameRequest);
 		} catch (ServerException e) {
 		}
-		assert(gameResponse.getTitle().equals("test3"));
-		assert(gameResponse.getId() == 2);
+		assert(gameResponse.getTitleString().equals("test3"));
+		assert(gameResponse.getID() == 2);
 		
 		createGamesTestRun = true;
 	}

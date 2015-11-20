@@ -109,7 +109,7 @@ public class ServerGamesFacade implements IGamesFacade {
 
 	@Override
 	public TransferModel getTransferModel(int gameID) throws ServerException {
-		ServerData.getInstance().getGameModel(gameID).getTransferModel();
+		return ServerData.getInstance().getGameModel(gameID).getTransferModel();
 	}
 }
 

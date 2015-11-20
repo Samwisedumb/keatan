@@ -2,23 +2,27 @@ package shared.transferClasses;
 
 import shared.definitions.CatanColor;
 
+/**
+ * A dumb data holder for a player in a Game object
+ * @author djoshuac
+ *
+ */
 public class GetPlayer {
 	private CatanColor color;
 	private String name;
 	private int id;
 	
 	public GetPlayer(CatanColor color, String name, int id) {
-		super();
-		this.color = color;
-		this.name = name;
-		this.id = id;
+		this.setColor(color);
+		this.setName(name);
+		this.setID(id);
 	}
 	
 	public CatanColor getColor() {
 		return color;
 	}
 	
-	public void setColor(CatanColor color) {
+	private void setColor(CatanColor color) {
 		this.color = color;
 	}
 	
@@ -26,15 +30,15 @@ public class GetPlayer {
 		return name;
 	}
 	
-	public void setName(String name) {
+	private void setName(String name) {
 		this.name = name;
 	}
 	
-	public int getId() {
+	public int getID() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	private void setID(int id) {
 		this.id = id;
 	}	
 }

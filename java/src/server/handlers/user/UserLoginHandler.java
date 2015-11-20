@@ -20,7 +20,7 @@ public class UserLoginHandler extends IHandler {
 		
 		try {
 			UserInfo user = ServerGamesFacade.getInstance().loginUser(userCredentials.getUsername(), userCredentials.getPassword());
-			exchange.getResponseHeaders().add("Set-user", Converter.toJson(user));
+			setUserCookie(exchange, user);
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 			exchange.getResponseBody().write(Converter.toJson("Success").getBytes());
 		}

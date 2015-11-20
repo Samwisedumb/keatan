@@ -10,7 +10,7 @@ import shared.definitions.CatanColor;
  * @author djoshuac
  */
 public class JoinGameRequest {
-	private int id;
+	private int gameID;
 	private CatanColor color;
 	
 	/**
@@ -18,21 +18,21 @@ public class JoinGameRequest {
 	 * @param color - the color of the player
 	 */
 	public JoinGameRequest(int id, CatanColor color) {
-		setId(id);
+		setGameID(id);
 		setColor(color);
 	}
 	
-	public int getId() {
-		return this.id;
+	public int getGameID() {
+		return this.gameID;
 	}
-	public void setId(int id) {
-		this.id = id;
+	private void setGameID(int id) {
+		this.gameID = id;
 	}
 	
 	public CatanColor getColor() {
 		return this.color;
 	}
-	public void setColor(CatanColor color) {
+	private void setColor(CatanColor color) {
 		this.color = color;
 	}
 }

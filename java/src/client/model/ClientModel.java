@@ -85,26 +85,30 @@ public class ClientModel {
 	
 	public void update(TransferModel newLump) {
 		this.dataLump = newLump;
-		
-		for(Hex hex : newLump.getMap().getHexes()) {
-			hexes.put(hex.getLocation(), hex);
-		}
-		
-		for(Road road : newLump.getMap().getRoads()) {
-			roads.put(road.getLocation().getNormalizedLocation(), road);
-		}
-		
-		for(VertexObject settlement : newLump.getMap().getSettlements()) {
-			settlements.put(settlement.getLocation().getNormalizedLocation(), settlement);
-			if (settlements.containsKey(settlement.getLocation().getNormalizedLocation())){
-				System.out.println("Hooray");
-				System.out.println(settlements.get(settlement.getLocation().getNormalizedLocation()));
-			}
-		}
-		
-		for(VertexObject city : newLump.getMap().getCities()) {
-			cities.put(city.getLocation().getNormalizedLocation(), city);
-		}
+
+		//TODO
+		//TODO
+		//TODO  !!!!!!!!
+		//TODO !
+//		for(Hex hex : newLump.getMap().getHexes()) {
+//			hexes.put(hex.getLocation(), hex);
+//		}
+//		
+//		for(Road road : newLump.getMap().getRoads()) {
+//			roads.put(road.getLocation().getNormalizedLocation(), road);
+//		}
+//		
+//		for(VertexObject settlement : newLump.getMap().getSettlements()) {
+//			settlements.put(settlement.getLocation().getNormalizedLocation(), settlement);
+//			if (settlements.containsKey(settlement.getLocation().getNormalizedLocation())){
+//				System.out.println("Hooray");
+//				System.out.println(settlements.get(settlement.getLocation().getNormalizedLocation()));
+//			}
+//		}
+//		
+//		for(VertexObject city : newLump.getMap().getCities()) {
+//			cities.put(city.getLocation().getNormalizedLocation(), city);
+//		}
 		
 		updateGameInfo();
 	}

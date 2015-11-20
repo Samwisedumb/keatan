@@ -86,6 +86,23 @@ public class Game extends ValidatableObject {
 		return this.players.get(index);
 	}
 	
+	/**
+	 * Returns true if a player with the given ID is in this game
+	 * @param playerID - the playerID in question
+	 * @return true if a player in this game has the given ID<br>
+	 * false if otherwise
+	 * @post see return
+	 * @pre none
+	 */
+	public boolean hasPlayer(int playerID) {
+		for (GetPlayer player : players) {
+			if (player.getID() == playerID) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Game [title=" + title + ", id=" + id + ", players=" + players

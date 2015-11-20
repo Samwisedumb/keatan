@@ -48,6 +48,15 @@ public class ServerGamesFacade implements IGamesFacade {
 			throw new ServerException("Invalid user information");
 		}
 	}
+	
+	@Override
+	public void verifyUserIsInGame(int gameID, UserInfo user) throws ServerException {
+		verifyUserInformation(user);
+		
+		if (!ServerData.getInstance().getGameInfo(gameID).hasPlayer(user.getUserID())) {
+			throw new ServerException("User is not in specified game");
+		}
+	}
 
 	@Override
 	public UserInfo loginUser(Username username, Password password) throws ServerException {
@@ -87,7 +96,7 @@ public class ServerGamesFacade implements IGamesFacade {
 
 	@Override
 	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException{
-		Game game = ServerData.getInstance().getGameInfo(requestJoin.getId());
+		Game game = ServerData.getInstance().getGameInfo(requestJoin.getGameID());
 		
 		if (game == null) {
 			throw new ServerException("Invalid gameID");

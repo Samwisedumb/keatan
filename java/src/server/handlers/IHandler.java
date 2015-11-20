@@ -18,8 +18,24 @@ public abstract class IHandler implements HttpHandler {
 			throw new ServerException("Missing user cookie");
 		}
 		
-		UserInfo user = Converter.fromJson(values.get(0), UserInfo.class);
+		return Converter.fromJson(values.get(0), UserInfo.class);
+	}
+	
+	protected Integer getGameCookie(HttpExchange exchange) throws ServerException {
+		List<String> values = exchange.getRequestHeaders().get("Game");
 		
-		return user;
+		if (values == null || values.size() == 0) {
+			throw new ServerException("Missing game cookie");
+		}
+		
+		return Converter.fromJson(values.get(0), Integer.class);
+	}
+	
+	protected void setUserCookie(HttpExchange exchange, UserInfo userCookie) {
+		exchange.getResponseHeaders().add("Set-user", Converter.toJson(userCookie));
+	}
+	
+	protected void setGameCookie(HttpExchange exchange, Integer gameCookie) {
+		exchange.getResponseHeaders().add("Set-game", Converter.toJson(gameCookie));
 	}
 }

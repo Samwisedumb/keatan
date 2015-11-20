@@ -25,8 +25,8 @@ public class GamesJoinHandler extends IHandler {
 			ServerGamesFacade.getInstance().verifyUserInformation(user);
 			
 			ServerGamesFacade.getInstance().joinGame(user, requestJoin);
-			
-			exchange.getResponseHeaders().add("Set-game", Converter.toJson(requestJoin.getId()));
+
+			setGameCookie(exchange, requestJoin.getGameID());
 			
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 			exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());

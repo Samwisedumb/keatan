@@ -60,14 +60,14 @@ public class ServerMovesFacade implements IMovesFacade {
 	
 	public boolean addPlayerToGame(JoinGameRequest request, String playerName, int playerID) {
 		
-		int gameSize = games.get(request.getId()).getTransfer().getPlayers().size();
+		int gameSize = games.get(request.getGameID()).getTransfer().getPlayers().size();
 		
 		if(gameSize == 4) {
 			return false;
 		}
 		else {
 			Player newPlayer = new Player(playerName, gameSize + 1, request.getColor(), playerID);
-			games.get(request.getId()).getTransfer().getPlayers().add(newPlayer);
+			games.get(request.getGameID()).getTransfer().getPlayers().add(newPlayer);
 		}
 		
 		return true;

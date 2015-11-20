@@ -44,19 +44,23 @@ public class ModelFacade {
 	}
 	
 	public static List<Road> getRoads() {
-		return model.getDataLump().getMap().getRoads();
+		//TODO
+		return null; //model.getDataLump().getMap().getRoads();
 	}
 	
 	public static List<VertexObject> getSettlements() {
-		return model.getDataLump().getMap().getSettlements();
+		//TODO
+		return null; //model.getDataLump().getMap().getSettlements();
 	}
 	
 	public static List<VertexObject> getCities() {
-		return model.getDataLump().getMap().getCities();
+		//TODO
+		return null;//model.getDataLump().getMap().getCities();
 	}
 	
 	public static List<Port> getPorts() {
-		return model.getDataLump().getMap().getPorts();
+		//TODO
+		return null;//model.getDataLump().getMap().getPorts();
 	}
 	
 	public static Player getThisPlayer() {
@@ -360,7 +364,7 @@ public class ModelFacade {
 		
 		int ratio = 4;
 		
-		for (Port port : model.getDataLump().getMap().getPorts()) {
+		for (Port port : getPorts()) {
 			
 			int x = port.getLocation().getX();
 			int y = port.getLocation().getY();

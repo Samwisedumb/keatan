@@ -47,4 +47,11 @@ public class MockGameFacade implements IGamesFacade{
 		return null;
 	}
 
+	@Override
+	public void verifyUserIsInGame(int gameID, UserInfo user)
+			throws ServerException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -2,6 +2,7 @@ package server.facades;
 
 import java.util.List;
 
+import client.model.TransferModel;
 import server.model.ServerModel;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
@@ -51,8 +52,6 @@ public class ServerGamesFacade implements IGamesFacade {
 	
 	@Override
 	public void verifyUserIsInGame(int gameID, UserInfo user) throws ServerException {
-		verifyUserInformation(user);
-		
 		if (!ServerData.getInstance().getGameInfo(gameID).hasPlayer(user.getUserID())) {
 			throw new ServerException("User is not in specified game");
 		}
@@ -106,6 +105,11 @@ public class ServerGamesFacade implements IGamesFacade {
 		}
 		
 		game.addPlayer(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
+	}
+
+	@Override
+	public TransferModel getTransferModel(int gameID) throws ServerException {
+		ServerData.getInstance().getGameModel(gameID).getTransferModel();
 	}
 }
 

@@ -45,8 +45,6 @@ public class ClientServer implements IServer {
 	private void setUserCookie() throws ServerException {
 		List<String> cookie = communicator.getResponseHeadersForLastSend().get("Set-user");
 		
-		System.out.println("User cookie set");
-		
 		if (cookie == null || cookie.size() < 1) {
 			throw new ServerException("Server failed to give user cookie");
 		}
@@ -67,7 +65,6 @@ public class ClientServer implements IServer {
 		}
 		else {
 			gameCookie = cookie.get(0);
-			System.out.println("Game cookie set.");
 		}
 	}
 	

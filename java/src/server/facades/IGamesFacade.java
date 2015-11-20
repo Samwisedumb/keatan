@@ -2,6 +2,7 @@ package server.facades;
 
 import java.util.List;
 
+import client.model.TransferModel;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
@@ -74,4 +75,6 @@ public interface IGamesFacade {
 	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException;
 
 	public void verifyUserIsInGame(int gameID, UserInfo user) throws ServerException;
+	
+	public TransferModel getTransferModel(int gameID) throws ServerException;
 }

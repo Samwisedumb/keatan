@@ -2,6 +2,7 @@ package server.facades;
 
 import java.util.List;
 
+import client.model.TransferModel;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
@@ -52,6 +53,12 @@ public class MockGameFacade implements IGamesFacade{
 			throws ServerException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public TransferModel getTransferModel(int gameID) throws ServerException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

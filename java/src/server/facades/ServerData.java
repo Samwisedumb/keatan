@@ -127,4 +127,21 @@ public class ServerData {
 	public List<Game> getGameInfoList() {
 		return gameTags;
 	}
+	
+	/**
+	 * Returns the specified game model
+	 * @param gameID - the gameID of the requested game
+	 * @pre none
+	 * @return the game with the given ID<br>
+	 * null if no game has the given ID
+	 * @post see return
+	 */
+	public ServerModel getGameModel(int gameID) {
+		if (gameID >= games.size() || gameID < 0) {
+			return null;
+		}
+		else {
+			return games.get(gameID);
+		}
+	}
 }

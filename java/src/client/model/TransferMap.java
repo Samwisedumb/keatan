@@ -9,6 +9,12 @@ public class TransferMap {
 	private int radius;
 	private HexLocation robber;
 	
+	public TransferMap(List<Hex> hexList, List<VertexValue> vertexList, List<EdgeValue> edgeList) {
+		this.hexes = hexList;
+		this.vertices = vertexList;
+		this.edges = edgeList;
+	}
+	
 	public void addHex(Hex hex) {
 		hexes.add(hex);
 	}

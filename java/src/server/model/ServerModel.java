@@ -14,6 +14,8 @@ import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import client.model.City;
+import client.model.DevCardList;
+import client.model.MessageList;
 import client.model.Player;
 import client.model.Port;
 import client.model.EdgeLocation;
@@ -24,7 +26,9 @@ import client.model.ResourceList;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.Status;
+import client.model.TransferMap;
 import client.model.TransferModel;
+import client.model.TurnTracker;
 import client.model.VertexLocation;
 import client.model.VertexObject;
 import client.model.VertexValue;
@@ -53,6 +57,21 @@ public class ServerModel {
 		this.gameName = gameName;
 		
 		createMap(randomHexes, randomChits, randomPorts);
+		
+		transfer = new TransferModel();
+		
+		transfer.setDeck(new DevCardList(2, 5, 2, 14, 2));
+		transfer.setBank(new ResourceList(19,19,19,19,19));
+		transfer.setChat(new MessageList());
+		transfer.setLog(new MessageList());
+		transfer.setMap(new TransferMap(new ArrayList<Hex>(hexes.values()),
+				new ArrayList<VertexValue>(vertices.values()),
+				new ArrayList<EdgeValue>(edges.values())));
+		transfer.setTurnTracker(new TurnTracker(0, 0, -1, -1));
+	}
+	
+	public TransferModel getTransferModel() {
+		return transfer;
 	}
 	
 	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
@@ -540,7 +559,31 @@ public class ServerModel {
 			break; //nothing happens. No dev cards to draw
 		case 0:
 			payForDevCard(cardBuyer);
-			
+			transfer.getDeck().setMonopoly(transfer.getDeck().getMonopoly() - 1);
+			cardBuyer.getNewDevCards().setMonopoly(cardBuyer.getNewDevCards().getMonopoly() + 1);
+			break;
+		case 1:
+			payForDevCard(cardBuyer);
+			transfer.getDeck().setMonument(transfer.getDeck().getMonument() - 1);
+			cardBuyer.getNewDevCards().setMonument(cardBuyer.getNewDevCards().getMonument() + 1);
+			break;
+		case 2:
+			payForDevCard(cardBuyer);
+			transfer.getDeck().setRoadBuilding(transfer.getDeck().getRoadBuilding() - 1);
+			cardBuyer.getNewDevCards().setRoadBuilding(cardBuyer.getNewDevCards().getRoadBuilding() + 1);
+			break;
+		case 3:
+			payForDevCard(cardBuyer);
+			transfer.getDeck().setSoldier(transfer.getDeck().getSoldier() - 1);
+			cardBuyer.getNewDevCards().setSoldier(cardBuyer.getNewDevCards().getSoldier() + 1);
+			break;
+		case 4:
+			payForDevCard(cardBuyer);
+			transfer.getDeck().setYearOfPlenty(transfer.getDeck().getYearOfPlenty() - 1);
+			cardBuyer.getNewDevCards().setYearOfPlenty(cardBuyer.getNewDevCards().getYearOfPlenty() + 1);
+			break;
+		default:
+			break;
 		}
 		
 	}

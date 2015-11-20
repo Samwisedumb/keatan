@@ -157,7 +157,8 @@ public class NetworkTests {
 		
 		try {
 			assert(ServerProxy.getGamesList().length == existingGames);
-		} catch (ServerException e) {
+		} 
+		catch (ServerException e) {
 		}
 		
 		CreateGameRequest gameRequest = new CreateGameRequest(false,false,false,"test");
@@ -165,7 +166,8 @@ public class NetworkTests {
 			ServerProxy.createGame(gameRequest);
 			existingGames++;
 			assert(ServerProxy.getGamesList().length == existingGames);
-		} catch (ServerException e) {
+		}
+		catch (ServerException e) {
 		}
 	}
 	

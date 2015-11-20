@@ -14,6 +14,7 @@ import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import client.model.City;
+import client.model.Player;
 import client.model.Port;
 import client.model.EdgeLocation;
 import client.model.EdgeValue;
@@ -37,9 +38,6 @@ public class ServerModel {
 	private String gameName;
 	
 	private HashMap<HexLocation, Hex> hexes;
-	private HashMap<EdgeLocation, Road> roads;
-	private HashMap<VertexLocation, Settlement> settlements;
-	private HashMap<VertexLocation, City> cities;
 
 	private HashMap<EdgeLocation, EdgeValue> edges;
 	private HashMap<VertexLocation, VertexValue> vertices;
@@ -521,6 +519,67 @@ public class ServerModel {
 	
 	public void placeCity(VertexLocation place, int playerIndex) {
 		vertices.get(place).setCity(new City(playerIndex));
+	}
+	
+	public void payForDevCard(Player cardBuyer) {
+		cardBuyer.removeResource(ResourceType.ORE, 1);
+		cardBuyer.removeResource(ResourceType.SHEEP, 1);
+		cardBuyer.removeResource(ResourceType.WHEAT, 1);
+	}
+	
+	public void buyDevCard(int playerIndex) {
+		Player cardBuyer = transfer.getPlayers().get(playerIndex);
+	
+		Random random = new Random();
+		int devCardNumber = random.nextInt(5);
+
+		int draw = devDeckDraw(devCardNumber);
+		
+		switch(draw) {
+		case -1:
+			break; //nothing happens. No dev cards to draw
+		case 0:
+			payForDevCard(cardBuyer);
+			
+		}
+		
+	}
+	
+	private int devDeckDraw(int cardNumber) {
+		 
+		//14, 2, 2, 2, 5
+		
+		int firstWeight = transfer.getDeck().getMonopoly();
+		int secondWeight = firstWeight + transfer.getDeck().getMonument();
+		int thirdWeight = secondWeight + transfer.getDeck().getRoadBuilding();
+		int fourthWeight = thirdWeight + transfer.getDeck().getSoldier();
+		int finalWeight = fourthWeight + transfer.getDeck().getYearOfPlenty();
+		
+		if(finalWeight == 0) {
+			return -1; //there are no more devcards to draw
+		}
+		
+		Random random = new Random();
+		int devCardNumber = random.nextInt(finalWeight);
+		
+		if(devCardNumber < firstWeight) {
+			return 0;
+		}
+		else if(devCardNumber >= firstWeight && devCardNumber < secondWeight) {
+			return 1;
+		}
+		else if(devCardNumber >= secondWeight && devCardNumber < thirdWeight) {
+			return 2;
+		}
+		else if(devCardNumber >= thirdWeight && devCardNumber < fourthWeight) {
+			return 3;
+		}
+		else if(devCardNumber >= fourthWeight && devCardNumber < finalWeight) {
+			return 4;
+		}
+		else {
+			return -1;
+		}
 	}
 }
 

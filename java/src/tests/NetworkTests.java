@@ -1,5 +1,7 @@
 package tests;
 
+import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,64 +27,91 @@ public class NetworkTests {
 	//Register
 	@Test
 	public void testRegister() {
-		boolean exceptionThrown = false;
 		UserCredentials userCredentials = new UserCredentials("Test","Test");
 		try {
 			ServerProxy.register(userCredentials);
+			fail("Should have thrown a password too short exception");
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			boolean reasonCheck = e.getReason().equals("The password is shorter than 5 characters");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck){
+				fail("Wrong exception thrown");
+			}
 		}
-		assert(exceptionThrown);
 		
-		exceptionThrown = false;
 		userCredentials = new UserCredentials("Te","Test1");
 		try {
 			ServerProxy.register(userCredentials);
+			fail("Should have thrown a name too short exception");
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			boolean reasonCheck = e.getReason().equals("The username is not within 3 and 7 characters");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck) {
+				fail("Wrong exception thrown");
+			}
 		}
-		assert(exceptionThrown);
 		
-		exceptionThrown = false;
 		userCredentials = new UserCredentials("Testing1","Test1");
 		try {
 			ServerProxy.register(userCredentials);
+			fail("Should have thrown a name too long exception");
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			boolean reasonCheck = e.getReason().equals("The username is not within 3 and 7 characters");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck) {
+				fail("Wrong exception thrown");
+			}
 		}
-		assert(exceptionThrown);
 		
-		exceptionThrown = false;
 		userCredentials = new UserCredentials("Test&","Test1");
 		try {
 			ServerProxy.register(userCredentials);
+			fail("Should have thrown a username using invalid character exception");
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			boolean reasonCheck = e.getReason().equals("The username contains invalid characters");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck) {
+				fail("Wrong exception thrown");
+			}
 		}
-		assert(exceptionThrown);
 		
-		exceptionThrown = false;
 		userCredentials = new UserCredentials("Test","Test&");
 		try {
 			ServerProxy.register(userCredentials);
+			fail("Should have thrown a password using invalid character exception");
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			boolean reasonCheck = e.getReason().equals("The password contains invalid characters");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck) {
+				fail("Wrong exception thrown");
+			}
 		}
-		assert(exceptionThrown);
 		
-		exceptionThrown = false;
 		userCredentials = new UserCredentials("Test","Test1");
 		try {
 			ServerProxy.register(userCredentials);
+			assert(true);
 		} catch (ServerException e) {
-			exceptionThrown = true;
+			fail("Should have passed");
 		}
-		assert(!exceptionThrown);
+		
+		userCredentials = new UserCredentials("Test","Test1");
+		try {
+			ServerProxy.register(userCredentials);
+			fail("Should have thrown a user already exists error");
+		} catch (ServerException e) {
+			boolean reasonCheck = e.getReason().equals("Username already exists");
+			//assert is doing weird things right here, hence the kludge.
+			if(!reasonCheck) {
+				fail("Wrong exception thrown");
+			}
+		}
 	}
 	
 	//Login
 	@Test
 	public void testLogin() {
+		//Set 
 		try {
 			ServerProxy.register(new UserCredentials("Test","Test1"));
 		} catch (ServerException e1) {

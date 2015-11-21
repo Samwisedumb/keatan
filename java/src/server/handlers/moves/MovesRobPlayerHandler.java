@@ -4,22 +4,22 @@ import java.io.IOException;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import server.command.BuyDevCardCommand;
+import server.command.RobPlayerCommand;
 import server.facades.ServerGamesFacade;
 import server.handlers.IHandler;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
-import shared.transferClasses.BuyDevCard;
+import shared.transferClasses.RobPlayer;
 import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 
-public class MovesBuyDevCardHandler extends IHandler {
+public class MovesRobPlayerHandler extends IHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		// TODO Auto-generated method stub
-		BuyDevCard buy = Converter.fromJson(exchange.getRequestBody(), BuyDevCard.class);
-
+		RobPlayer rob = Converter.fromJson(exchange.getRequestBody(), RobPlayer.class);
+		
 		try {			
 			UserInfo cookieUser = getUserCookie(exchange);
 			
@@ -29,7 +29,7 @@ public class MovesBuyDevCardHandler extends IHandler {
 			
 			ServerGamesFacade.getInstance().verifyUserIsInGame(cookieGame, cookieUser);
 			
-			BuyDevCardCommand command = new BuyDevCardCommand(cookieGame, buy);
+			RobPlayerCommand command = new RobPlayerCommand(cookieGame, rob);
 			command.execute();
 			
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -39,9 +39,6 @@ public class MovesBuyDevCardHandler extends IHandler {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}
-	
-		exchange.close();
-		
 	}
 
 }

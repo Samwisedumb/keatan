@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.MaritimeTrade;
 
 /**
@@ -8,14 +9,23 @@ import shared.transferClasses.MaritimeTrade;
  *
  */
 public class MaritimeTradeCommand implements Command {
+	
+	int game;
+	MaritimeTrade tradeCommand;
+	
 	/**
 	 * Creates a command that, when executed, will initiate a maritime trade.
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public MaritimeTradeCommand(int gameID, MaritimeTrade transferObject){}
+	public MaritimeTradeCommand(int gameID, MaritimeTrade transferObject){
+		game = gameID;
+		tradeCommand = transferObject;
+	}
 	
 	@Override
-	public void execute() {}
+	public void execute() {
+		ServerMovesFacade.getInstance().maritimeTrade(game, tradeCommand);
+	}
 
 }

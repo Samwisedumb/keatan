@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.DiscardCards;
 
 /**
@@ -8,17 +9,24 @@ import shared.transferClasses.DiscardCards;
  *
  */
 public class DiscardCardsCommand implements Command {
+	
+	int game;
+	DiscardCards discardCommand;
+	
 	/**
 	 * Creates a command that, when executed, will cause a player to discard cards.
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public DiscardCardsCommand(int gameID, DiscardCards transferObject){}
+	public DiscardCardsCommand(int gameID, DiscardCards transferObject){
+		game = gameID;
+		discardCommand = transferObject;
+	}
 	
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
-		
+		ServerMovesFacade.getInstance().discardCards(game, discardCommand);
 	}
 	
 }

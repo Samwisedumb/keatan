@@ -68,6 +68,8 @@ public class ServerModel {
 				new ArrayList<VertexValue>(vertices.values()),
 				new ArrayList<EdgeValue>(edges.values())));
 		transfer.setTurnTracker(new TurnTracker(0, 0, -1, -1));
+		transfer.setVersion(0);
+		transfer.setWinner(-1);
 	}
 	
 	public TransferModel getTransferModel() {
@@ -440,7 +442,7 @@ public class ServerModel {
 	public void getResources(int numberRoll) {
 		
 		if(numberRoll == 7) {
-			transfer.getTurnTracker().setStatus(Status.Robbing);
+			transfer.getTurnTracker().setStatus(Status.Discarding);
 			return;
 		}
 		
@@ -455,7 +457,10 @@ public class ServerModel {
 		List<HexLocation> chitLocs = new ArrayList<HexLocation>();
 		
 		for(Hex theHex : hexes.values()) {
-			if(theHex.getChitNumber() == numberRoll) {
+			if(robber.equals(theHex.getLocation())) {
+				//Do nothing
+			}
+			else if(theHex.getChitNumber() == numberRoll) {
 				chitLocs.add(theHex.getLocation());
 			}
 		}
@@ -514,6 +519,8 @@ public class ServerModel {
 	public void payForRoad(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WOOD, 1);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
+		transfer.getBank().setWood(transfer.getBank().getWood() + 1);
+		transfer.getBank().setBrick(transfer.getBank().getBrick() + 1);
 	}
 	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
@@ -525,6 +532,10 @@ public class ServerModel {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.SHEEP, 1);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WHEAT, 1);
+		transfer.getBank().setWood(transfer.getBank().getWood() + 1);
+		transfer.getBank().setBrick(transfer.getBank().getBrick() + 1);
+		transfer.getBank().setSheep(transfer.getBank().getSheep() + 1);
+		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
 	}
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
@@ -534,6 +545,8 @@ public class ServerModel {
 	public void payForCity(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WHEAT, 2);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.ORE, 3);
+		transfer.getBank().setWheat(transfer.getBank().getWheat() + 2);
+		transfer.getBank().setOre(transfer.getBank().getOre() + 3);
 	}
 	
 	public void placeCity(VertexLocation place, int playerIndex) {
@@ -544,15 +557,15 @@ public class ServerModel {
 		cardBuyer.removeResource(ResourceType.ORE, 1);
 		cardBuyer.removeResource(ResourceType.SHEEP, 1);
 		cardBuyer.removeResource(ResourceType.WHEAT, 1);
+		transfer.getBank().setOre(transfer.getBank().getOre() + 1);
+		transfer.getBank().setSheep(transfer.getBank().getSheep() + 1);
+		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
 	}
 	
 	public void buyDevCard(int playerIndex) {
 		Player cardBuyer = transfer.getPlayers().get(playerIndex);
-	
-		Random random = new Random();
-		int devCardNumber = random.nextInt(5);
 
-		int draw = devDeckDraw(devCardNumber);
+		int draw = devDeckDraw();
 		
 		switch(draw) {
 		case -1:
@@ -588,7 +601,7 @@ public class ServerModel {
 		
 	}
 	
-	private int devDeckDraw(int cardNumber) {
+	private int devDeckDraw() {
 		 
 		//14, 2, 2, 2, 5
 		
@@ -602,7 +615,9 @@ public class ServerModel {
 			return -1; //there are no more devcards to draw
 		}
 		
-		Random random = new Random();
+		long seed = System.nanoTime();
+		Random random = new Random(seed);
+		
 		int devCardNumber = random.nextInt(finalWeight);
 		
 		if(devCardNumber < firstWeight) {
@@ -624,5 +639,105 @@ public class ServerModel {
 			return -1;
 		}
 	}
+
+	public void discardCards(int playerIndex, ResourceList discardList) {
+		Player discarder = transfer.getPlayers().get(playerIndex);
+		discarder.setDiscarded(true);
+		
+		discarder.removeResource(ResourceType.BRICK, discardList.getBrick());
+		discarder.removeResource(ResourceType.WHEAT, discardList.getWheat());
+		discarder.removeResource(ResourceType.SHEEP, discardList.getSheep());
+		discarder.removeResource(ResourceType.WOOD, discardList.getWood());
+		discarder.removeResource(ResourceType.ORE, discardList.getOre());
+		
+		transfer.getBank().setBrick(transfer.getBank().getBrick() + discardList.getBrick());
+		transfer.getBank().setWheat(transfer.getBank().getWheat() + discardList.getWheat());
+		transfer.getBank().setSheep(transfer.getBank().getSheep() + discardList.getSheep());
+		transfer.getBank().setWood(transfer.getBank().getWood() + discardList.getWood());
+		transfer.getBank().setOre(transfer.getBank().getOre() + discardList.getOre());
+		
+		transfer.getTurnTracker().setStatus(Status.Robbing);
+	}
+	
+	public void robPlayer(int playerIndex, int victimIndex, HexLocation robberMove) {
+		
+		Player thief = transfer.getPlayers().get(playerIndex);
+		Player victim = transfer.getPlayers().get(victimIndex);
+		
+		ResourceType claim = wheelOfSteal(victim);
+		
+		switch(claim) {
+		case WOOD:
+			victim.removeResource(ResourceType.WOOD, 1);
+			thief.addResource(ResourceType.WOOD, 1);
+			break;
+		case WHEAT:
+			victim.removeResource(ResourceType.WHEAT, 1);
+			thief.addResource(ResourceType.WHEAT, 1);
+			break;
+		case SHEEP:
+			victim.removeResource(ResourceType.SHEEP, 1);
+			thief.addResource(ResourceType.SHEEP, 1);
+			break;
+		case ORE:
+			victim.removeResource(ResourceType.ORE, 1);
+			thief.addResource(ResourceType.ORE, 1);
+			break;
+		case BRICK:
+			victim.removeResource(ResourceType.BRICK, 1);
+			thief.addResource(ResourceType.BRICK, 1);
+			break;
+		default:
+			break;
+		}
+		
+		robber = robberMove;
+		
+	}
+	
+	public ResourceType wheelOfSteal(Player victim) {
+		
+		int firstWeight = victim.getResources().getWood();
+		int secondWeight = firstWeight + victim.getResources().getWheat();
+		int thirdWeight = secondWeight + victim.getResources().getSheep();
+		int fourthWeight = thirdWeight + victim.getResources().getOre();
+		int finalWeight = fourthWeight + victim.getResources().getBrick();
+		
+		if(finalWeight == 0) {
+			return null; //empty hand
+		}
+		
+		long seed = System.nanoTime();
+		Random random = new Random(seed);
+		
+		int resourceCardNumber = random.nextInt(finalWeight);
+		
+		if(resourceCardNumber < firstWeight) {
+			return ResourceType.WOOD;
+		}
+		else if(resourceCardNumber >= firstWeight && resourceCardNumber < secondWeight) {
+			return ResourceType.WHEAT;
+		}
+		else if(resourceCardNumber >= secondWeight && resourceCardNumber < thirdWeight) {
+			return ResourceType.SHEEP;
+		}
+		else if(resourceCardNumber >= thirdWeight && resourceCardNumber < fourthWeight) {
+			return ResourceType.ORE;
+		}
+		else if(resourceCardNumber >= fourthWeight && resourceCardNumber < finalWeight) {
+			return ResourceType.BRICK;
+		}
+		else {
+			return null;
+		}
+	}
+
+	public void MaritimeTrade(int playerIndex, int ratio, ResourceType input, ResourceType output) {
+		transfer.getPlayers().get(playerIndex).removeResource(input, ratio);
+		transfer.getPlayers().get(playerIndex).addResource(output, 1);
+		transfer.getBank().changeResourceAmount(input, ratio);
+		transfer.getBank().changeResourceAmount(output, -1);
+	}
+	
 }
 

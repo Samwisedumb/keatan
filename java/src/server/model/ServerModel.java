@@ -26,6 +26,7 @@ import client.model.ResourceList;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.Status;
+import client.model.TradeOffer;
 import client.model.TransferMap;
 import client.model.TransferModel;
 import client.model.TurnTracker;
@@ -732,12 +733,49 @@ public class ServerModel {
 		}
 	}
 
-	public void MaritimeTrade(int playerIndex, int ratio, ResourceType input, ResourceType output) {
+	public void maritimeTrade(int playerIndex, int ratio, ResourceType input, ResourceType output) {
 		transfer.getPlayers().get(playerIndex).removeResource(input, ratio);
 		transfer.getPlayers().get(playerIndex).addResource(output, 1);
 		transfer.getBank().changeResourceAmount(input, ratio);
 		transfer.getBank().changeResourceAmount(output, -1);
 	}
 	
+	public void offerTrade(int sender, int receiver, ResourceList offer) {
+		transfer.setTradeOffer(new TradeOffer(sender, receiver, offer));
+	}
+	
+	public void acceptTrade(int offerer, boolean willAccept) {
+		if(willAccept == false) {
+			return; //nothing happens you silly person
+		}
+		
+		Player sender = transfer.getPlayers().get(transfer.getTradeOffer().getSender());
+		Player receiver = transfer.getPlayers().get(transfer.getTradeOffer().getReceiver());
+		
+		ResourceList trade = transfer.getTradeOffer().getOffer();
+		
+		sender.addResource(ResourceType.BRICK, trade.getBrick());
+		receiver.addResource(ResourceType.BRICK, trade.getBrick() * -1);
+		
+		sender.addResource(ResourceType.ORE, trade.getOre());
+		receiver.addResource(ResourceType.ORE, trade.getOre() * -1);
+		
+		sender.addResource(ResourceType.SHEEP, trade.getSheep());
+		receiver.addResource(ResourceType.SHEEP, trade.getSheep() * -1);
+		
+		sender.addResource(ResourceType.WHEAT, trade.getWheat());
+		receiver.addResource(ResourceType.WHEAT, trade.getWheat() * -1);
+		
+		sender.addResource(ResourceType.WOOD, trade.getWood());
+		receiver.addResource(ResourceType.WOOD, trade.getWood() * -1);
+		
+		transfer.setTradeOffer(null);
+	}
+	
+	public void roadBuilding(int playerIndex, EdgeLocation placeOne, EdgeLocation placeTwo) {
+		transfer.getPlayers().get(playerIndex).useRoadBuildingCard();
+		placeRoad(placeOne, playerIndex);
+		placeRoad(placeTwo, playerIndex);
+	}
 }
 

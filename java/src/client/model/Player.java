@@ -214,4 +214,9 @@ public class Player {
 			break;
 		}
 	}
+	
+	public void useRoadBuildingCard() {
+		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() - 1);
+		playedDevCard = true;
+	}
 }

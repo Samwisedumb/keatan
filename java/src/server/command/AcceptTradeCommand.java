@@ -1,5 +1,6 @@
 package server.command;
 
+import server.facades.ServerMovesFacade;
 import shared.transferClasses.AcceptTrade;
 
 /**
@@ -8,14 +9,23 @@ import shared.transferClasses.AcceptTrade;
  *
  */
 public class AcceptTradeCommand implements Command {
+	
+	int game;
+	AcceptTrade tradeCommand;
+	
 	/**
 	 * Creates a command that, when executed, will accept a trade.
 	 * @param gameID The ID of the game the command applies to
 	 * @param transferObject The parameters for the command
 	 */
-	public AcceptTradeCommand(int gameID, AcceptTrade transferObject){}
+	public AcceptTradeCommand(int gameID, AcceptTrade transferObject) {
+		game = gameID;
+		tradeCommand = transferObject;
+	}
 
 	@Override
-	public void execute() {}
+	public void execute() {
+		ServerMovesFacade.getInstance().acceptTrade(game, tradeCommand);
+	}
 
 }

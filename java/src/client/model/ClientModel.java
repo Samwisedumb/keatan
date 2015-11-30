@@ -6,6 +6,8 @@ import java.util.List;
 
 import shared.definitions.EdgeDirection;
 import shared.definitions.VertexDirection;
+import shared.transferClasses.Game;
+import shared.transferClasses.UserInfo;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
 
@@ -19,48 +21,62 @@ public class ClientModel {
 	/**
 	 * This is where we store the model that the server sends to the client for updates
 	 */
-	private TransferModel dataLump; //GG TAs
+	private TransferModel transferModel;
 
 	/**
-	 * The username of the user
+	 * This is where we store the info for user
 	 */
-	private String username;
+	private User user;
 	/**
-	 * This is where we store the info for user's player
+	 * @post sets the current user info for the user
+	 * @pre user must not be null
 	 */
-	private PlayerInfo playerInfo;
-	
+	public void setUserInfo(UserInfo userInfo) {
+		user.setUserInfo(userInfo);
+	}
 	/**
-	 * This is where we store the info for user's game the are currently playing or considering joining
+	 * @post sets the current game info for the user
+	 * @pre user must not be null
 	 */
-	private GameInfo gameInfo;
-
+	public void setGameInfo(GameInfo game) {
+		user.setGameInfo(game);
+	}
+	/**
+	 * @post gets the current game info for the user
+	 * @pre user must not be null
+	 */
 	public GameInfo getGameInfo() {
-		return gameInfo;
+		return user.getGameInfo();
+	}
+	/**
+	 * @post clears the current game info for the user
+	 * @pre user must not be null
+	 */
+	public void clearGameInfo() {
+		user.clearGameInfo();
 	}
 
-	public void setGameInfo(GameInfo gameInfo) {
-		this.gameInfo = gameInfo;
+	/**
+	 * Gets the player info for the current user
+	 * @return the player info for the current user
+	 * @pre user cannot be null
+	 * @post see return
+	 */
+	public PlayerInfo getPlayerInfo() {
+		return user.getPlayerInfo();
 	}
 
-	public void setPlayerInfo(PlayerInfo playerInfo) {
-		this.playerInfo = playerInfo;
-	}
-
+	
+	// Otherstuff
 	public ClientModel() {
 		hexes = new HashMap<HexLocation, Hex>();
 		roads = new HashMap<EdgeLocation, Road>();
 		settlements = new HashMap<VertexLocation, VertexObject>();
 		cities = new HashMap<VertexLocation, VertexObject>();
 		
-		dataLump = null;
-	}
-	
-	public PlayerInfo getPlayerInfo() {
-		if (this.playerInfo == null) {
-			this.playerInfo.getColor();
-		}
-		return this.playerInfo;
+		user = new User();
+		
+		transferModel = null;
 	}
 
 	public HashMap<HexLocation, Hex> getHexes() {
@@ -79,50 +95,20 @@ public class ClientModel {
 		return cities;
 	}
 
-	public TransferModel getDataLump() {
-		return dataLump;
+	public TransferModel getTransferModel() {
+		return transferModel;
 	}
 	
-	public void update(TransferModel newLump) {
-		this.dataLump = newLump;
-
-		//TODO
-		//TODO
-		//TODO  !!!!!!!!
-		//TODO !
-//		for(Hex hex : newLump.getMap().getHexes()) {
-//			hexes.put(hex.getLocation(), hex);
-//		}
-//		
-//		for(Road road : newLump.getMap().getRoads()) {
-//			roads.put(road.getLocation().getNormalizedLocation(), road);
-//		}
-//		
-//		for(VertexObject settlement : newLump.getMap().getSettlements()) {
-//			settlements.put(settlement.getLocation().getNormalizedLocation(), settlement);
-//			if (settlements.containsKey(settlement.getLocation().getNormalizedLocation())){
-//				System.out.println("Hooray");
-//				System.out.println(settlements.get(settlement.getLocation().getNormalizedLocation()));
-//			}
-//		}
-//		
-//		for(VertexObject city : newLump.getMap().getCities()) {
-//			cities.put(city.getLocation().getNormalizedLocation(), city);
-//		}
-		
-		updateGameInfo();
+	public void update(TransferModel transferModel) {
+		this.transferModel = transferModel;
+	
+		System.out.println("In client model update(transferModel) happened");
+			
+		user.update(transferModel);
 	}
-	private void updateGameInfo() {
-		if (gameInfo == null) {
-			gameInfo = new GameInfo();
-		}
-		else {
-			gameInfo.update(dataLump);
-		}
-	}
+	
 	
 	///THINGS!
-	
 	public List<EdgeLocation> getAdjacentEdges(EdgeLocation checkEdge) {
 		
 		List<EdgeLocation> adjacentEdges = new ArrayList<EdgeLocation>();
@@ -728,12 +714,5 @@ public class ClientModel {
 		
 		
 		return nearbyEdges;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getUsername() {
-		return username;
 	}
 }

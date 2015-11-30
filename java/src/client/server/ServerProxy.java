@@ -23,6 +23,7 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
@@ -61,8 +62,8 @@ public class ServerProxy {
 	}
 
 	//server functions
-	public static void login(UserCredentials userCredentials) throws ServerException {
-		server.login(userCredentials);
+	public static UserInfo login(UserCredentials userCredentials) throws ServerException {
+		return server.login(userCredentials);
 	}
 
 	public static void register(UserCredentials userCredentials)
@@ -79,9 +80,8 @@ public class ServerProxy {
 		return server.createGame(createGameRequest);
 	}
 
-	public static void joinGame(JoinGameRequest joinGameRequest)
-			throws ServerException {
-		server.joinGame(joinGameRequest);
+	public static Game joinGame(JoinGameRequest joinGameRequest) throws ServerException {
+		return server.joinGame(joinGameRequest);
 	}
 
 	public static TransferModel getModel(int version) throws ServerException {

@@ -6,6 +6,7 @@ import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.UserCredentials;
+import client.model.TransferModel;
 import client.server.ClientServer;
 import client.server.ServerProxy;
 
@@ -14,17 +15,19 @@ public class TestingMain {
 		ServerCommunicator server = new ServerCommunicator(8081);
 		ServerProxy.initialize(new ClientServer("localhost", "8081"));
 		
-		UserCredentials pig = new UserCredentials("_pigs-", "canfly-_");
+		UserCredentials hill = new UserCredentials("Hillary", "davis");
+		UserCredentials dono = new UserCredentials("Donald", "davis");
+		UserCredentials burn = new UserCredentials("Bernie", "davis");
 		
 		try {
-			ServerProxy.register(pig);
+			ServerProxy.register(hill);
 		}
 		catch (ServerException e) {
 			System.err.println("failed to registers: " + e.getReason());
 		}
 		
 		try {
-			ServerProxy.login(pig);
+			ServerProxy.login(hill);
 		}
 		catch (ServerException e) {
 			System.err.println("failed to login: " + e.getReason());
@@ -41,6 +44,21 @@ public class TestingMain {
 			for (int i = 0; i < games.length; i++) {
 				System.out.println(games[i].toString());
 			}
+
+			ServerProxy.register(dono);
+			ServerProxy.login(dono);
+			ServerProxy.joinGame(new JoinGameRequest(0, CatanColor.RED));
+			
+			ServerProxy.register(burn);
+			ServerProxy.login(burn);
+			ServerProxy.joinGame(new JoinGameRequest(0, CatanColor.WHITE));
+			
+			TransferModel model = ServerProxy.getModel(-1);
+			System.out.println("get game -1: " + Converter.toJson(model));
+			model = ServerProxy.getModel(0);
+			System.out.println("get game 0: " + Converter.toJson(model));
+			
+			
 		}
 		catch (ServerException e) {
 			System.err.println("failed to getGames: " + e.getReason());

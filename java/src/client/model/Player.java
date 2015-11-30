@@ -1,5 +1,6 @@
 package client.model;
 
+import client.data.PlayerInfo;
 import shared.definitions.CatanColor;
 import shared.definitions.ResourceType;
 
@@ -213,5 +214,13 @@ public class Player {
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * @post returns the player info for this player
+	 * @pre player must be valid
+	 */
+	public PlayerInfo getPlayerInfo() {
+		return new PlayerInfo(playerID, playerIndex, name, color);
 	}
 }

@@ -18,6 +18,7 @@ public class TransferModel {
 	
 	public TransferModel() {
 		players = new ArrayList<Player>();
+		version = 0;
 	}
 			
 	public ResourceList getBank() {

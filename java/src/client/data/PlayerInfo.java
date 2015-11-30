@@ -1,8 +1,6 @@
 package client.data;
 
-import client.model.Player;
 import shared.definitions.CatanColor;
-import shared.transferClasses.GetPlayer;
 
 /**
  * Used to pass player information into views<br>
@@ -16,34 +14,24 @@ import shared.transferClasses.GetPlayer;
  * </ul>
  * 
  */
-public class PlayerInfo
-{
-	
+public class PlayerInfo {	
 	private int id;
 	private int playerIndex;
 	private String name;
 	private CatanColor color;
 	
-	public PlayerInfo()
-	{
+	public PlayerInfo(int id, int playerIndex, String name, CatanColor color) {
+		setID(id);
+		setPlayerIndex(playerIndex);
+		setName(name);
+		setColor(color);
+	}
+	
+	public PlayerInfo() {
 		setID(-1);
 		setPlayerIndex(-1);
 		setName("");
 		setColor(CatanColor.WHITE);
-	}
-	
-	public PlayerInfo(GetPlayer player, int index) {
-		setID(player.getID());
-		setPlayerIndex(index);
-		setName(player.getName());
-		setColor(player.getColor());
-	}
-
-	public PlayerInfo(Player player, int index) {
-		setID(player.getID());
-		setPlayerIndex(index);
-		setName(player.getName());
-		setColor(player.getColor());
 	}
 
 	public PlayerInfo(String username) {

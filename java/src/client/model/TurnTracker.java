@@ -22,6 +22,7 @@ public class TurnTracker {
 		this.currentPlayer = currentPlayer;
 		this.longestRoad = longestRoad;
 		this.largestArmy = largestArmy;
+		this.status = Status.FirstRound;
 	}
 	
 	/**

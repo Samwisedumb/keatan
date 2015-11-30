@@ -23,6 +23,7 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
@@ -36,9 +37,10 @@ public interface IServer {
 	/**
 	 * 
 	 * @param userCredentials - the credentials of the user
+	 * @return 
 	 * @throws ServerException if cannot connect to server or credentials are invalid
 	 */
-	abstract public void login(UserCredentials userCredentials)
+	abstract public UserInfo login(UserCredentials userCredentials)
 			throws ServerException;
 	/**
 	 * 
@@ -68,10 +70,10 @@ public interface IServer {
 	/**
 	 * 
 	 * @param joinGameRequest
+	 * @return 
 	 * @throws ServerException
 	 */
-	abstract public void joinGame(JoinGameRequest joinGameRequest)
-			throws ServerException;
+	abstract public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException;
 
 	/**
 	 * 

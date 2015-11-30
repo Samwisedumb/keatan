@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import server.model.ServerModel;
+import shared.definitions.CatanColor;
 import shared.transferClasses.Game;
+import shared.transferClasses.GetPlayer;
 import shared.transferClasses.Password;
 import shared.transferClasses.UserInfo;
 import shared.transferClasses.Username;
@@ -143,5 +145,18 @@ public class ServerData {
 		else {
 			return games.get(gameID);
 		}
+	}
+
+	/**
+	 * @post adds a player to a game
+	 * @pre the gameID must be a valid game id
+	 * @param gameID - the gameID
+	 * @param color - the color of the player
+	 * @param username - the username of the player
+	 * @param userID - the userID
+	 */
+	public void addPlayer(int gameID, CatanColor color, String username, int userID) {
+		games.get(gameID).addPlayer(color, username, userID);
+		gameTags.get(gameID).addPlayer(new GetPlayer(color, username, userID));
 	}
 }

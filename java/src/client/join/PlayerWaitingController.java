@@ -1,10 +1,14 @@
 package client.join;
 
+import java.util.List;
+
 import shared.exceptions.ServerException;
-import shared.transferClasses.AddAIRequest;
+import shared.json.Converter;
 import client.base.Controller;
 import client.data.PlayerInfo;
 import client.model.ModelFacade;
+import client.model.TransferModel;
+import client.server.ServerPoller;
 import client.server.ServerProxy;
 
 
@@ -31,34 +35,43 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 	 * Refreshes the game list in the join game veiw
 	 */
 	private void refreshPlayerInfo() {
-		PlayerInfo[] info = ModelFacade.getJoinedPlayersInfo();
-		numberOfShownJoinedPlayers = info.length;
+		List<PlayerInfo> info = ModelFacade.getJoinedPlayersInfo();
+
+		numberOfShownJoinedPlayers = info.size();
 		getView().setPlayers(info);
+		
+		getView().closeModal();
 		getView().showModal();
 	}
 	
 	@Override
 	public void start() {
 		try {
-			String[] aiTypes = ServerProxy.listAITypes();
+			String[] aiTypes = {"Joe"}; //ServerProxy.listAITypes(); // not needed for credit
 			getView().setAIChoices(aiTypes);
-			refreshPlayerInfo();
 			getView().showModal();
+	
+			TransferModel model = ServerProxy.getModel(-1);
+			ModelFacade.updateModel(model);
+				
+			System.out.println("ServerPoller started");
+			ServerPoller.start();
 		}
 		catch (ServerException e) {
-			// To the Ta's of the past. Why is there no message view?  ('n')
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void addAI() {
-		try {
-			ServerProxy.addAI(new AddAIRequest(getView().getSelectedAI()));
-		}
-		catch (ServerException e) {
-			// To the Ta's of the past. Why is there no message view?  ('n')
-			getView().closeModal();
-		}
+		System.out.println("Adding AI is not required for credit");
+//		try {
+//			//ServerProxy.addAI(new AddAIRequest(getView().getSelectedAI()));
+//		}
+//		catch (ServerException e) {
+//			// To the Ta's of the past. Why is there no message view?  ('n')
+//			getView().closeModal();
+//		}
 	}
 
 	/**
@@ -68,13 +81,13 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 	
 	@Override
 	public void update() {
-		PlayerInfo[] joinedPlayerInfo = ModelFacade.getJoinedPlayersInfo();
+		List<PlayerInfo> joinedPlayerInfo = ModelFacade.getJoinedPlayersInfo();
 		
-		if (ModelFacade.getJoinedPlayersInfo().length == 4) {
+		if (ModelFacade.getJoinedPlayersInfo().size() == 4) {
 			numberOfShownJoinedPlayers = 0;
 			getView().closeModal();
 		}
-		else if (joinedPlayerInfo.length == numberOfShownJoinedPlayers) {
+		else if (joinedPlayerInfo.size() == numberOfShownJoinedPlayers) {
 			// do nothing
 		}
 		else {

@@ -32,8 +32,9 @@ public class MockGameFacade implements IGamesFacade{
 	}
 
 	@Override
-	public void joinGame(UserInfo user, JoinGameRequest requestJoin) {
+	public Game joinGame(UserInfo user, JoinGameRequest requestJoin) {
 		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override

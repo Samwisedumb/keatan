@@ -63,65 +63,13 @@ public class MapController extends Controller implements IMapController {
 	}
 
 	protected void initFromModel() {
-		
-		for (Hex hex : ModelFacade.getHexes()) {
-			getView().addHex(hex.getLocation(), hex.getType());
-			
-			if (hex.getType() != HexType.DESERT
-					&& hex.getType() != HexType.WATER) {
-				getView().addNumber(hex.getLocation(), hex.getChitNumber());
-			}
-		}
-
-		for (Road road : ModelFacade.getRoads()) {
-			PlayerInfo owner = ModelFacade.getGameInfo().getPlayerInfo(
-					road.getOwner());
-			getView().placeRoad(road.getLocation(), owner.getColor());
-		}
-
-		for (VertexObject settlement : ModelFacade.getSettlements()) {
-			PlayerInfo owner = ModelFacade.getGameInfo().getPlayerInfo(
-					settlement.getOwner());
-			getView().placeSettlement(settlement.getLocation(),
-					owner.getColor());
-		}
-
-		for (VertexObject city : ModelFacade.getCities()) {
-			PlayerInfo owner = ModelFacade.getGameInfo().getPlayerInfo(
-					city.getOwner());
-			getView().placeSettlement(city.getLocation(), owner.getColor());
-		}
-
-		// getView().addHex(new HexLocation(0,0), HexType.WOOD);
-		// getView().addHex(new HexLocation(1,1), HexType.DESERT);
+		getView().addHex(new HexLocation(0,0), HexType.WOOD);
+		getView().addHex(new HexLocation(1,1), HexType.DESERT);
 
 		drawWater();
-
-		for (Port port : ModelFacade.getPorts()) {
-			if (port != null) {
-				if (port.getResource() == null) {
-					getView()
-							.addPort(
-									new EdgeLocation(port.getLocation().getX(),
-											port.getLocation().getY(),
-											port.getDirection()),
-									PortType.THREE);
-				} else {
-					getView()
-							.addPort(
-									new EdgeLocation(port.getLocation().getX(),
-											port.getLocation().getY(),
-											port.getDirection()),
-									port.getResource());
-				}
-			}
-		}
 	}
 
-
-
 	protected void drawWater() {
-		// HARDCODED FOR REASONS!
 		getView().addHex(new HexLocation(0, 3), HexType.WATER);
 		getView().addHex(new HexLocation(-1, 3), HexType.WATER);
 		getView().addHex(new HexLocation(-2, 3), HexType.WATER);
@@ -189,9 +137,7 @@ public class MapController extends Controller implements IMapController {
 		state.placeRobber(hexLoc);
 	}
 
-	public void startMove(PieceType pieceType, boolean isFree,
-			boolean allowDisconnected) {
-		// This is probably wrong but I've no idea how to fix it
+	public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
 		getView().startDrop(pieceType, CatanColor.ORANGE, true);
 
 		state.startMove(pieceType, false, false);
@@ -215,19 +161,20 @@ public class MapController extends Controller implements IMapController {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		if (ModelFacade.getModelVersion() != -1) {
-
 			initFromModel();
 			
-			if (ModelFacade.whoseTurnIsItAnyway() != ModelFacade.getPlayerInfo().getIndex()) {
+			
+			if (ModelFacade.whoseTurnIsItAnyway() != ModelFacade.getUserPlayerInfo().getIndex()) {
 				if (ModelFacade.whatStateMightItBe() == Status.FirstRound
 						|| ModelFacade.whatStateMightItBe() == Status.SecondRound) {
 					state = new MapControllerDoubleWaitState();
-				} else {
+				}
+				else {
 					state = new MapControllerNotTurnState();
 				}
-			} else {
+			}
+			else {
 				switch (ModelFacade.whatStateMightItBe()) {
 				case Rolling:
 					state = new MapControllerRollingDiceState();

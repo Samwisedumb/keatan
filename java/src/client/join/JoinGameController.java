@@ -11,7 +11,7 @@ import client.data.GameInfo;
 import client.data.PlayerInfo;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
-import client.server.ServerPoller;
+import client.model.TransferModel;
 import client.server.ServerProxy;
 
 
@@ -124,7 +124,8 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 				games[i] = new GameInfo(gameArray[i]);
 			}
 			getJoinGameView().setGames(games, new PlayerInfo());
-		} catch (ServerException e) {
+		}
+		catch (ServerException e) {
 			showModalError(e.getReason());
 		}
 	}
@@ -168,37 +169,31 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 		}
 	}
 
+	private GameInfo gameToJoin;
+	
 	@Override
 	public void startJoinGame(GameInfo game) {
-		ModelFacade.setGameInfo(game);
+		gameToJoin = game;
 		getSelectColorView().showModal();
 	}
 
 	@Override
 	public void cancelJoinGame() {
-		ModelFacade.clearGameInfo();
-		ModelFacade.clearPlayerInfo();
+		gameToJoin = null;
 		refreshGameList();
-		getJoinGameView().closeModal();
+		getSelectColorView().closeModal();
 	}
 
 	@Override
 	public void joinGame(CatanColor color) {
-		
 		try {
-			ServerProxy.joinGame(new JoinGameRequest(ModelFacade.getGameInfo().getId(), color));
+			Game game = ServerProxy.joinGame(new JoinGameRequest(gameToJoin.getId(), color));
 			// If join succeeded
+			ModelFacade.setGameInfo(new GameInfo(game));
+			
 			getSelectColorView().closeModal();
 			getJoinGameView().closeModal();
 			
-			System.out.println("ServerPoller started");
-
-			// update the model so that the proper player info can set retrieved
-			ModelFacade.updateModel(ServerProxy.getModel(-1));
-			GameInfo game = ModelFacade.getGameInfo();			
-			ModelFacade.setPlayerInfo(game.getPlayerInfo(ModelFacade.getUsername()));
-
-			ServerPoller.start();
 			joinAction.execute();
 		}
 		catch (ServerException e) {
@@ -208,8 +203,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		// do nothing		
 	}
 }
 

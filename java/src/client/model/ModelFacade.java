@@ -9,6 +9,7 @@ import shared.definitions.CatanColor;
 import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
+import shared.transferClasses.UserInfo;
 import client.base.Observer;
 import client.communication.LogEntry;
 import client.data.GameInfo;
@@ -23,13 +24,13 @@ public class ModelFacade {
 	/**
 	 * Updates the model if the given model's version is newer.
 	 * @pre none
-	 * @post If the ModelFacade's model is not yet initialized, or the given model has a higher version,
+	 * @post If the given model is not null and has a higher version,
 	 * the model is updated to the given model.
-	 * @param model - the model to check for an update
+	 * @param data - the model to check for an update
 	 */
-	public static void updateModel(TransferModel lump) {
-		if (getModelVersion() < lump.getVersion()) {
-			model.update(lump);
+	public static void updateModel(TransferModel data) {
+		if (data != null && getModelVersion() < data.getVersion()) {
+			model.update(data);
 			notifyObserversOfChange();
 		}
 	}
@@ -40,39 +41,65 @@ public class ModelFacade {
 	}
 	
 	public static List<Hex> getHexes() {
-		return model.getDataLump().getMap().getHexes();
+		return model.getTransferModel().getMap().getHexes();
 	}
 	
 	public static List<Road> getRoads() {
 		//TODO
-		return null; //model.getDataLump().getMap().getRoads();
+		return null; //model.getTransferModel().getMap().getRoads();
 	}
 	
 	public static List<VertexObject> getSettlements() {
 		//TODO
-		return null; //model.getDataLump().getMap().getSettlements();
+		return null; //model.getTransferModel().getMap().getSettlements();
 	}
 	
 	public static List<VertexObject> getCities() {
 		//TODO
-		return null;//model.getDataLump().getMap().getCities();
+		return null;//model.getTransferModel().getMap().getCities();
 	}
 	
 	public static List<Port> getPorts() {
 		//TODO
-		return null;//model.getDataLump().getMap().getPorts();
+		return null;//model.getTransferModel().getMap().getPorts();
 	}
 	
-	public static Player getThisPlayer() {
-		return model.getDataLump().getPlayers().get(model.getPlayerInfo().getIndex());
+	/**
+	 * @post returns the PlayerInfo for this user
+	 * @pre model must not be null
+	 */
+	public static PlayerInfo getUserPlayerInfo() {
+		return model.getPlayerInfo();
 	}
 	
-	public static Player getAPlayer(int index) {
-		return model.getDataLump().getPlayers().get(index);
+	/**
+	 * @post returns the Player object that corresponds to the user
+	 * @pre model must not be null, user and game info, and transfer model must be set
+	 */
+	public static Player getUserPlayer() {
+		return getPlayerByIndex(getUserPlayerInfo().getIndex());
 	}
+	
+	/**
+	 * @post returns the Player object that corresponds to the given index
+	 * @pre model must not be null, and transfer model must be set
+	 */
+	public static Player getPlayerByIndex(int index) {
+		return model.getTransferModel().getPlayers().get(index);
+	}
+	
+	/**
+	 * @pre game info must be set
+	 * @post returns a list of the info for players who have joined the same game as the user
+	 */
+	public static List<PlayerInfo> getJoinedPlayersInfo() {
+		return getGameInfo().getPlayers();
+	}
+	
+	
 	
 	public static int getWinner() {
-		return model.getDataLump().getWinner();
+		return model.getTransferModel().getWinner();
 	}
 	
 	/**
@@ -140,7 +167,7 @@ public class ModelFacade {
 	}
 	
 	public static boolean canReceiveResource(int resource_amount, ResourceType resource_type) {
-		return model.getDataLump().getBank().hasResource(resource_type, resource_amount);
+		return model.getTransferModel().getBank().hasResource(resource_type, resource_amount);
 	}
 	
 	/**
@@ -148,23 +175,23 @@ public class ModelFacade {
 	 * @returns -1 if no model version yet, otherwise it returns the models version
 	 */
 	public static int getModelVersion() {
-		if (model.getDataLump() == null) {
+		if (model.getTransferModel() == null) {
 			return -1;
 		}
 		else if (model.getGameInfo().getPlayers().size() != 4) {
 			return -1;
 		}
 		else {
-			return model.getDataLump().getVersion();
+			return model.getTransferModel().getVersion();
 		}
 	}
 
 	public static int whoseTurnIsItAnyway() {
-		return model.getDataLump().getTurnTracker().getCurrentPlayer();
+		return model.getTransferModel().getTurnTracker().getCurrentPlayer();
 	}
 
 	public static Status whatStateMightItBe() {
-		return model.getDataLump().getTurnTracker().getStatus();
+		return model.getTransferModel().getTurnTracker().getStatus();
 	}
 	
 	public static boolean canBuildSettlement(int playerIndex, VertexLocation vertLoc) {
@@ -191,7 +218,7 @@ public class ModelFacade {
 			}
 		}
 		
-		ResourceList rList = model.getDataLump().getPlayers().get(playerIndex).getResources();
+		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if(rList.getBrick() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0 || rList.getWood() == 0) {
 			return false;
@@ -217,7 +244,7 @@ public class ModelFacade {
 			return false;
 		}
 		
-		ResourceList rList = model.getDataLump().getPlayers().get(playerIndex).getResources();
+		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if(rList.getOre() < 3 || rList.getWheat() < 2) {
 			return false;
@@ -248,7 +275,7 @@ public class ModelFacade {
 			return false;
 		}
 		
-		ResourceList rList = model.getDataLump().getPlayers().get(playerIndex).getResources();
+		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if(rList.getBrick() == 0 || rList.getWood() == 0) {
 			return false;
@@ -283,7 +310,7 @@ public class ModelFacade {
 	}
 
 	public static boolean canDomesticTrade(TradeOffer offer) {
-		int currentPlayer = model.getDataLump().getTurnTracker().getCurrentPlayer();
+		int currentPlayer = model.getTransferModel().getTurnTracker().getCurrentPlayer();
 		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
 			return false;
 		}
@@ -328,7 +355,7 @@ public class ModelFacade {
 		
 		//Check if sender has enough resources
 		
-		ResourceList sendResources = model.getDataLump().getPlayers().get(offer.getSender()).getResources();
+		ResourceList sendResources = model.getTransferModel().getPlayers().get(offer.getSender()).getResources();
 		if(theOffer.getBrick() > sendResources.getBrick()
 				|| theOffer.getOre() > sendResources.getOre()
 				|| theOffer.getSheep() > sendResources.getSheep()
@@ -339,7 +366,7 @@ public class ModelFacade {
 		
 		//Check if receiver has enough resources
 		
-		ResourceList receiveResources = model.getDataLump().getPlayers().get(offer.getReceiver()).getResources();
+		ResourceList receiveResources = model.getTransferModel().getPlayers().get(offer.getReceiver()).getResources();
 		if(theRequest.getBrick() > receiveResources.getBrick()
 				|| theRequest.getOre() > receiveResources.getOre()
 				|| theRequest.getSheep() > receiveResources.getSheep()
@@ -353,11 +380,11 @@ public class ModelFacade {
 	}
 	
 	public static boolean canMaritimeTrade(int playerIndex, ResourceType tradeResource, ResourceType desiredResource) {
-		Player player = model.getDataLump().getPlayers().get(playerIndex);
+		Player player = model.getTransferModel().getPlayers().get(playerIndex);
 		
 		int tradeRatio = getTradeRatio(playerIndex, tradeResource);
 		
-		return player.getResources().hasResource(tradeResource, tradeRatio) && model.getDataLump().getBank().hasResource(desiredResource, 1);
+		return player.getResources().hasResource(tradeResource, tradeRatio) && model.getTransferModel().getBank().hasResource(desiredResource, 1);
 	}
 	
 	public static int getTradeRatio(int playerIndex, ResourceType tradeResource) {
@@ -402,14 +429,14 @@ public class ModelFacade {
 	}
 	
 	public static boolean canBuyDevelopmentCard(int playerIndex) {
-		ResourceList rList = model.getDataLump().getPlayers().get(playerIndex).getResources();
-		if(model.getDataLump().getTurnTracker().getCurrentPlayer() != playerIndex) {
+		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
+		if(model.getTransferModel().getTurnTracker().getCurrentPlayer() != playerIndex) {
 			return false;
 		}
 		else if(rList.getOre() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0) {
 			return false;
 		}
-		else if(model.getDataLump().getDeck().getTotalCards() > 0) {
+		else if(model.getTransferModel().getDeck().getTotalCards() > 0) {
 			return true;
 		}
 		else {
@@ -418,12 +445,12 @@ public class ModelFacade {
 	}
 	
 	public static boolean canLoseCardsFromDieRoll(int playerIndex) {
-		return model.getDataLump().getPlayers().get(playerIndex).getResources().getTotalCards() > 7;
+		return model.getTransferModel().getPlayers().get(playerIndex).getResources().getTotalCards() > 7;
 	}
 	
 	public static boolean canWin(int playerIndex) {
-		return model.getDataLump().getTurnTracker().getCurrentPlayer() == playerIndex && 
-				model.getDataLump().getPlayers().get(playerIndex).getVictoryPoints() > 9;
+		return model.getTransferModel().getTurnTracker().getCurrentPlayer() == playerIndex && 
+				model.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() > 9;
 	}
 	
 	/**
@@ -433,9 +460,17 @@ public class ModelFacade {
 	 * @return the hex location of the robber
 	 */
 	public static HexLocation findRobber() {
-		return model.getDataLump().getMap().getRobber();
+		return model.getTransferModel().getMap().getRobber();
 	}
 
+	/**
+	 * @post sets the user information for the user
+	 * @param userInfo - the userInfo to set it to
+	 * @pre model must not be null
+	 */
+	public static void setUserInfo(UserInfo userInfo) {
+		model.setUserInfo(userInfo);
+	}
 	/**
 	 * This function sets the data for the game the user is interacting with, namely
 	 * <ul>
@@ -449,10 +484,15 @@ public class ModelFacade {
 	public static void setGameInfo(GameInfo game) {
 		model.setGameInfo(game);
 	}
+	/**
+	 * Gets the game info for the game the user has joined or is trying to join
+	 * @return the game info for the game the user has joined or is trying to join
+	 * @pre model must not be null
+	 * @post see return
+	 */
 	public static GameInfo getGameInfo() {
 		return model.getGameInfo();
 	}
-	
 	/**
 	 * This function clears the current game info the user is trying to interact with.
 	 * @pre model must not be null
@@ -460,51 +500,6 @@ public class ModelFacade {
 	 */
 	public static void clearGameInfo() {
 		model.setGameInfo(null);
-	}
-	
-	/**
-	 * This function sets the data for the player info of the user
-	 * @pre model must not be null
-	 * @post player info is set to given
-	 * @param player - the player info to store
-	 */
-	public static void setPlayerInfo(PlayerInfo player) {
-		System.out.println("Set player info: " + player.getColor());
-		model.setPlayerInfo(player);
-	}
-	public static PlayerInfo getPlayerInfo() {
-		return model.getPlayerInfo();
-	}
-	
-	/**
-	 * This function clears the current player info of the user
-	 * @pre model must not be null
-	 * @post player info is set to null
-	 */
-	public static void clearPlayerInfo() {
-		model.setPlayerInfo(null);
-	}
-	
-	/**
-	 * This function returns the player info for the current game
-	 * @pre model cannot be null, model.getGameInfo() cannot return null
-	 * @post see return
-	 * @return The player information array for the players in the current game
-	 */
-	public static PlayerInfo[] getJoinedPlayersInfo() {
-		List<PlayerInfo> playerList = model.getGameInfo().getPlayers();
-		int numPlayers = 0;
-		for (PlayerInfo info : playerList) {
-			if(info != null) {
-				numPlayers++;
-			}
-		}
-		
-		PlayerInfo[] players = new PlayerInfo[numPlayers];
-		for (int i = 0; i < numPlayers; i++) {
-			players[i] = playerList.get(i);
-		}
-		return players;
 	}
 	
 	/**
@@ -530,22 +525,14 @@ public class ModelFacade {
 	}
 	
 	public static List<LogEntry> getChatLog() {
-		MessageList chat = model.getDataLump().getChat();
+		MessageList chat = model.getTransferModel().getChat();
 		List<LogEntry> chatLog = new ArrayList<LogEntry>();
 		
 		for (MessageLine line : chat.getLines()) {
-			CatanColor color = getGameInfo().getPlayerInfo(line.getSource()).getColor();
+			CatanColor color = getGameInfo().getPlayerInfoByName(line.getSource()).getColor();
 			chatLog.add(new LogEntry(color, line.getMessage()));
 		}
 		
 		return chatLog;
-	}
-	
-	public static void setUsername(String username) {
-		System.out.println("Set username to: " + username);
-		model.setUsername(username);
-	}
-	public static String getUsername() {
-		return model.getUsername();
 	}
 }

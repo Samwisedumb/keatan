@@ -34,13 +34,6 @@ public class ServerGamesFacade implements IGamesFacade {
 		return instance;
 	}
 	
-	/**
-	 * A private constructor for the ServerGamesFacade singleton
-	 */
-	private ServerGamesFacade() {
-		
-	}
-	
 	@Override
 	public void verifyUserInformation(UserInfo user) throws ServerException {
 		UserInfo registeredUser = ServerData.getInstance().getUserInfo(user.getUsername());
@@ -94,7 +87,7 @@ public class ServerGamesFacade implements IGamesFacade {
 	}
 
 	@Override
-	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException{
+	public Game joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException{
 		Game game = ServerData.getInstance().getGameInfo(requestJoin.getGameID());
 		
 		if (game == null) {
@@ -104,7 +97,9 @@ public class ServerGamesFacade implements IGamesFacade {
 			throw new ServerException("Requsted game is full");
 		}
 		
-		game.addPlayer(new GetPlayer(requestJoin.getColor(), user.getUsernameString(), user.getUserID()));
+		ServerData.getInstance().addPlayer(requestJoin.getGameID(), requestJoin.getColor(), user.getUsernameString(), user.getUserID());
+		
+		return game;
 	}
 
 	@Override

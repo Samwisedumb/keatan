@@ -72,7 +72,7 @@ public interface IGamesFacade {
 //	 * @return true if the game was successfully joined, else false
 //	 * @post the client either joins the game or is returned to the choose games menu.
 //	 */
-	public void joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException;
+	public Game joinGame(UserInfo user, JoinGameRequest requestJoin) throws ServerException;
 
 	public void verifyUserIsInGame(int gameID, UserInfo user) throws ServerException;
 	

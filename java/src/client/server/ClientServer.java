@@ -3,6 +3,7 @@ package client.server;
 import java.util.List;
 
 import shared.exceptions.ServerException;
+import shared.json.Converter;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.AddAIRequest;
 import shared.transferClasses.BuildCity;
@@ -25,6 +26,7 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
@@ -76,7 +78,7 @@ public class ClientServer implements IServer {
 	 */
 	private void addUserCookieToNextRequest() throws ServerException {
 		if (userCookie != null) {
-			communicator.addRequestHeader("user", userCookie);
+			communicator.addRequestHeader("User", userCookie);
 		}
 		else {
 			throw new ServerException("User cookie is null");
@@ -91,7 +93,7 @@ public class ClientServer implements IServer {
 	 */
 	private void addGameCookieToNextRequest() throws ServerException {
 		if (gameCookie != null) {
-			communicator.addRequestHeader("user", gameCookie);
+			communicator.addRequestHeader("Game", gameCookie);
 		}
 		else {
 			throw new ServerException("Game cookie is null");
@@ -104,9 +106,10 @@ public class ClientServer implements IServer {
 	}
 	
 	@Override
-	public void login(UserCredentials userCredentials) throws ServerException {
+	public UserInfo login(UserCredentials userCredentials) throws ServerException {
 		communicator.send("/user/login", userCredentials);
 		setUserCookie();
+		return Converter.fromJson(userCookie, UserInfo.class);
 	}
 
 	@Override
@@ -122,10 +125,11 @@ public class ClientServer implements IServer {
 	}
 
 	@Override
-	public void joinGame(JoinGameRequest joinGameRequest) throws ServerException {
+	public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException {
 		addUserCookieToNextRequest();
-		communicator.send("/games/join", joinGameRequest);
+		Game game = communicator.send("/games/join", joinGameRequest, Game.class);
 		setGameCookie();
+		return game;
 	}
 
 	@Override

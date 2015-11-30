@@ -93,7 +93,7 @@ public class DiscardController extends Controller implements IDiscardController 
 	@Override
 	public void discard() {
 		
-		DiscardCards command = new DiscardCards(ModelFacade.getPlayerInfo().getIndex(), theList);
+		DiscardCards command = new DiscardCards(ModelFacade.getUserPlayerInfo().getIndex(), theList);
 		
 		try {
 			ServerProxy.discardCards(command);

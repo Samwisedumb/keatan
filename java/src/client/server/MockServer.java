@@ -27,6 +27,7 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.UserCredentials;
+import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
@@ -46,9 +47,9 @@ public class MockServer implements IServer  {
 	}
 	
 	@Override
-	public void login(UserCredentials userCredentials) throws ServerException {
+	public UserInfo login(UserCredentials userCredentials) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
@@ -72,10 +73,9 @@ public class MockServer implements IServer  {
 	}
 
 	@Override
-	public void joinGame(JoinGameRequest joinGameRequest)
-			throws ServerException {
+	public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

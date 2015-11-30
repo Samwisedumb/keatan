@@ -1,5 +1,7 @@
 package client.join;
 
+import java.util.List;
+
 import client.base.IOverlayView;
 import client.data.PlayerInfo;
 
@@ -13,10 +15,10 @@ public interface IPlayerWaitingView extends IOverlayView
 	/**
 	 * Sets the list of players who have already joined the game
 	 * 
-	 * @param value
+	 * @param info
 	 *            List of players who have already joined the game
 	 */
-	void setPlayers(PlayerInfo[] value);
+	void setPlayers(List<PlayerInfo> info);
 	
 	/**
 	 * Sets the list of AI types from which the user may select

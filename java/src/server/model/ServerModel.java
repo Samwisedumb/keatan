@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
 
+import shared.definitions.CatanColor;
 import shared.definitions.HexType;
 import shared.definitions.PortType;
 import shared.definitions.EdgeDirection;
@@ -35,7 +36,6 @@ import client.model.VertexValue;
 
 /**
  * A model for a Settlers of Catan&#8482 game on the the server side
- * @author djoshuac
  */
 public class ServerModel {
 	
@@ -623,6 +623,15 @@ public class ServerModel {
 		else {
 			return -1;
 		}
+	}
+	
+	/**
+	 * @post Adds a player to the game
+	 * @pre number of players currently in game should be less than 4
+	 */
+	public void addPlayer(CatanColor color, String name, int playerID) {
+		List<Player> players = getTransferModel().getPlayers();
+		players.add(new Player(name, playerID, color, players.size()));
 	}
 }
 

@@ -16,6 +16,7 @@ import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import client.model.City;
 import client.model.DevCardList;
+import client.model.MessageLine;
 import client.model.MessageList;
 import client.model.Player;
 import client.model.Port;
@@ -785,6 +786,50 @@ public class ServerModel {
 		transfer.getPlayers().get(playerIndex).useRoadBuildingCard();
 		placeRoad(placeOne, playerIndex);
 		placeRoad(placeTwo, playerIndex);
+	}
+	
+	public void soldier(int playerIndex, int victimIndex, HexLocation robberMove) {
+		robPlayer(playerIndex, victimIndex, robberMove);
+		
+		transfer.getPlayers().get(playerIndex).useSoldierCard();
+	}
+	
+	public void monumentPlay(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).useMonumentCard();
+	}
+	
+	public void yearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo) {
+		Player luckyPerson = transfer.getPlayers().get(playerIndex);
+		luckyPerson.addResource(resourceOne, 1);
+		luckyPerson.addResource(resourceTwo, 1);
+		luckyPerson.useYearOfPlentyCard();
+	}
+	
+	public void monopoly(int playerIndex, ResourceType mine) {
+		List<Player> players = transfer.getPlayers();
+		
+		int winnings = 0;
+		
+		for(int i = 0; i < players.size(); i++) {
+			if(i == playerIndex) {}
+			else {
+				winnings += players.get(i).getResourceAmount(mine);
+				players.get(i).removeResource(mine, players.get(i).getResourceAmount(mine));
+			}
+		}
+		
+		players.get(playerIndex).addResource(mine, winnings);
+		players.get(playerIndex).useMonopolyCard();
+	}
+	
+	public void sendChat(int playerIndex, String message) {
+		MessageLine chatMessage = new MessageLine(message, transfer.getPlayers().get(playerIndex).getName());
+		transfer.getChat().addLine(chatMessage);
+	}
+	
+	public void endTurn(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).endTurn();
+		transfer.getTurnTracker().endPlayerTurn();
 	}
 }
 

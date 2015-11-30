@@ -36,6 +36,8 @@ public class TurnTracker {
 		else {
 			currentPlayer++;
 		}
+		
+		this.status = Status.Rolling;
 	}
 	
 	public int getCurrentTurn() {

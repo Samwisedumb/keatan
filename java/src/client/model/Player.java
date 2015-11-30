@@ -216,6 +216,23 @@ public class Player {
 		}
 	}
 	
+	public int getResourceAmount(ResourceType resource) {
+		switch(resource) {
+		case BRICK:
+			return resources.getBrick();
+		case ORE:
+			return resources.getOre();
+		case SHEEP:
+			return resources.getSheep();
+		case WHEAT:
+			return resources.getWheat();
+		case WOOD:
+			return resources.getWood();
+		default:
+			return 0;
+		}
+	}
+	
 	/**
 	 * @post returns the player info for this player
 	 * @pre player must be valid
@@ -226,5 +243,42 @@ public class Player {
 	public void useRoadBuildingCard() {
 		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() - 1);
 		playedDevCard = true;
+	}
+	
+	public void useSoldierCard() {
+		oldDevCards.setSoldier(oldDevCards.getSoldier() - 1);
+		playedDevCard = true;
+		this.soldiers++;
+	}
+	
+	public void useMonumentCard() {
+		oldDevCards.setMonument(oldDevCards.getMonument() - 1);
+		playedDevCard = true;
+		this.victoryPoints++;
+	}
+	
+	public void useYearOfPlentyCard() {
+		oldDevCards.setYearOfPlenty(oldDevCards.getYearOfPlenty() - 1);
+		playedDevCard = true;
+	}
+	
+	public void useMonopolyCard() {
+		oldDevCards.setMonopoly(oldDevCards.getMonopoly() - 1);
+		playedDevCard = true;
+	}
+	
+	public void endTurn() {
+		playedDevCard = false;
+		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() + newDevCards.getRoadBuilding());
+		oldDevCards.setSoldier(oldDevCards.getSoldier() + newDevCards.getSoldier());
+		oldDevCards.setMonument(oldDevCards.getMonument() + newDevCards.getMonument());
+		oldDevCards.setYearOfPlenty(oldDevCards.getYearOfPlenty() + newDevCards.getYearOfPlenty());
+		oldDevCards.setMonopoly(oldDevCards.getMonopoly() + newDevCards.getMonopoly());
+		
+		newDevCards.setMonopoly(0);
+		newDevCards.setMonument(0);
+		newDevCards.setRoadBuilding(0);
+		newDevCards.setSoldier(0);
+		newDevCards.setYearOfPlenty(0);
 	}
 }

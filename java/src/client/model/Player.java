@@ -223,4 +223,8 @@ public class Player {
 	public PlayerInfo getPlayerInfo() {
 		return new PlayerInfo(playerID, playerIndex, name, color);
 	}
+	public void useRoadBuildingCard() {
+		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() - 1);
+		playedDevCard = true;
+	}
 }

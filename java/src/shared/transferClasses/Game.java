@@ -2,7 +2,10 @@ package shared.transferClasses;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import shared.definitions.CatanColor;
 import shared.exceptions.InvalidObjectException;
 
 /**
@@ -17,12 +20,17 @@ public class Game extends ValidatableObject {
 	private String title;
 	private int id;
 	private List<GetPlayer> players;
+	
+	
+	private Set<CatanColor> gameColors;
+	
 	public static final int MAX_PLAYERS = 4;
 	
 	public Game(String title, int id) {
 		setTitle(title);
 		setID(id);
 		setPlayers(new ArrayList<GetPlayer>(MAX_PLAYERS));
+		gameColors = new TreeSet<CatanColor>();
 	}
 
 	public List<GetPlayer> getPlayers() {
@@ -70,6 +78,7 @@ public class Game extends ValidatableObject {
 	 */
 	public void addPlayer(GetPlayer player) {
 		this.players.add(player);
+		this.gameColors.add(player.getColor());
 	}
 
 	/**
@@ -101,6 +110,10 @@ public class Game extends ValidatableObject {
 			}
 		}
 		return false;
+	}
+	
+	public boolean hasColor(CatanColor color) {
+		return gameColors.contains(color);
 	}
 	
 	@Override

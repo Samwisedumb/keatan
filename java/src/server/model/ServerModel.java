@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import shared.definitions.CatanColor;
 import shared.definitions.HexType;
@@ -54,6 +56,9 @@ public class ServerModel {
 	
 	private int radius;
 	
+	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
+	private TransferModel transfer;
+	
 	public ServerModel(boolean randomHexes, boolean randomChits, boolean randomPorts, String gameName) {
 		this.radius = 2;
 		this.gameName = gameName;
@@ -76,10 +81,7 @@ public class ServerModel {
 	
 	public TransferModel getTransferModel() {
 		return transfer;
-	}
-	
-	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
-	private TransferModel transfer;
+	}	
 	
 	private void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts) {		
 		List<Hex> theHexes = initializeHexList(randomHexes);
@@ -650,7 +652,7 @@ public class ServerModel {
 		List<Player> players = getTransferModel().getPlayers();
 		players.add(new Player(name, playerID, color, players.size()));
 	}
-
+	
 	public void discardCards(int playerIndex, ResourceList discardList) {
 		Player discarder = transfer.getPlayers().get(playerIndex);
 		discarder.setDiscarded(true);

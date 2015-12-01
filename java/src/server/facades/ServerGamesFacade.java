@@ -93,9 +93,13 @@ public class ServerGamesFacade implements IGamesFacade {
 		if (game == null) {
 			throw new ServerException("Invalid gameID");
 		}
-		if (game.isFull()) {
+		else if (game.isFull() == true) {
 			throw new ServerException("Requsted game is full");
 		}
+		else if(game.hasColor(requestJoin.getColor()) == true) {
+			throw new ServerException("That color is already in the game");
+		}
+		
 		
 		ServerData.getInstance().addPlayer(requestJoin.getGameID(), requestJoin.getColor(), user.getUsernameString(), user.getUserID());
 		

@@ -62,8 +62,7 @@ public class LoginController extends Controller implements ILoginController {
 	}
 
 	@Override
-	public void start() {
-		
+	public void start() {		
 		getLoginView().showModal();
 	}
 
@@ -89,7 +88,7 @@ public class LoginController extends Controller implements ILoginController {
 			UserInfo user = ServerProxy.login(credentials);
 
 			ModelFacade.setUserInfo(user);
-			getLoginView().closeModal();
+			getLoginView().closeModal();			
 			loginAction.execute();
 		}
 		catch (ServerException e) {
@@ -184,7 +183,7 @@ public class LoginController extends Controller implements ILoginController {
 				UserInfo user = ServerProxy.login(credentials);
 
 				ModelFacade.setUserInfo(user);
-				getLoginView().closeModal();
+				getLoginView().closeModal();				
 				loginAction.execute();
 			}
 			catch (ServerException e) {

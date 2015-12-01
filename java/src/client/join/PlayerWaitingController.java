@@ -1,27 +1,25 @@
 package client.join;
 
-import java.util.List;
-
-import shared.exceptions.ServerException;
-import shared.json.Converter;
 import client.base.Controller;
-import client.data.PlayerInfo;
 import client.model.ModelFacade;
-import client.model.TransferModel;
 import client.server.ServerPoller;
-import client.server.ServerProxy;
 
 
 /**
  * Implementation for the player waiting controller
  */
 public class PlayerWaitingController extends Controller implements IPlayerWaitingController {
-
+	/**
+	 * The state of the PlayerWaitingController
+	 */
+	IPlayerWaitingState state;
+	
 	public PlayerWaitingController(IPlayerWaitingView view) {
 		super(view);
 		
 		ModelFacade.addObserver(this);
-		numberOfShownJoinedPlayers = 0;
+		
+		state = new EnoughPlayersState();
 	}
 
 	@Override
@@ -30,36 +28,9 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 		return (IPlayerWaitingView)super.getView();
 	}
 	
-	
-	/**
-	 * Refreshes the game list in the join game veiw
-	 */
-	private void refreshPlayerInfo() {
-		List<PlayerInfo> info = ModelFacade.getJoinedPlayersInfo();
-
-		numberOfShownJoinedPlayers = info.size();
-		getView().setPlayers(info);
-		
-		getView().closeModal();
-		getView().showModal();
-	}
-	
 	@Override
 	public void start() {
-		try {
-			String[] aiTypes = {"Joe"}; //ServerProxy.listAITypes(); // not needed for credit
-			getView().setAIChoices(aiTypes);
-			getView().showModal();
-	
-			TransferModel model = ServerProxy.getModel(-1);
-			ModelFacade.updateModel(model);
-				
-			System.out.println("ServerPoller started");
-			ServerPoller.start();
-		}
-		catch (ServerException e) {
-			e.printStackTrace();
-		}
+		state = new NotEnoughPlayersState(this);
 	}
 
 	@Override
@@ -73,26 +44,18 @@ public class PlayerWaitingController extends Controller implements IPlayerWaitin
 //			getView().closeModal();
 //		}
 	}
-
+	
 	/**
-	 * The number of players shown to the view
+	 * Sets the state of the controller to the given state
+	 * @param state - the state to put the controller in
 	 */
-	private int numberOfShownJoinedPlayers;
+	protected void setState(IPlayerWaitingState state) {
+		this.state = state;
+	}
 	
 	@Override
 	public void update() {
-		List<PlayerInfo> joinedPlayerInfo = ModelFacade.getJoinedPlayersInfo();
-		
-		if (ModelFacade.getJoinedPlayersInfo().size() == 4) {
-			numberOfShownJoinedPlayers = 0;
-			getView().closeModal();
-		}
-		else if (joinedPlayerInfo.size() == numberOfShownJoinedPlayers) {
-			// do nothing
-		}
-		else {
-			refreshPlayerInfo();
-		}
+		state.update();
 	}
 }
 

@@ -11,7 +11,6 @@ import client.data.GameInfo;
 import client.data.PlayerInfo;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
-import client.model.TransferModel;
 import client.server.ServerProxy;
 
 
@@ -169,11 +168,22 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 		}
 	}
 
+	/**
+	 * The information of the game the user is trying to join
+	 */
 	private GameInfo gameToJoin;
 	
 	@Override
 	public void startJoinGame(GameInfo game) {
 		gameToJoin = game;
+		
+		for (CatanColor color : CatanColor.class.getEnumConstants()) {
+			getSelectColorView().setColorEnabled(color, true);
+		}
+		for (PlayerInfo player : game.getPlayers()) {
+			getSelectColorView().setColorEnabled(player.getColor(), false);
+		}
+		
 		getSelectColorView().showModal();
 	}
 

@@ -94,6 +94,8 @@ public class OverlayView extends PanelView implements IOverlayView
 			
 			// Hide the currently-visible overlay
 			overlayStack.peek().getOverlayPanel().setVisible(false);
+			
+			System.out.println("I hid an overlay. Right now I have " + overlayStack.size());
 		}
 		
 		window.setGlassPane(overlayPanel);

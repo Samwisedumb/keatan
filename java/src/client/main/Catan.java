@@ -14,6 +14,7 @@ import client.join.PlayerWaitingView;
 import client.join.SelectColorView;
 import client.login.LoginController;
 import client.login.LoginView;
+import client.map.MapController;
 import client.misc.MessageView;
 import client.server.ClientServer;
 import client.server.ServerProxy;

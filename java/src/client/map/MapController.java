@@ -1,5 +1,7 @@
 package client.map;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 import shared.definitions.CatanColor;
 import shared.definitions.HexType;
 import shared.definitions.PieceType;
@@ -159,46 +161,51 @@ public class MapController extends Controller implements IMapController {
 		state.robPlayer(victim);
 	}
 
+	boolean joe = false;
 	@Override
 	public void update() {
-		if (ModelFacade.getModelVersion() != -1) {
+		if (ModelFacade.isGameReadyToStart() && !joe) {
 			initFromModel();
-			
-			
-			if (ModelFacade.whoseTurnIsItAnyway() != ModelFacade.getUserPlayerInfo().getIndex()) {
-				if (ModelFacade.whatStateMightItBe() == Status.FirstRound
-						|| ModelFacade.whatStateMightItBe() == Status.SecondRound) {
-					state = new MapControllerDoubleWaitState();
-				}
-				else {
-					state = new MapControllerNotTurnState();
-				}
-			}
-			else {
-				switch (ModelFacade.whatStateMightItBe()) {
-				case Rolling:
-					state = new MapControllerRollingDiceState();
-					break;
-				case Discarding:
-					break;
-				case FirstRound:
-					state = new MapControllerDoublePlaceState();
-					startMove(PieceType.ROAD, true, true);
-					break;
-				case Playing:
-					state = new MapControllerBuildTradeState();
-					break;
-				case Robbing:
-					state = new MapControllerThieveryState();
-					break;
-				case SecondRound:
-					state = new MapControllerDoublePlaceState();
-					break;
-				default:
-					state = new MapControllerNotTurnState();
-					break;
-				}
-			}
+			System.out.println("Map inited");
+			getView().startDrop(PieceType.ROAD, CatanColor.BLUE, true);
+			System.out.println("update() -> Dropped");
+			joe = true;
+//			
+//			
+//			if (ModelFacade.whoseTurnIsItAnyway() != ModelFacade.getUserPlayerInfo().getIndex()) {
+//				if (ModelFacade.whatStateMightItBe() == Status.FirstRound
+//						|| ModelFacade.whatStateMightItBe() == Status.SecondRound) {
+//					state = new MapControllerDoubleWaitState();
+//				}
+//				else {
+//					state = new MapControllerNotTurnState();
+//				}
+//			}
+//			else {
+//				switch (ModelFacade.whatStateMightItBe()) {
+//				case Rolling:
+//					state = new MapControllerRollingDiceState();
+//					break;
+//				case Discarding:
+//					break;
+//				case FirstRound:
+//					state = new MapControllerDoublePlaceState();
+//					startMove(PieceType.ROAD, true, true);
+//					break;
+//				case Playing:
+//					state = new MapControllerBuildTradeState();
+//					break;
+//				case Robbing:
+//					state = new MapControllerThieveryState();
+//					break;
+//				case SecondRound:
+//					state = new MapControllerDoublePlaceState();
+//					break;
+//				default:
+//					state = new MapControllerNotTurnState();
+//					break;
+//				}
+			//}
 		}
 	}
 

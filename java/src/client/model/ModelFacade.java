@@ -14,12 +14,48 @@ import client.base.Observer;
 import client.communication.LogEntry;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
+import client.server.ServerPoller;
 
 
 
 public class ModelFacade {
 	private static final ClientModel model = new ClientModel();
 	private static final List<Observer> observers = new ArrayList<Observer>();
+	
+	
+	//// NOTE: Only some controllers have the access to close modal dialogs.
+	////		And the controllers that can close modal dialogs can only close the one that is on top of the stack.
+	////		This is bad because the MapController cannot ensure that it doesn't cover the PlayerWaitingControllers dialog
+	////		before the PlayerWaitingController closes it, therefore, making the PlayerWaitingController prone to close
+	////		the MapController's dialog instead of it's own depending on the order that their update methods are called.
+	/**
+	 * Is the game ready to begin
+	 */
+	private static boolean gameIsReadyToBegin = false;
+	/**
+	 * @return true if all players have joined and the game is ready to begin<br>
+	 * false if players still need to join
+	 */
+	public static boolean isGameReadyToStart() {
+		return gameIsReadyToBegin;
+	}
+	/**
+	 * @post the game is now ready to begin, controllers are notified
+	 */
+	public static void alertThatAllPlayersHaveJoined() {
+		gameIsReadyToBegin = true;
+		ServerPoller.stop();
+		notifyObserversOfChange();
+		ServerPoller.start();
+	}
+	/**
+	 * @post the game is not ready to begin, player is waiting for players to join
+	 */
+	public static void alertThatPlayerIsWaitingForPlayersToJoin() {
+		gameIsReadyToBegin = false;
+		ServerPoller.start();
+	}
+	////
 	
 	/**
 	 * Updates the model if the given model's version is newer.

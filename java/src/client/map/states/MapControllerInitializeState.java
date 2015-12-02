@@ -5,9 +5,14 @@ import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.VertexLocation;
 
-public class MapControllerDoubleWaitState extends MapControllerState {
+/**
+ * The state where it is the user's turn and the game is being initialized.
+ * In this state the user is to place a disconnected road and a settlement for free.
+ * @author djoshuac
+ */
+public class MapControllerInitializeState extends MapControllerState {
 
-	public MapControllerDoubleWaitState(IMapController controller) {
+	public MapControllerInitializeState(IMapController controller) {
 		super(controller);
 	}
 
@@ -33,6 +38,6 @@ public class MapControllerDoubleWaitState extends MapControllerState {
 	public boolean canPlaceRobber(HexLocation hexLoc) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
+	}	
+	
 }

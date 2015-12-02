@@ -230,8 +230,11 @@ public class ModelFacade {
 		}
 	}
 
+	/**
+	 * @return The index of the player whose turn it is
+	 */
 	public static int whoseTurnIsItAnyway() {
-		return model.getTransferModel().getTurnTracker().getCurrentPlayer();
+		return model.getTransferModel().getTurnTracker().getPlayerTurn();
 	}
 
 	public static Status whatStateMightItBe() {
@@ -354,7 +357,7 @@ public class ModelFacade {
 	}
 
 	public static boolean canDomesticTrade(TradeOffer offer) {
-		int currentPlayer = model.getTransferModel().getTurnTracker().getCurrentPlayer();
+		int currentPlayer = model.getTransferModel().getTurnTracker().getPlayerTurn();
 		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
 			return false;
 		}
@@ -474,7 +477,7 @@ public class ModelFacade {
 	
 	public static boolean canBuyDevelopmentCard(int playerIndex) {
 		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
-		if(model.getTransferModel().getTurnTracker().getCurrentPlayer() != playerIndex) {
+		if(model.getTransferModel().getTurnTracker().getPlayerTurn() != playerIndex) {
 			return false;
 		}
 		else if(rList.getOre() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0) {
@@ -493,7 +496,7 @@ public class ModelFacade {
 	}
 	
 	public static boolean canWin(int playerIndex) {
-		return model.getTransferModel().getTurnTracker().getCurrentPlayer() == playerIndex && 
+		return model.getTransferModel().getTurnTracker().getPlayerTurn() == playerIndex && 
 				model.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() > 9;
 	}
 	

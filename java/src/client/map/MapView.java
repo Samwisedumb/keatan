@@ -21,6 +21,7 @@ import client.base.IView;
 import client.base.OverlayView;
 import client.base.PanelView;
 import client.data.RobPlayerInfo;
+import client.map.states.MapControllerState;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.VertexLocation;
@@ -216,6 +217,22 @@ public class MapView extends PanelView implements IMapView
 		{
 			overlay.cancelDrop();
 			overlay.closeModal();
+		}
+
+		@Override
+		public void initFromModel() {
+			assert false;
+		}
+
+		@Override
+		public void setState(MapControllerState state) {
+			assert false;
+		}
+
+		@Override
+		public IRobView getRobView() {
+			assert false;
+			return null;
 		}
 	};
 	

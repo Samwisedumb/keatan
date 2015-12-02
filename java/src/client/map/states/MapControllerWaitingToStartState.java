@@ -5,34 +5,45 @@ import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.VertexLocation;
 
-public class MapControllerDoubleWaitState extends MapControllerState {
-
-	public MapControllerDoubleWaitState(IMapController controller) {
+/**
+ * This state is for when the user has joined a game and is waiting for it to begin
+ * @author djoshuac
+ */
+public class MapControllerWaitingToStartState extends MapControllerState {
+	public MapControllerWaitingToStartState(IMapController controller) {
 		super(controller);
 	}
 
+	/**
+	 * @return false
+	 */
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	/**
+	 * @return false
+	 */
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * @return false
+	 */
 	@Override
 	public boolean canPlaceCity(VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * @return false
+	 */
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 }

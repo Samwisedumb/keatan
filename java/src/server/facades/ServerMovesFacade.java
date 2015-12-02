@@ -209,7 +209,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 		
-		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getCurrentPlayer()) {
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
 			return false;
 		}
 		

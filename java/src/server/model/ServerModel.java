@@ -69,7 +69,7 @@ public class ServerModel {
 		transfer.setMap(new TransferMap(new ArrayList<Hex>(hexes.values()),
 				new ArrayList<VertexValue>(vertices.values()),
 				new ArrayList<EdgeValue>(edges.values())));
-		transfer.setTurnTracker(new TurnTracker(0, 0, -1, -1));
+		transfer.setTurnTracker(new TurnTracker(0, -1, -1));
 		transfer.setVersion(0);
 		transfer.setWinner(-1);
 	}

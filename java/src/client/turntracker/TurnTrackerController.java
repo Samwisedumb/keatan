@@ -1,7 +1,5 @@
 package client.turntracker;
 
-import java.util.Observable;
-
 import shared.definitions.CatanColor;
 import client.base.Controller;
 

@@ -3,6 +3,7 @@ package client.map;
 import shared.definitions.PieceType;
 import client.base.IController;
 import client.data.RobPlayerInfo;
+import client.map.states.MapControllerState;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.VertexLocation;
@@ -138,5 +139,21 @@ public interface IMapController extends IController
 	 *            The player to be robbed
 	 */
 	void robPlayer(RobPlayerInfo victim);
+	
+	/**
+	 * Redraws the map
+	 */
+	void initFromModel();
+	
+	/**
+	 * Changes the state of the controller
+	 * @param state - the new state to change the controller to
+	 */
+	void setState(MapControllerState state);
+	
+	/**
+	 * Gets the IRobView
+	 */
+	IRobView getRobView();
 }
 

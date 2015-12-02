@@ -126,7 +126,7 @@
 		</jar>
  		<jar jarfile="${java.dist}/catan-server.jar" basedir="${java.build}">
 			<manifest>
-				<attribute name="Main-Class" value="PUT THE NAME OF YOUR SERVER'S MAIN CLASS HERE"/>
+				<attribute name="Main-Class" value="server.ServerMain"/>
 				<attribute name="Class-Path" 
 					value="lib/gson-2.2.4.jar" />
 			</manifest>
@@ -135,6 +135,8 @@
 	
 	<target name="our-client" depends="package" description="compiles, packages, and runs the student client">
 		<java jar="${java.dist}/catan-client.jar" dir="${java.dist}" fork="yes">
+			<arg value="${port}"/>
+			<arg value="${host}"/>
 			<sysproperty key="com.sun.management.jmxremote" value=""/>
 			<assertions>
 				<enable/>

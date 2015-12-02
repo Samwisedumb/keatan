@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import server.model.ServerModel;
+import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
@@ -25,7 +26,11 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
+import client.model.EdgeLocation;
+import client.model.ModelFacade;
 import client.model.Player;
+import client.model.ResourceList;
+import client.model.VertexLocation;
 
 /**
  * Server Facade that handles all "moves" commands for all games
@@ -60,14 +65,14 @@ public class ServerMovesFacade implements IMovesFacade {
 	
 	public boolean addPlayerToGame(JoinGameRequest request, String playerName, int playerID) {
 		
-		int gameSize = games.get(request.getGameID()).getTransfer().getPlayers().size();
+		int gameSize = games.get(request.getGameID()).getTransferModel().getPlayers().size();
 		
 		if(gameSize == 4) {
 			return false;
 		}
 		else {
 			Player newPlayer = new Player(playerName, gameSize + 1, request.getColor(), playerID);
-			games.get(request.getGameID()).getTransfer().getPlayers().add(newPlayer);
+			games.get(request.getGameID()).getTransferModel().getPlayers().add(newPlayer);
 		}
 		
 		return true;
@@ -90,13 +95,19 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void buildRoad(int gameID, BuildRoad build) {
+	public void buildRoad(int gameID, BuildRoad build) throws ServerException {
 		// TODO Auto-generated method stub
-		if(build.getFree() == false) {
-			games.get(gameID).payForRoad(build.getPlayerIndex());
+		if(canBuildRoad(build.getPlayerIndex(), build.getRoadLocation(), gameID) == false) {
+			throw new ServerException("Can't put a road there, buddy");
 		}
 		
-		games.get(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
+		if(build.getFree() == false) {
+			//games.get(gameID).payForRoad(build.getPlayerIndex());
+			ServerData.getInstance().getGameModel(gameID).payForRoad(build.getPlayerIndex());
+		}
+		
+		//games.get(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
+		ServerData.getInstance().getGameModel(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
 	}
 
 	@Override
@@ -193,4 +204,45 @@ public class ServerMovesFacade implements IMovesFacade {
 		return null;
 	}
 	
+	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID) {
+		// TODO Auto-generated method stub
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getCurrentPlayer()) {
+			return false;
+		}
+		
+		if(thisGame.getEdges().get(edgeLoc.getNormalizedLocation()).hasRoad() == true) {
+			return false;
+		}
+		
+		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
+		
+		if(rList.getBrick() == 0 || rList.getWood() == 0) {
+			return false;
+		}
+		
+		List<VertexLocation> points = thisGame.getNearbyVertices(edgeLoc);
+		
+		for(VertexLocation point : points) {
+			if(thisGame.getVertices().get(point.getNormalizedLocation()).hasMunicipality() == true) {
+				if(thisGame.getVertices().get(point.getNormalizedLocation()).ownsMunicipality(playerIndex) == true) {
+					return true;
+				}
+			}
+		}
+		
+		List<EdgeLocation> nearbyEdges = thisGame.getAdjacentEdges(edgeLoc);
+		
+		for(EdgeLocation nearbyEdge : nearbyEdges) {
+			if(thisGame.getEdges().get(nearbyEdge.getNormalizedLocation()).hasRoad() == true) {
+				if(thisGame.getEdges().get(nearbyEdge.getNormalizedLocation()).getRoad().getOwner() == playerIndex) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }

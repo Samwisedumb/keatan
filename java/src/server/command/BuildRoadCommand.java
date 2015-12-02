@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuildRoad;
 
 /**
@@ -26,7 +27,12 @@ public class BuildRoadCommand implements Command {
 
 	@Override
 	public void execute() {
-		ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
+		try {
+			ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
+		} catch (ServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

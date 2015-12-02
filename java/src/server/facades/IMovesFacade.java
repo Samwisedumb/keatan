@@ -1,5 +1,6 @@
 package server.facades;
 
+import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
@@ -48,9 +49,10 @@ public interface IMovesFacade {
 	 * @pre Somebody wants to build a road
 	 * @param gameID the ID of the game
 	 * @param build the information about where to build the road (and its owner)
+	 * @throws ServerException 
 	 * @post the road is built
 	 */
-	public void buildRoad(int gameID, BuildRoad build);
+	public void buildRoad(int gameID, BuildRoad build) throws ServerException;
 	
 	/**
 	 * @pre Somebody wants to build a settlement

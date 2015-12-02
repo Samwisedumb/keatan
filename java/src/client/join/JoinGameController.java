@@ -1,5 +1,7 @@
 package client.join;
 
+import java.util.List;
+
 import shared.definitions.CatanColor;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
@@ -175,16 +177,37 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 	
 	@Override
 	public void startJoinGame(GameInfo game) {
-		gameToJoin = game;
-		
-		for (CatanColor color : CatanColor.class.getEnumConstants()) {
-			getSelectColorView().setColorEnabled(color, true);
+		try {
+			Game[] games = ServerProxy.getGamesList();
+			boolean gameFound = false;
+			for (int i = 0; i < games.length && !gameFound; i++) {
+				if (game.getId() == games[i].getID()) {
+					gameToJoin = new GameInfo(games[i]);
+					game = gameToJoin;
+					gameFound = true;
+				}
+			}
 		}
-		for (PlayerInfo player : game.getPlayers()) {
-			getSelectColorView().setColorEnabled(player.getColor(), false);
+		catch (ServerException e) {
+			showModalError(e.getReason());
+			return;
 		}
 		
-		getSelectColorView().showModal();
+		if (game.getPlayers().size() >= 4) {
+			refreshGameList();
+			showModalError("Sorry game is full");
+			return;
+		}
+		else {
+			for (CatanColor color : CatanColor.class.getEnumConstants()) {
+				getSelectColorView().setColorEnabled(color, true);
+			}
+			for (PlayerInfo player : game.getPlayers()) {
+				getSelectColorView().setColorEnabled(player.getColor(), false);
+			}
+			
+			getSelectColorView().showModal();
+		}
 	}
 
 	@Override

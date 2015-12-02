@@ -44,9 +44,9 @@ public class ModelFacade {
 	 */
 	public static void alertThatAllPlayersHaveJoined() {
 		gameIsReadyToBegin = true;
-		ServerPoller.stop();
-		notifyObserversOfChange();
-		ServerPoller.start();
+//		ServerPoller.stop();
+//		notifyObserversOfChange();
+//		ServerPoller.start();
 	}
 	/**
 	 * @post the game is not ready to begin, player is waiting for players to join

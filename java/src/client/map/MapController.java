@@ -64,6 +64,8 @@ public class MapController extends Controller implements IMapController {
 		getView().addHex(new HexLocation(1,1), HexType.DESERT);
 
 		drawWater();
+		
+		getView().paintMap();
 	}
 
 	protected void drawWater() {

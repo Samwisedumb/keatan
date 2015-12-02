@@ -359,7 +359,7 @@ public class MapComponent extends JComponent
 		}
 		
 		// Repaint
-		this.repaint();
+		//this.repaint();
 	}
 	
 	public void addNumber(HexLocation hexLoc, int num)

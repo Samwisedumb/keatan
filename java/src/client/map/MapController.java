@@ -1,5 +1,6 @@
 package client.map;
 
+import shared.definitions.CatanColor;
 import shared.definitions.HexType;
 import shared.definitions.PieceType;
 import client.base.Controller;
@@ -55,6 +56,9 @@ public class MapController extends Controller implements IMapController {
 		this.robView = robView;
 	}
 
+	/**
+	 * Initializes the map from the model
+	 */
 	protected void initFromModel() {
 		getView().addHex(new HexLocation(0,0), HexType.WOOD);
 		getView().addHex(new HexLocation(1,1), HexType.DESERT);
@@ -151,8 +155,7 @@ public class MapController extends Controller implements IMapController {
 	public void robPlayer(RobPlayerInfo victim) {
 		state.robPlayer(victim);
 	}
-
-	boolean joe = false;
+	
 	@Override
 	public void update() {
 		if (ModelFacade.isGameReadyToStart()) {
@@ -179,7 +182,7 @@ public class MapController extends Controller implements IMapController {
 				case FirstRound:
 					state = new MapControllerDoublePlaceState();
 					System.out.println("I'm in first round");
-					//startMove(PieceType.ROAD, true, true);
+					startMove(PieceType.ROAD, true, true);
 					break;
 				case Playing:
 					state = new MapControllerBuildTradeState();

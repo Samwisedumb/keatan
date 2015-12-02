@@ -324,6 +324,5 @@ public class MapView extends PanelView implements IMapView
 			}
 		}
 	}
-	
 }
 

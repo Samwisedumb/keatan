@@ -48,7 +48,9 @@ public class ModelFacade {
 		gameIsReadyToBegin = true;
 		ServerPoller.stop();
 		try {
-			forceUpdateModel(ServerProxy.getModel(-1));
+			// one last update to ensure that all controllers are alerted with the proper information
+			// and that the player waiting controller can close it's dialog before the mapcontroller opens one
+			forceUpdateModel(ServerProxy.getModel(-1)); 
 		} catch (ServerException e) {
 			e.printStackTrace();
 		}

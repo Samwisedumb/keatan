@@ -9,12 +9,14 @@ import shared.definitions.CatanColor;
 import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
+import shared.exceptions.ServerException;
 import shared.transferClasses.UserInfo;
 import client.base.Observer;
 import client.communication.LogEntry;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
 import client.server.ServerPoller;
+import client.server.ServerProxy;
 
 
 
@@ -44,9 +46,13 @@ public class ModelFacade {
 	 */
 	public static void alertThatAllPlayersHaveJoined() {
 		gameIsReadyToBegin = true;
-//		ServerPoller.stop();
-//		notifyObserversOfChange();
-//		ServerPoller.start();
+		ServerPoller.stop();
+		try {
+			forceUpdateModel(ServerProxy.getModel(-1));
+		} catch (ServerException e) {
+			e.printStackTrace();
+		}
+		ServerPoller.start();
 	}
 	/**
 	 * @post the game is not ready to begin, player is waiting for players to join
@@ -65,7 +71,7 @@ public class ModelFacade {
 	 * @param data - the model to check for an update
 	 */
 	public static void updateModel(TransferModel data) {
-		if (data != null && getModelVersion() < data.getVersion()) {
+		if (data != null && (!gameIsReadyToBegin || getModelVersion() < data.getVersion())) {
 			model.update(data);
 			notifyObserversOfChange();
 		}

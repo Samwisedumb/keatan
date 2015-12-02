@@ -11,31 +11,105 @@ import server.handlers.user.UserRegisterHandler;
 
 import com.sun.net.httpserver.HttpServer;
 
+/**
+ * The server class for the Catan game. Use the constructor to initialize it.<br><br>
+ * <strong>default host</strong> - <em>"localhost"</em><br>
+ * <strong>default port</strong> - <em>8081</em>
+ * @author djoshuac
+ */
 public class ServerCommunicator {
-	private static final int MAX_WAITING_CONNECTIONS = 1;
+	private static final int MAX_WAITING_CONNECTIONS = 4;
+	public static final String DEFAULT_HOST = "localhost";
+	public static final int DEFAULT_PORT = 8081;
 	
 	private HttpServer server;
-	private int portNumber;
 	
-	public ServerCommunicator(int portNumber) {
-		this.portNumber = portNumber;
-		
+	/**
+	 * Initializes a ServerCommunicator with given host and port<br>
+	 * Fails to start server if host or port are invalid
+	 * @param host - the host to use
+	 * @param port - the port to use
+	 */
+	public ServerCommunicator(String host, int port) {
 		try {
-			server = HttpServer.create(new InetSocketAddress(this.portNumber), MAX_WAITING_CONNECTIONS);
+			server = HttpServer.create(new InetSocketAddress(host, port), MAX_WAITING_CONNECTIONS);
+			server.setExecutor(null); //this gives us the default executer
+			initializeContexts();
+			server.start();
 		}
 		catch (Exception e) {
 			System.err.println(e.getMessage());
+			System.err.println(e.getStackTrace());
 		}
-		
-		server.setExecutor(null); //this gives us the default executer
+	}
+	
 
+	/**
+	 * Initializes a ServerCommunicator with given host and default port, see Class Java doc for the default values<br>
+	 * Fails to start server if host or port are invalid
+	 * @param host - the host to use
+	 */
+	public ServerCommunicator(String host) {
+		try {
+			server = HttpServer.create(new InetSocketAddress(host, DEFAULT_PORT), MAX_WAITING_CONNECTIONS);
+			server.setExecutor(null); //this gives us the default executer
+			initializeContexts();
+			server.start();
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.err.println(e.getStackTrace());
+		}
+	}
+	
+
+	/**
+	 * Initializes a ServerCommunicator with default host and given port, see Class Java doc for the default values<br>
+	 * Fails to start server if host or port are invalid
+	 * @param port - the port to use
+	 */
+	public ServerCommunicator(int portNumber) {		
+		try {
+			server = HttpServer.create(new InetSocketAddress(DEFAULT_HOST, portNumber), MAX_WAITING_CONNECTIONS);
+			server.setExecutor(null); //this gives us the default executer
+			initializeContexts();
+			server.start();
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.err.println(e.getStackTrace());
+		}
+	}
+	
+	/**
+	 * Initializes a ServerCommunicator with default host and default port, see Class Java doc for the default values<br>
+	 * Fails to start server if host or port are invalid
+	 */
+	public ServerCommunicator() {
+		try {
+			server = HttpServer.create(new InetSocketAddress(DEFAULT_HOST, DEFAULT_PORT), MAX_WAITING_CONNECTIONS);
+			server.setExecutor(null); //this gives us the default executer
+			initializeContexts();
+			server.start();
+		}
+		catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.err.println(e.getStackTrace());
+		}
+	}
+	
+	/**
+	 * This function initializes all the context for all the variations of
+	 * ServerCommunicator constructors, which prevents duplicate code.
+	 * @pre the server field must be initialized properly (not null)
+	 * @post the context handlers are added
+	 */
+	private void initializeContexts() {
 		server.createContext("/user/register", new UserRegisterHandler());
 		server.createContext("/user/login", new UserLoginHandler());
 		server.createContext("/games/create", new GamesCreateHandler());
 		server.createContext("/games/list", new GamesListHandler());
 		server.createContext("/games/join", new GamesJoinHandler());
 		server.createContext("/game/model", new GameModelHandler());
-		
-		server.start();
 	}
 }

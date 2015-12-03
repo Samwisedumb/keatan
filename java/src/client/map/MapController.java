@@ -49,7 +49,6 @@ public class MapController extends Controller implements IMapController {
 	 */
 	@Override
 	public void initFromModel() {
-		state.initFromModel();
 		getView().addHex(new HexLocation(0,0), HexType.WOOD);
 		getView().addHex(new HexLocation(1,1), HexType.DESERT);
 
@@ -82,7 +81,6 @@ public class MapController extends Controller implements IMapController {
 		getView().addHex(new HexLocation(1, 2), HexType.WATER);
 	}
 	
-	// Implementation of IMapController
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
 		return state.canPlaceRoad(edgeLoc);

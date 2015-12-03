@@ -3,9 +3,9 @@ package client.domestic.states;
 import shared.definitions.ResourceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.OfferTrade;
+import client.base.MasterController;
 import client.model.ModelFacade;
 import client.model.ResourceList;
-import client.server.ServerProxy;
 
 public class DomesticTradeControllerBuildTradeState implements
 		DomesticTradeControllerState {
@@ -38,7 +38,7 @@ public class DomesticTradeControllerBuildTradeState implements
 
 		OfferTrade command = new OfferTrade(ModelFacade.whoseTurnIsItAnyway(), offer, receiver);
 		try {
-			ServerProxy.offerTrade(command);
+			MasterController.getSingleton().offerTrade(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

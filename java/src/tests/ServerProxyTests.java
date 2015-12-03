@@ -13,23 +13,26 @@ import client.server.ServerProxy;
 public class ServerProxyTests {
 	private static final UserCredentials fox = new UserCredentials("Fox", "password");
 	
+	private boolean firstTimeSetup = true;
+	
 	@Before
 	public void setup() {
-		if (!ServerProxy.isInitialized()) {
+		if (firstTimeSetup) {
 			ServerCommunicator server = new ServerCommunicator(8081);
-			ServerProxy.initialize(new ClientServer("localhost", "8081"));
+			ClientServer.setTargetServer(new ServerProxy("localhost", 8081));
 			try {
-				ServerProxy.register(new UserCredentials("Fox", "password"));
+				ClientServer.getSingleton().register(new UserCredentials("Fox", "password"));
 			}
 			catch (ServerException e) {
 				e.printStackTrace();
 			}
+			firstTimeSetup = false;
 		}
 	}
 	
 	private static void registerTest(UserCredentials creds, String exceptionReason) {	
 		try {
-			ServerProxy.register(creds);
+			ClientServer.getSingleton().register(creds);
 
 			assert(exceptionReason.equals("none"));
 		}
@@ -40,7 +43,7 @@ public class ServerProxyTests {
 	
 	private static void loginTest(UserCredentials creds, String exceptionReason) {	
 		try {
-			ServerProxy.login(creds);
+			ClientServer.getSingleton().login(creds);
 			
 			assert(exceptionReason.equals("none"));
 		}
@@ -75,9 +78,9 @@ public class ServerProxyTests {
 	@Test
 	public void listGamesTests() {
 		try {
-			ServerProxy.login(fox);
+			ClientServer.getSingleton().login(fox);
 			
-			Game[] gamesList = ServerProxy.getGamesList();
+			Game[] gamesList = ClientServer.getSingleton().getGamesList();
 			
 			System.out.println(gamesList.length);
 		}

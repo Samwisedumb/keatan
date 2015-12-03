@@ -1,9 +1,6 @@
 package client.server;
 
-import java.util.List;
-
 import shared.exceptions.ServerException;
-import shared.json.Converter;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.AddAIRequest;
 import shared.transferClasses.BuildCity;
@@ -30,246 +27,167 @@ import shared.transferClasses.UserInfo;
 import shared.transferClasses.YearOfPlenty;
 import client.model.TransferModel;
 
+/**
+ * This class is used to work as a singleton server and allow for dependency injection for
+ * a target server for the Catan game.
+ * @author djoshuac
+ */
 public class ClientServer implements IServer {
-	private ClientCommunicator communicator;
-	
-	private String userCookie;
-	private String gameCookie;
-	
-	public ClientServer (String host, String port) {
-		communicator = new ClientCommunicator(host + ":" + port);
-	}
+	private static IServer server = null;
 	
 	/**
-	 * Sets the userCookie
-	 * @throws ServerException when the userCookie does not exist in communicator's response headers
+	 * Returns the IServer singleton. If a target server has not been initialized,
+	 * a ServerProxy is assigned as default
 	 */
-	private void setUserCookie() throws ServerException {
-		List<String> cookie = communicator.getResponseHeadersForLastSend().get("Set-user");
+	public static IServer getSingleton() {
+		if (server == null) {
+			server = new ServerProxy(); // default target server
+		}
+		return server;
+	}
+	
+	private ClientServer() { // private constructor prevents other classes from using it as the target server
 		
-		if (cookie == null || cookie.size() < 1) {
-			throw new ServerException("Server failed to give user cookie");
-		}
-		else {
-			userCookie = cookie.get(0);
-		}
 	}
 	
 	/**
-	 * Sets the gameCookie
-	 * @throws ServerException when the gameCookie does not exist in communicator's response headers
+	 * Initializes the IServer singleton to target the given server to support dependency injection.
+	 * @pre targetServer must specify a valid server
+	 * @param targetServer - the IServer to target
+	 * @post getSingleton() will now target the given server
 	 */
-	private void setGameCookie() throws ServerException {
-		List<String> cookie = communicator.getResponseHeadersForLastSend().get("Set-game");
-		
-		if (cookie == null || cookie.size() < 1) {
-			throw new ServerException("Server failed to give game cookie");
-		}
-		else {
-			gameCookie = cookie.get(0);
-		}
-	}
-	
-	/**
-	 * Adds the userCookie to the next server request
-	 * @pre userCookie must not be null
-	 * @post the userCookie is set to the user header
-	 * @throws ServerException if userCookie is null
-	 */
-	private void addUserCookieToNextRequest() throws ServerException {
-		if (userCookie != null) {
-			communicator.addRequestHeader("User", userCookie);
-		}
-		else {
-			throw new ServerException("User cookie is null");
-		}
-	}
-	
-	/**
-	 * Adds the gameCookie to the next server request
-	 * @pre gameCookie must not be null
-	 * @post the gameCookie is set to the game header
-	 * @throws ServerException if gameCookie is null
-	 */
-	private void addGameCookieToNextRequest() throws ServerException {
-		if (gameCookie != null) {
-			communicator.addRequestHeader("Game", gameCookie);
-		}
-		else {
-			throw new ServerException("Game cookie is null");
-		}
+	public static void setTargetServer(IServer targetServer) {
+		server = targetServer;
 	}
 
 	@Override
-	public void register(UserCredentials userCredentials) throws ServerException {
-		communicator.send("/user/register", userCredentials);
-	}
-	
-	@Override
 	public UserInfo login(UserCredentials userCredentials) throws ServerException {
-		communicator.send("/user/login", userCredentials);
-		setUserCookie();
-		return Converter.fromJson(userCookie, UserInfo.class);
+		return server.login(userCredentials);
+	}
+
+	@Override
+	public void register(UserCredentials userCredentials)
+			throws ServerException {
+		server.register(userCredentials);		
 	}
 
 	@Override
 	public Game[] getGamesList() throws ServerException {
-		addUserCookieToNextRequest();
-		return communicator.send("/games/list", null, Game[].class);
+		return server.getGamesList();
 	}
 
 	@Override
-	public CreateGameResponse createGame(CreateGameRequest createGameRequest) throws ServerException {
-		addUserCookieToNextRequest();
-		return communicator.send("/games/create", createGameRequest, CreateGameResponse.class);
+	public CreateGameResponse createGame(CreateGameRequest createGameRequest)
+			throws ServerException {
+		return server.createGame(createGameRequest);
 	}
 
 	@Override
 	public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException {
-		addUserCookieToNextRequest();
-		Game game = communicator.send("/games/join", joinGameRequest, Game.class);
-		setGameCookie();
-		return game;
+		return server.joinGame(joinGameRequest);
 	}
 
 	@Override
 	public TransferModel getModel(int version) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/game/model", version, TransferModel.class);
+		return server.getModel(version);
 	}
 
 	@Override
 	public void addAI(AddAIRequest addAIRequest) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		communicator.send("/game/addAI", addAIRequest);
+		server.addAI(addAIRequest);
 	}
 
 	@Override
 	public String[] listAITypes() throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/game/listAI", null, String[].class);
+		return server.listAITypes();
 	}
 
 	@Override
-	public TransferModel sendChat(SendChat sendChat) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/sendChat", sendChat, TransferModel.class);
+	public void sendChat(SendChat sendChat) throws ServerException {
+		server.sendChat(sendChat);
 	}
 
 	@Override
-	public TransferModel rollDice(RollNumber rollNumber) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/rollDice", rollNumber, TransferModel.class);		
+	public void rollDice(RollNumber rollNumber) throws ServerException {
+		server.rollDice(rollNumber);
 	}
 
 	@Override
-	public TransferModel robPlayer(RobPlayer robPlayer) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/robPlayer", robPlayer, TransferModel.class);
+	public void robPlayer(RobPlayer robPlayer) throws ServerException {
+		server.robPlayer(robPlayer);
 	}
 
 	@Override
-	public TransferModel finishTurn(FinishTurn finishTurn) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/finishTurn", finishTurn, TransferModel.class);
+	public void finishTurn(FinishTurn finishTurn) throws ServerException {
+		server.finishTurn(finishTurn);
 	}
 
 	@Override
-	public TransferModel buyDevCard(BuyDevCard buyDevCard) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/buyDevCard", buyDevCard, TransferModel.class);
+	public void buyDevCard(BuyDevCard buyDevCard) throws ServerException {
+		server.buyDevCard(buyDevCard);
 	}
 
 	@Override
-	public TransferModel yearOfPlenty(YearOfPlenty yearOfPlenty) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/yearOfPlenty", yearOfPlenty, TransferModel.class);
+	public void yearOfPlenty(YearOfPlenty yearOfPlenty) throws ServerException {
+		server.yearOfPlenty(yearOfPlenty);
 	}
 
 	@Override
-	public TransferModel roadBuilding(RoadBuilding roadBuilding) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/Road_Building", roadBuilding, TransferModel.class);
+	public void roadBuilding(RoadBuilding roadBuilding)  throws ServerException {
+		server.roadBuilding(roadBuilding);
 	}
 
 	@Override
-	public TransferModel soldier(Soldier soldier) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/Soldier", soldier, TransferModel.class);
+	public void soldier(Soldier soldier) throws ServerException {
+		server.soldier(soldier);
 	}
 
 	@Override
-	public TransferModel monopoly(Monopoly monopoly) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/Monopoly", monopoly, TransferModel.class);
+	public void monopoly(Monopoly monopoly) throws ServerException {
+		server.monopoly(monopoly);
 	}
 
 	@Override
-	public TransferModel monument(Monument monument) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/Monument", monument, TransferModel.class);
+	public void monument(Monument monument) throws ServerException {
+		server.monument(monument);
 	}
 
 	@Override
-	public TransferModel buildRoad(BuildRoad buildRoad) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/buildRoad", buildRoad, TransferModel.class);
+	public void buildRoad(BuildRoad buildRoad) throws ServerException {
+		server.buildRoad(buildRoad);
 	}
 
 	@Override
-	public TransferModel buildSettlement(BuildSettlement buildSettlement) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/buildSettlement", buildSettlement, TransferModel.class);
+	public void buildSettlement(BuildSettlement buildSettlement)
+			throws ServerException {
+		server.buildSettlement(buildSettlement);
 	}
 
 	@Override
-	public TransferModel buildCity(BuildCity buildCity) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/buildCity", buildCity, TransferModel.class);
+	public void buildCity(BuildCity buildCity) throws ServerException {
+		server.buildCity(buildCity);
 	}
 
 	@Override
-	public TransferModel offerTrade(OfferTrade offer) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/offerTrade", offer, TransferModel.class);
+	public void offerTrade(OfferTrade offer) throws ServerException {
+		server.offerTrade(offer);
 	}
 
 	@Override
-	public TransferModel respondToTrade(AcceptTrade acceptTrade) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/acceptTrade", acceptTrade, TransferModel.class);
+	public void respondToTrade(AcceptTrade acceptTrade)
+			throws ServerException {
+		server.respondToTrade(acceptTrade);
 	}
 
 	@Override
-	public TransferModel maritimeTrade(MaritimeTrade maritimeTrade) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/maritimeTrade", maritimeTrade, TransferModel.class);
+	public void maritimeTrade(MaritimeTrade maritimeTrade)
+			throws ServerException {
+		server.maritimeTrade(maritimeTrade);
 	}
 
 	@Override
-	public TransferModel discardCards(DiscardCards discardCards) throws ServerException {
-		addUserCookieToNextRequest();
-		addGameCookieToNextRequest();
-		return communicator.send("/moves/discardCards", discardCards, TransferModel.class);
+	public void discardCards(DiscardCards discardCards)
+			throws ServerException {
+		server.discardCards(discardCards);
 	}
-
 }

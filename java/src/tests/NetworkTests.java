@@ -1,6 +1,6 @@
 package tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class NetworkTests {
 	public void setup() {
 		if(!setupDone) {
 			ServerCommunicator server = new ServerCommunicator(8081);
-			ServerProxy.initialize(new ClientServer("localhost","8081"));
+			ClientServer.setTargetServer(new ServerProxy("localhost", 8081));
 			setupDone = true;
 		}
 	}
@@ -29,7 +29,7 @@ public class NetworkTests {
 	public void testRegister() {
 		UserCredentials userCredentials = new UserCredentials("Test","Test");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a password too short exception");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("The password is shorter than 5 characters");
@@ -41,7 +41,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Te","Test1");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a name too short exception");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("The username is not within 3 and 7 characters");
@@ -53,7 +53,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Testing1","Test1");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a name too long exception");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("The username is not within 3 and 7 characters");
@@ -65,7 +65,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Test&","Test1");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a username using invalid character exception");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("The username contains invalid characters");
@@ -77,7 +77,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Test","Test&");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a password using invalid character exception");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("The password contains invalid characters");
@@ -89,7 +89,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Test","Test1");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			assert(true);
 		} catch (ServerException e) {
 			fail("Should have passed");
@@ -97,7 +97,7 @@ public class NetworkTests {
 		
 		userCredentials = new UserCredentials("Test","Test1");
 		try {
-			ServerProxy.register(userCredentials);
+			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a user already exists error");
 		} catch (ServerException e) {
 			boolean reasonCheck = e.getReason().equals("Username already exists");
@@ -113,14 +113,14 @@ public class NetworkTests {
 	public void testLogin() {
 		//Set 
 		try {
-			ServerProxy.register(new UserCredentials("Test","Test1"));
+			ClientServer.getSingleton().register(new UserCredentials("Test","Test1"));
 		} catch (ServerException e1) {
 		}
 
 		boolean exceptionThrown = false;
 		UserCredentials userCredentials = new UserCredentials("Test","Test");
 		try {
-			ServerProxy.login(userCredentials);
+			ClientServer.getSingleton().login(userCredentials);
 		} catch (ServerException e) {
 			exceptionThrown = true;
 		}
@@ -129,7 +129,7 @@ public class NetworkTests {
 		exceptionThrown = false;
 		userCredentials = new UserCredentials("Test1","Test1");
 		try {
-			ServerProxy.login(userCredentials);
+			ClientServer.getSingleton().login(userCredentials);
 		} catch (ServerException e) {
 			exceptionThrown = true;
 		}
@@ -138,7 +138,7 @@ public class NetworkTests {
 		exceptionThrown = false;
 		userCredentials = new UserCredentials("Test","Test1");
 		try {
-			ServerProxy.login(userCredentials);
+			ClientServer.getSingleton().login(userCredentials);
 		} catch (ServerException e) {
 			exceptionThrown = true;
 		}
@@ -151,7 +151,7 @@ public class NetworkTests {
 		CreateGameRequest gameRequest = new CreateGameRequest(false,false,false,"test1");
 		CreateGameResponse gameResponse = null;
 		try {
-			gameResponse = ServerProxy.createGame(gameRequest);
+			gameResponse = ClientServer.getSingleton().createGame(gameRequest);
 		} catch (ServerException e) {
 		}
 		assert(gameResponse.getTitleString().equals("test1"));
@@ -159,7 +159,7 @@ public class NetworkTests {
 		
 		gameRequest = new CreateGameRequest(false,false,false,"test2");
 		try {
-			gameResponse = ServerProxy.createGame(gameRequest);
+			gameResponse = ClientServer.getSingleton().createGame(gameRequest);
 		} catch (ServerException e) {
 		}
 		assert(gameResponse.getTitleString().equals("test2"));
@@ -167,7 +167,7 @@ public class NetworkTests {
 		
 		gameRequest = new CreateGameRequest(true,true,true,"test3");
 		try {
-			gameResponse = ServerProxy.createGame(gameRequest);
+			gameResponse = ClientServer.getSingleton().createGame(gameRequest);
 		} catch (ServerException e) {
 		}
 		assert(gameResponse.getTitleString().equals("test3"));
@@ -185,16 +185,16 @@ public class NetworkTests {
 		}
 		
 		try {
-			assert(ServerProxy.getGamesList().length == existingGames);
+			assert(ClientServer.getSingleton().getGamesList().length == existingGames);
 		} 
 		catch (ServerException e) {
 		}
 		
 		CreateGameRequest gameRequest = new CreateGameRequest(false,false,false,"test");
 		try {
-			ServerProxy.createGame(gameRequest);
+			ClientServer.getSingleton().createGame(gameRequest);
 			existingGames++;
-			assert(ServerProxy.getGamesList().length == existingGames);
+			assert(ClientServer.getSingleton().getGamesList().length == existingGames);
 		}
 		catch (ServerException e) {
 		}

@@ -2,10 +2,10 @@ package client.communication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import shared.definitions.CatanColor;
 import client.base.Controller;
+import client.base.MasterController;
 
 
 /**
@@ -47,8 +47,12 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		if (MasterController.getSingleton().hasGameBegun()) {
+			// #TODO make is so master controller keeps track of what goes on
+		}
+		else {
+			getView().setEntries(new ArrayList<LogEntry>());
+		}
 	}
 	
 }

@@ -14,7 +14,6 @@ import client.join.PlayerWaitingView;
 import client.join.SelectColorView;
 import client.login.LoginController;
 import client.login.LoginView;
-import client.map.MapController;
 import client.misc.MessageView;
 import client.server.ClientServer;
 import client.server.ServerProxy;
@@ -25,7 +24,6 @@ import client.server.ServerProxy;
 @SuppressWarnings("serial")
 public class Catan extends JFrame
 {
-
 	private CatanPanel catanPanel;
 
 	public Catan()
@@ -53,6 +51,7 @@ public class Catan extends JFrame
 
 	public static void main(final String[] args)
 	{
+		ServerProxy server = new ServerProxy(); //#TODO make this work with custom host and port given by args
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -108,9 +107,7 @@ public class Catan extends JFrame
 				loginView.setController(loginController);
 				loginView.setController(loginController);
 
-				
-				ServerProxy.initialize(new ClientServer("localhost", "8081"));
-				System.out.println("ServerProxy Started");
+				ClientServer.setTargetServer(server);
 				loginController.start();
 			}
 		});

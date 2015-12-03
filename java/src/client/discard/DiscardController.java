@@ -1,15 +1,13 @@
 package client.discard;
 
-import java.util.Observable;
-
 import shared.definitions.ResourceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.DiscardCards;
 import client.base.Controller;
+import client.base.MasterController;
 import client.misc.IWaitView;
 import client.model.ModelFacade;
 import client.model.ResourceList;
-import client.server.ServerProxy;
 
 
 /**
@@ -96,7 +94,7 @@ public class DiscardController extends Controller implements IDiscardController 
 		DiscardCards command = new DiscardCards(ModelFacade.getUserPlayerInfo().getIndex(), theList);
 		
 		try {
-			ServerProxy.discardCards(command);
+			MasterController.getSingleton().discardCards(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

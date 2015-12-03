@@ -8,10 +8,10 @@ import shared.transferClasses.Monument;
 import shared.transferClasses.RoadBuilding;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
+import client.base.MasterController;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;
-import client.server.ServerProxy;
 
 public class DevCardControllerYourTurnState implements DevCardControllerState {
 
@@ -36,7 +36,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		BuyDevCard command = new BuyDevCard(ModelFacade.whoseTurnIsItAnyway());
 		try {
-			ServerProxy.buyDevCard(command);
+			MasterController.getSingleton().buyDevCard(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		Monopoly command = new Monopoly(ModelFacade.whoseTurnIsItAnyway(), resource);
 		try {
-			ServerProxy.monopoly(command);
+			MasterController.getSingleton().monopoly(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,7 +72,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		RoadBuilding command = new RoadBuilding(ModelFacade.whoseTurnIsItAnyway(), roadOne, roadTwo);
 		try {
-			ServerProxy.roadBuilding(command);
+			MasterController.getSingleton().roadBuilding(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +84,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		Soldier command = new Soldier(ModelFacade.whoseTurnIsItAnyway(), victimIndex, location);
 		try {
-			ServerProxy.soldier(command);
+			MasterController.getSingleton().soldier(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,7 +96,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		YearOfPlenty command = new YearOfPlenty(ModelFacade.whoseTurnIsItAnyway(), resourceOne, resourceTwo);
 		try {
-			ServerProxy.yearOfPlenty(command);
+			MasterController.getSingleton().yearOfPlenty(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,7 +108,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		// TODO Auto-generated method stub
 		Monument commmand = new Monument(ModelFacade.whoseTurnIsItAnyway());
 		try {
-			ServerProxy.monument(commmand);
+			MasterController.getSingleton().monument(commmand);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

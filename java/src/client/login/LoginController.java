@@ -5,9 +5,9 @@ import shared.transferClasses.UserCredentials;
 import shared.transferClasses.UserInfo;
 import client.base.Controller;
 import client.base.IAction;
+import client.base.MasterController;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
-import client.server.ServerProxy;
 
 
 /**
@@ -85,7 +85,7 @@ public class LoginController extends Controller implements ILoginController {
 			
 		try {
 			UserCredentials credentials = new UserCredentials(username, password);
-			UserInfo user = ServerProxy.login(credentials);
+			UserInfo user = MasterController.getSingleton().login(credentials);
 
 			ModelFacade.setUserInfo(user);
 			getLoginView().closeModal();			
@@ -179,8 +179,8 @@ public class LoginController extends Controller implements ILoginController {
 		else {
 			try {
 				UserCredentials credentials = new UserCredentials(username, password1);
-				ServerProxy.register(credentials);
-				UserInfo user = ServerProxy.login(credentials);
+				MasterController.getSingleton().register(credentials);
+				UserInfo user = MasterController.getSingleton().login(credentials);
 
 				ModelFacade.setUserInfo(user);
 				getLoginView().closeModal();				

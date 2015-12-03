@@ -48,155 +48,155 @@ public class MockServer implements IServer  {
 	
 	@Override
 	public UserInfo login(UserCredentials userCredentials) throws ServerException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void register(UserCredentials userCredentials)
 			throws ServerException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public Game[] getGamesList() throws ServerException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public CreateGameResponse createGame(CreateGameRequest createGameRequest)
 			throws ServerException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void addAI(AddAIRequest addAIRequest) throws ServerException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public String[] listAITypes() throws ServerException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
-	public TransferModel sendChat(SendChat sendChat) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void sendChat(SendChat sendChat) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel rollDice(RollNumber rollNumber) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void rollDice(RollNumber rollNumber) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel robPlayer(RobPlayer robPlayer) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void robPlayer(RobPlayer robPlayer) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel finishTurn(FinishTurn finishTurn)
+	public void finishTurn(FinishTurn finishTurn)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel buyDevCard(BuyDevCard buyDevCard)
+	public void buyDevCard(BuyDevCard buyDevCard)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel yearOfPlenty(YearOfPlenty yearOfPlenty)
+	public void yearOfPlenty(YearOfPlenty yearOfPlenty)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel roadBuilding(RoadBuilding roadBuilding)
+	public void roadBuilding(RoadBuilding roadBuilding)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel soldier(Soldier soldier) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void soldier(Soldier soldier) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel monopoly(Monopoly monopoly) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void monopoly(Monopoly monopoly) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel monument(Monument monument) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void monument(Monument monument) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel buildRoad(BuildRoad buildRoad) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void buildRoad(BuildRoad buildRoad) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel buildSettlement(BuildSettlement buildSettlement)
+	public void buildSettlement(BuildSettlement buildSettlement)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel buildCity(BuildCity buildCity) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void buildCity(BuildCity buildCity) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel offerTrade(OfferTrade offer) throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+	public void offerTrade(OfferTrade offer) throws ServerException {
+		
+		return;
 	}
 
 	@Override
-	public TransferModel respondToTrade(AcceptTrade acceptTrade)
+	public void respondToTrade(AcceptTrade acceptTrade)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel maritimeTrade(MaritimeTrade maritimeTrade)
+	public void maritimeTrade(MaritimeTrade maritimeTrade)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 
 	@Override
-	public TransferModel discardCards(DiscardCards discardCards)
+	public void discardCards(DiscardCards discardCards)
 			throws ServerException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return;
 	}
 }

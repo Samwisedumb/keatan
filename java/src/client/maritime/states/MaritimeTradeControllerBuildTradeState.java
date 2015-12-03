@@ -3,8 +3,8 @@ package client.maritime.states;
 import shared.definitions.ResourceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.MaritimeTrade;
+import client.base.MasterController;
 import client.model.ModelFacade;
-import client.server.ServerProxy;
 
 public class MaritimeTradeControllerBuildTradeState implements
 		MaritimeTradeControllerState {
@@ -20,7 +20,7 @@ public class MaritimeTradeControllerBuildTradeState implements
 		// TODO Auto-generated method stub
 		MaritimeTrade command = new MaritimeTrade(ModelFacade.whoseTurnIsItAnyway(), ratio, input, output);
 		try {
-			ServerProxy.maritimeTrade(command);
+			MasterController.getSingleton().maritimeTrade(command);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,7 +1,5 @@
 package client.join;
 
-import java.util.List;
-
 import shared.definitions.CatanColor;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
@@ -9,11 +7,11 @@ import shared.transferClasses.Game;
 import shared.transferClasses.JoinGameRequest;
 import client.base.Controller;
 import client.base.IAction;
+import client.base.MasterController;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
 import client.misc.IMessageView;
 import client.model.ModelFacade;
-import client.server.ServerProxy;
 
 
 /**
@@ -119,7 +117,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 	 */
 	private void refreshGameList() {
 		try {
-			Game[] gameArray = ServerProxy.getGamesList();
+			Game[] gameArray = MasterController.getSingleton().getGamesList();
 			GameInfo[] games = new GameInfo[gameArray.length];
 			for (int i = 0; i < games.length; i++) {
 				games[i] = new GameInfo(gameArray[i]);
@@ -160,7 +158,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 		}
 		else {
 			try {
-				ServerProxy.createGame(new CreateGameRequest(randHex, randChits, randPorts, gameTitle));
+				MasterController.getSingleton().createGame(new CreateGameRequest(randHex, randChits, randPorts, gameTitle));
 				refreshGameList();
 				getNewGameView().closeModal();
 			}
@@ -178,7 +176,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 	@Override
 	public void startJoinGame(GameInfo game) {
 		try {
-			Game[] games = ServerProxy.getGamesList();
+			Game[] games = MasterController.getSingleton().getGamesList();
 			boolean gameFound = false;
 			for (int i = 0; i < games.length && !gameFound; i++) {
 				if (game.getId() == games[i].getID()) {
@@ -220,7 +218,7 @@ public class JoinGameController extends Controller implements IJoinGameControlle
 	@Override
 	public void joinGame(CatanColor color) {
 		try {
-			Game game = ServerProxy.joinGame(new JoinGameRequest(gameToJoin.getId(), color));
+			Game game = MasterController.getSingleton().joinGame(new JoinGameRequest(gameToJoin.getId(), color));
 			// If join succeeded
 			ModelFacade.setGameInfo(new GameInfo(game));
 			

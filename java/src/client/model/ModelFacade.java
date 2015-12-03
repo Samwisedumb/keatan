@@ -9,61 +9,19 @@ import shared.definitions.CatanColor;
 import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
-import shared.exceptions.ServerException;
 import shared.transferClasses.UserInfo;
+import client.base.MasterController;
 import client.base.Observer;
 import client.communication.LogEntry;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
-import client.server.ServerPoller;
-import client.server.ServerProxy;
 
 
 
 public class ModelFacade {
 	private static final ClientModel model = new ClientModel();
 	private static final List<Observer> observers = new ArrayList<Observer>();
-	
-	
-	//// NOTE: Only some controllers have the access to close modal dialogs.
-	////		And the controllers that can close modal dialogs can only close the one that is on top of the stack.
-	////		This is bad because the MapController cannot ensure that it doesn't cover the PlayerWaitingControllers dialog
-	////		before the PlayerWaitingController closes it, therefore, making the PlayerWaitingController prone to close
-	////		the MapController's dialog instead of it's own depending on the order that their update methods are called.
-	/**
-	 * Is the game ready to begin
-	 */
-	private static boolean gameIsReadyToBegin = false;
-	/**
-	 * @return true if all players have joined and the game is ready to begin<br>
-	 * false if players still need to join
-	 */
-	public static boolean isGameReadyToStart() {
-		return gameIsReadyToBegin;
-	}
-	/**
-	 * @post the game is now ready to begin, controllers are notified
-	 */
-	public static void alertThatAllPlayersHaveJoined() {
-		gameIsReadyToBegin = true;
-		ServerPoller.stop();
-		try {
-			// one last update to ensure that all controllers are alerted with the proper information
-			// and that the player waiting controller can close it's dialog before the mapcontroller opens one
-			forceUpdateModel(ServerProxy.getModel(-1)); 
-		} catch (ServerException e) {
-			e.printStackTrace();
-		}
-		ServerPoller.start();
-	}
-	/**
-	 * @post the game is not ready to begin, player is waiting for players to join
-	 */
-	public static void alertThatPlayerIsWaitingForPlayersToJoin() {
-		gameIsReadyToBegin = false;
-		ServerPoller.start();
-	}
-	////
+
 	
 	/**
 	 * Updates the model if the given model's version is newer.
@@ -73,7 +31,8 @@ public class ModelFacade {
 	 * @param data - the model to check for an update
 	 */
 	public static void updateModel(TransferModel data) {
-		if (data != null && (!gameIsReadyToBegin || getModelVersion() < data.getVersion())) {
+		if (data != null &&
+				(MasterController.getSingleton().hasGameBegun() || getModelVersion() < data.getVersion())) {
 			model.update(data);
 			notifyObserversOfChange();
 		}
@@ -141,7 +100,10 @@ public class ModelFacade {
 	}
 	
 	
-	
+	/**
+	 * @return The index of the winning player if a player has won<br>
+	 * -1 if no player has won yet
+	 */
 	public static int getWinner() {
 		return model.getTransferModel().getWinner();
 	}
@@ -571,6 +533,11 @@ public class ModelFacade {
 		}
 	}
 	
+	/**
+	 * Gets the chat log for the given game
+	 * @return the chat log for the given game
+	 * @pre model must not be null
+	 */
 	public static List<LogEntry> getChatLog() {
 		MessageList chat = model.getTransferModel().getChat();
 		List<LogEntry> chatLog = new ArrayList<LogEntry>();

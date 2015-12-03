@@ -1,10 +1,12 @@
 package client.communication;
 
+import java.util.ArrayList;
+
 import shared.exceptions.ServerException;
 import shared.transferClasses.SendChat;
 import client.base.Controller;
+import client.base.MasterController;
 import client.model.ModelFacade;
-import client.server.ServerProxy;
 
 
 /**
@@ -13,8 +15,9 @@ import client.server.ServerProxy;
 public class ChatController extends Controller implements IChatController {
 
 	public ChatController(IChatView view) {
-		
 		super(view);
+		
+		ModelFacade.addObserver(this);
 	}
 
 	@Override
@@ -25,7 +28,7 @@ public class ChatController extends Controller implements IChatController {
 	@Override
 	public void sendMessage(String message) {
 		try {
-			ServerProxy.sendChat(new SendChat(ModelFacade.getUserPlayerInfo().getIndex(), message));
+			MasterController.getSingleton().sendChat(new SendChat(ModelFacade.getUserPlayerInfo().getIndex(), message));
 		}
 		catch (ServerException e) {
 			//Server error, but no way to tell user
@@ -34,9 +37,12 @@ public class ChatController extends Controller implements IChatController {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		getView().setEntries(ModelFacade.getChatLog());
+		if (MasterController.getSingleton().hasGameBegun()) {
+			getView().setEntries(ModelFacade.getChatLog());
+		}
+		else {
+			getView().setEntries(new ArrayList<LogEntry>());
+		}
 	}
-
 }
 

@@ -6,10 +6,12 @@ import client.model.HexLocation;
 import client.model.VertexLocation;
 
 /**
- * This state is for when the user has joined a game and is waiting for it to begin
+ * This state is for when the user has joined a game and is waiting for it to begin<br>
+ * The user should be able to do nothing with the map when in this state
  * @author djoshuac
  */
 public class MapControllerWaitingToStartState extends MapControllerState {
+	
 	public MapControllerWaitingToStartState(IMapController controller) {
 		super(controller);
 	}

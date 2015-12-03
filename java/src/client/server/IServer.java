@@ -29,7 +29,7 @@ import client.model.TransferModel;
 
 /**
  * This interface is used by a client to send requests to a Settlers of Catan Server.
- * @author djoshuac and willvdb
+ * @author willvdb
  *
  */
 public interface IServer {
@@ -40,14 +40,14 @@ public interface IServer {
 	 * @return 
 	 * @throws ServerException if cannot connect to server or credentials are invalid
 	 */
-	abstract public UserInfo login(UserCredentials userCredentials)
+	UserInfo login(UserCredentials userCredentials)
 			throws ServerException;
 	/**
 	 * 
 	 * @param userCredentials - the credentials of the user
 	 * @throws ServerException if cannot connect to server or credentials are invalid
 	 */
-	abstract public void register(UserCredentials userCredentials)
+	void register(UserCredentials userCredentials)
 			throws ServerException;
 
 	/**
@@ -55,7 +55,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public Game[] getGamesList()
+	Game[] getGamesList()
 			throws ServerException;
 
 	/**
@@ -64,7 +64,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public CreateGameResponse createGame(CreateGameRequest createGameRequest)
+	CreateGameResponse createGame(CreateGameRequest createGameRequest)
 			throws ServerException;
 	
 	/**
@@ -73,7 +73,7 @@ public interface IServer {
 	 * @return 
 	 * @throws ServerException
 	 */
-	abstract public Game joinGame(JoinGameRequest joinGameRequest) throws ServerException;
+	Game joinGame(JoinGameRequest joinGameRequest) throws ServerException;
 
 	/**
 	 * 
@@ -81,7 +81,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel getModel(int version)
+	TransferModel getModel(int version)
 			throws ServerException;
 	
 	/**
@@ -89,7 +89,7 @@ public interface IServer {
 	 * @param addAIRequest
 	 * @throws ServerException
 	 */
-	abstract public void addAI(AddAIRequest addAIRequest)
+	void addAI(AddAIRequest addAIRequest)
 			throws ServerException;
 
 	/**
@@ -97,7 +97,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public String[] listAITypes()
+	String[] listAITypes()
 			throws ServerException;
 	
 	/**
@@ -106,7 +106,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel sendChat(SendChat sendChat)
+	void sendChat(SendChat sendChat)
 			throws ServerException;
 	
 	/**
@@ -115,7 +115,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel rollDice(RollNumber rollNumber)
+	void rollDice(RollNumber rollNumber)
 			throws ServerException;
 
 	/**
@@ -124,7 +124,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel robPlayer(RobPlayer robPlayer)
+	void robPlayer(RobPlayer robPlayer)
 			throws ServerException;
 
 	/**
@@ -133,7 +133,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel finishTurn(FinishTurn finishTurn)
+	void finishTurn(FinishTurn finishTurn)
 			throws ServerException;
 	
 	/**
@@ -142,7 +142,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException=
 	 */
-	abstract public TransferModel buyDevCard(BuyDevCard buyDevCard)
+	void buyDevCard(BuyDevCard buyDevCard)
 			throws ServerException;
 
 	/**
@@ -151,7 +151,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel yearOfPlenty(YearOfPlenty yearOfPlenty)
+	void yearOfPlenty(YearOfPlenty yearOfPlenty)
 			throws ServerException;
 
 	/**
@@ -160,7 +160,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel roadBuilding(RoadBuilding roadBuilding)
+	void roadBuilding(RoadBuilding roadBuilding)
 			throws ServerException;
 
 	/**
@@ -169,7 +169,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel soldier(Soldier soldier)
+	void soldier(Soldier soldier)
 			throws ServerException;
 
 	/**
@@ -178,7 +178,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel monopoly(Monopoly monopoly)
+	void monopoly(Monopoly monopoly)
 			throws ServerException;
 
 	/**
@@ -187,7 +187,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel monument(Monument monument)
+	void monument(Monument monument)
 			throws ServerException;
 	
 	/**
@@ -196,7 +196,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel buildRoad(BuildRoad buildRoad)
+	void buildRoad(BuildRoad buildRoad)
 			throws ServerException;
 
 	/**
@@ -205,7 +205,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel buildSettlement(BuildSettlement buildSettlement)
+	void buildSettlement(BuildSettlement buildSettlement)
 			throws ServerException;
 
 	/**
@@ -215,7 +215,7 @@ public interface IServer {
 	 * @throws ServerException
 	 * @throws IllegalActionException
 	 */
-	abstract public TransferModel buildCity(BuildCity buildCity)
+	void buildCity(BuildCity buildCity)
 			throws ServerException;
 
 	/**
@@ -224,7 +224,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel offerTrade(OfferTrade offer)
+	void offerTrade(OfferTrade offer)
 			throws ServerException;
 	
 	/**
@@ -233,7 +233,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel respondToTrade(AcceptTrade acceptTrade)
+	void respondToTrade(AcceptTrade acceptTrade)
 			throws ServerException;
 
 	/**
@@ -242,7 +242,7 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel maritimeTrade(MaritimeTrade maritimeTrade)
+	void maritimeTrade(MaritimeTrade maritimeTrade)
 			throws ServerException;
 
 	/**
@@ -251,6 +251,6 @@ public interface IServer {
 	 * @return
 	 * @throws ServerException
 	 */
-	abstract public TransferModel discardCards(DiscardCards discardCards)
+	void discardCards(DiscardCards discardCards)
 			throws ServerException;
 }

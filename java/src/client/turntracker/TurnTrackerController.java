@@ -2,18 +2,22 @@ package client.turntracker;
 
 import shared.definitions.CatanColor;
 import client.base.Controller;
+import client.data.PlayerInfo;
+import client.model.ModelFacade;
 
 
 /**
- * Implementation for the turn tracker controller
+ * Implementation for the turn tracker controller.
  */
 public class TurnTrackerController extends Controller implements ITurnTrackerController {
-
+	private CatanColor shownColor;
+	
 	public TurnTrackerController(ITurnTrackerView view) {
-		
 		super(view);
 		
-		initFromModel();
+		getView().setLocalPlayerColor(CatanColor.WHITE);
+		
+		ModelFacade.addObserver(this);
 	}
 	
 	@Override
@@ -26,18 +30,13 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 	public void endTurn() {
 
 	}
-	
-	private void initFromModel() {
-		//<temp>
-		getView().setLocalPlayerColor(CatanColor.RED);
-		//</temp>
-	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		PlayerInfo user = ModelFacade.getUserPlayerInfo();
+		if (user != null && user.getColor() != null && user.getColor() != shownColor) {
+			getView().setLocalPlayerColor(user.getColor());
+		}
 	}
-
 }
 

@@ -2,6 +2,7 @@ package client.map.states;
 
 import shared.definitions.PieceType;
 import client.base.IView;
+import client.base.MasterController;
 import client.data.PlayerInfo;
 import client.data.RobPlayerInfo;
 import client.map.IMapController;
@@ -100,7 +101,7 @@ public abstract class MapControllerState implements IMapController {
 	 * Queries the ModelFacade for the current state and changes the controller's state accordingly
 	 */
 	public final void update() {
-		if (ModelFacade.isGameReadyToStart()) {
+		if (MasterController.getSingleton().hasGameBegun()) {
 			controller.initFromModel();
 			System.out.println("Map inited");
 			
@@ -108,38 +109,36 @@ public abstract class MapControllerState implements IMapController {
 			Status gameStatus = ModelFacade.whatStateMightItBe();
 			
 			if (ModelFacade.whoseTurnIsItAnyway() != user.getIndex()) {
-				if (gameStatus == Status.FirstRound || gameStatus == Status.SecondRound) {
-					System.out.println("I'm in double wait");
-					controller.setState(new MapControllerDoubleWaitState(controller));
-				}
-				else {
-					controller.setState(new MapControllerNotTurnState(controller));
-				}
+				System.out.println("It is not my turn to do stuff");
+				controller.setState(new MapControllerNotTurnState(controller));
 			}
 			else {
 				switch (gameStatus) {
 				case Rolling:
+					System.out.println("It's my turn to roll");
 					controller.setState(new MapControllerRollingDiceState(controller));
 					break;
 				case Discarding:
 					System.err.println("Discarding state is not made yet");
 					break;
 				case FirstRound:
-					System.out.println("I'm in first round");
+					System.out.println("I'm in first round (initial place state)");
 					controller.setState(new MapControllerInitializeState(controller));
 					break;
 				case Playing:
+					System.out.println("I'm in Build State");
 					controller.setState(new MapControllerBuildTradeState(controller));
 					break;
 				case Robbing:
+					System.out.println("I'm in Theivery State");
 					controller.setState(new MapControllerThieveryState(controller));
 					break;
 				case SecondRound:
+					System.out.println("I'm in second round (initial place state)");
 					controller.setState(new MapControllerInitializeState(controller));
 					break;
 				default:
-					controller.setState(new MapControllerNotTurnState(controller));
-					break;
+					System.err.println("Unrecognized game status: " + gameStatus.name());
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package client.join;
 
 import java.util.List;
 
+import client.base.MasterController;
 import client.data.PlayerInfo;
 import client.model.ModelFacade;
 
@@ -21,7 +22,7 @@ public class NotEnoughPlayersState implements IPlayerWaitingState {
 	 * @param controller - the controller for this NotEnoughPlayersState state
 	 */
 	public NotEnoughPlayersState(PlayerWaitingController controller) {
-		ModelFacade.alertThatPlayerIsWaitingForPlayersToJoin();
+		MasterController.getSingleton().beginWaitingForPlayersToJoin();
 		
 		this.controller = controller;
 		numberOfShownJoinedPlayers = 0;
@@ -62,7 +63,7 @@ public class NotEnoughPlayersState implements IPlayerWaitingState {
 				controller.getView().closeModal();
 			}
 			controller.setState(new EnoughPlayersState());
-			ModelFacade.alertThatAllPlayersHaveJoined();
+			MasterController.getSingleton().beginGame();
 		}
 		else {
 			if (joinedPlayerInfo.size() != numberOfShownJoinedPlayers) {

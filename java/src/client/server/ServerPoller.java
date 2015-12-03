@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import shared.exceptions.ServerException;
-import shared.json.Converter;
 import client.model.ModelFacade;
 import client.model.TransferModel;
 
@@ -31,7 +30,7 @@ public class ServerPoller {
 		public void run() {
 			TransferModel model;
 			try {
-				model = ServerProxy.getModel(ModelFacade.getModelVersion());
+				model = targetServer.getModel(ModelFacade.getModelVersion());
 				ModelFacade.updateModel(model);
 			}
 			catch (ServerException e) {
@@ -44,6 +43,7 @@ public class ServerPoller {
 	private static final int ONE_SECOND = 1000; //in milliseconds
 	private static final int NO_DELAY = 0; //in milliseconds
 	private static Timer timer;
+	private static IServer targetServer;
 	
 	/**
 	 * Delays, and then starts a timer to poll the target server at regular intervals.
@@ -57,6 +57,9 @@ public class ServerPoller {
 	 * or delay + System.currentTimeMillis() is less than zero
 	 */
 	public static void start(long period, long delay) {
+		if (targetServer == null) {
+			targetServer = new ServerProxy(); // defautl server
+		}
 		if (timer == null) {
 			timer = new Timer();
 			timer.schedule(new UpdateModelTask(), delay, period);
@@ -105,6 +108,17 @@ public class ServerPoller {
 			timer.purge();
 			timer = null;
 		}
+	}
+	
+	/**
+	 * Sets the target server to the given server
+	 * @pre none
+	 * @post Sets the target server to the given server.
+	 * If this function is not called before start(), then start
+	 * will use a default server.
+	 */
+	public static void setTargetServer(IServer server) {
+		targetServer = server;
 	}
 }
 

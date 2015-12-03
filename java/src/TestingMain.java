@@ -12,50 +12,52 @@ import client.server.ServerProxy;
 
 public class TestingMain {	
 	public static void main(String[] args) {
-		ServerCommunicator server = new ServerCommunicator(8081);
-		ServerProxy.initialize(new ClientServer("localhost", "8081"));
+		ServerCommunicator server = new ServerCommunicator(); // uses default localhost:8081
+		ClientServer.setTargetServer(new ServerProxy());
 		
 		UserCredentials hill = new UserCredentials("Hillary", "davis");
 		UserCredentials dono = new UserCredentials("Donald", "davis");
 		UserCredentials burn = new UserCredentials("Bernie", "davis");
 		
 		try {
-			ServerProxy.register(hill);
+			ClientServer.getSingleton().register(hill);
 		}
 		catch (ServerException e) {
 			System.err.println("failed to registers: " + e.getReason());
 		}
 		
 		try {
-			ServerProxy.login(hill);
+			ClientServer.getSingleton().login(hill);
 		}
 		catch (ServerException e) {
 			System.err.println("failed to login: " + e.getReason());
 		}
 		
 		try {
-			System.out.println("create game: " + Converter.toJson(ServerProxy.createGame(new CreateGameRequest(false, false, false, "Waldo"))));
-			System.out.println("create game: " + Converter.toJson(ServerProxy.createGame(new CreateGameRequest(false, false, false, "Werry"))));
+			System.out.println("create game: " + Converter.toJson(ClientServer.getSingleton().createGame(
+					new CreateGameRequest(false, false, false, "Waldo"))));
+			System.out.println("create game: " + Converter.toJson(ClientServer.getSingleton().createGame(
+					new CreateGameRequest(false, false, false, "Werry"))));
 			
-			System.out.println("join game: "); ServerProxy.joinGame(new JoinGameRequest(0, CatanColor.BLUE));
+			System.out.println("join game: "); ClientServer.getSingleton().joinGame(new JoinGameRequest(0, CatanColor.BLUE));
 			
-			Game[] games = ServerProxy.getGamesList();
+			Game[] games = ClientServer.getSingleton().getGamesList();
 			System.out.println(games.length);
 			for (int i = 0; i < games.length; i++) {
 				System.out.println(games[i].toString());
 			}
 
-			ServerProxy.register(dono);
-			ServerProxy.login(dono);
-			ServerProxy.joinGame(new JoinGameRequest(0, CatanColor.RED));
+			ClientServer.getSingleton().register(dono);
+			ClientServer.getSingleton().login(dono);
+			ClientServer.getSingleton().joinGame(new JoinGameRequest(0, CatanColor.RED));
 			
-			ServerProxy.register(burn);
-			ServerProxy.login(burn);
-			ServerProxy.joinGame(new JoinGameRequest(0, CatanColor.WHITE));
+			ClientServer.getSingleton().register(burn);
+			ClientServer.getSingleton().login(burn);
+			ClientServer.getSingleton().joinGame(new JoinGameRequest(0, CatanColor.WHITE));
 			
-			TransferModel model = ServerProxy.getModel(-1);
+			TransferModel model = ClientServer.getSingleton().getModel(-1);
 			System.out.println("get game -1: " + Converter.toJson(model));
-			model = ServerProxy.getModel(0);
+			model = ClientServer.getSingleton().getModel(0);
 			System.out.println("get game 0: " + Converter.toJson(model));
 			
 			

@@ -240,6 +240,20 @@ public class Player {
 	public PlayerInfo getPlayerInfo() {
 		return new PlayerInfo(playerID, playerIndex, name, color);
 	}
+	
+	public void playRoad() {
+		this.roads--;
+	}
+	
+	public void playSettlement() {
+		this.settlements--;
+	}
+	
+	public void playCity() {
+		this.cities--;
+		this.settlements++;
+	}
+	
 	public void useRoadBuildingCard() {
 		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() - 1);
 		playedDevCard = true;

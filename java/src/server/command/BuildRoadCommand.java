@@ -26,12 +26,12 @@ public class BuildRoadCommand implements Command {
 	}
 
 	@Override
-	public void execute() {
+	public void execute() throws ServerException {
 		try {
 			ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ServerException(e.getReason());
 		}
 	}
 

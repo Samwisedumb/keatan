@@ -8,7 +8,6 @@ import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.Game;
-import shared.transferClasses.GetPlayer;
 import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.Password;
 import shared.transferClasses.UserInfo;

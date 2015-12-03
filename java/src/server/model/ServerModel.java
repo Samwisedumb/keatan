@@ -531,7 +531,9 @@ public class ServerModel {
 	}
 	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
+		transfer.getLog().addLine(new MessageLine("played a road", transfer.getPlayers().get(playerIndex).getName()));
 		edges.get(place).setRoad(new Road(playerIndex, place));
+		transfer.getPlayers().get(playerIndex).playRoad();
 	}
 
 	public void payForSettlement(int playerIndex) {
@@ -546,7 +548,9 @@ public class ServerModel {
 	}
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
+		transfer.getLog().addLine(new MessageLine("played a settlement", transfer.getPlayers().get(playerIndex).getName()));
 		vertices.get(place).setSettlement(new Settlement(playerIndex));
+		transfer.getPlayers().get(playerIndex).playSettlement();
 	}
 	
 	public void payForCity(int playerIndex) {
@@ -557,7 +561,9 @@ public class ServerModel {
 	}
 	
 	public void placeCity(VertexLocation place, int playerIndex) {
+		transfer.getLog().addLine(new MessageLine("played a city", transfer.getPlayers().get(playerIndex).getName()));
 		vertices.get(place).setCity(new City(playerIndex));
+		transfer.getPlayers().get(playerIndex).playCity();
 	}
 	
 	public void payForDevCard(Player cardBuyer) {
@@ -1205,5 +1211,245 @@ public class ServerModel {
 		
 		return cousinEdges;
 	}
+
+	public List<VertexLocation> getAdjacentVertices(VertexLocation checkVertex) {
+		
+		List<VertexLocation> adjacentVertices = new ArrayList<VertexLocation>();
+		
+		HexLocation coordinates = checkVertex.getHexLocation();
+		
+		int x = coordinates.getX();
+		int y = coordinates.getY();
+		
+		VertexDirection point = checkVertex.getDirection();
+		
+		VertexLocation adjacentLocationOne;
+		VertexLocation adjacentLocationTwo;
+		
+		switch(point) {
+			case NorthWest:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.West);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.NorthEast);
+				break;
+			case NorthEast:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.NorthWest);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.East);
+				break;
+			case East:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.NorthEast);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.SouthEast);
+				break;
+			case SouthEast:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.East);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.SouthWest);
+				break;	
+			case SouthWest:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.SouthEast);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.West);
+				break;
+			case West:
+				adjacentLocationOne = new VertexLocation(x, y, VertexDirection.SouthWest);
+				adjacentLocationTwo = new VertexLocation(x, y, VertexDirection.NorthWest);
+				break;
+				
+			default:
+				adjacentLocationOne = null;
+				adjacentLocationTwo = null;
+				break;
+		}
+		
+        VertexLocation distantCousin = getDistantCousin(checkVertex);
+        
+        if(distantCousin != null) {
+            adjacentVertices.add(distantCousin);
+        }
+        
+		adjacentVertices.add(adjacentLocationOne);
+		adjacentVertices.add(adjacentLocationTwo);
+		
+		return adjacentVertices;
+	}
+	
+	private VertexLocation getDistantCousin(VertexLocation checkVertex) {
+		
+		int x = checkVertex.getX();
+		int y = checkVertex.getY();
+		
+		VertexDirection point = checkVertex.getDirection();
+		
+		boolean NorthEdge; //Whether the hex is not part of the northern edge
+		boolean SouthEdge; //Whether the hex is not part of the southern edge
+		
+		//RUDIMENTARY MY DEAR WATSON!
+		
+		if((y == 2) ||
+				  ((x == -2) && (y == 0)) ||
+				  ((x == -1 &&  y == 1))) {
+					NorthEdge = true;
+				}
+				else {
+					NorthEdge = false;
+				}
+				
+				if((y == -2) ||
+				  ((x == 2) && (y == 0)) ||
+				  ((x == 1 && y == -1))) {
+					SouthEdge = true;
+				}
+				else {
+					SouthEdge = false;
+				}
+		
+		VertexDirection cousinDirection = null;
+		
+		int newX = 0;
+		int newY = 0;
+		
+		switch(point) {
+		
+			case NorthWest:
+				if(NorthEdge == false) {
+					newX = x;
+					newY = y + 1;
+					cousinDirection = VertexDirection.West;
+				}
+				else {
+					newX = x - 1;
+					newY = y;
+					cousinDirection = VertexDirection.NorthEast;					
+				}
+				break;
+		
+			case NorthEast:
+				if(NorthEdge == false) {
+					newX = x;
+					newY = y + 1;
+					cousinDirection = VertexDirection.East;
+				}
+				else {
+					newX = x + 1;
+					newY = y + 1;
+					cousinDirection = VertexDirection.NorthWest;
+				}
+				break;
+				
+			case East:
+				if(SouthEdge == false) {
+					newX = x + 1;
+					newY = y;
+					cousinDirection = VertexDirection.NorthEast;
+				}
+				else {
+					newX = x + 1;
+					newY = y + 1;
+					cousinDirection = VertexDirection.SouthEast;
+				}
+				break;
+
+			case SouthEast:
+				if(NorthEdge == false) {
+					newX = x + 1;
+					newY = y;
+					cousinDirection = VertexDirection.SouthWest;
+				}
+				else {
+					newX = x;
+					newY = y - 1;
+					cousinDirection = VertexDirection.East;
+				}
+				break;
+				
+			case SouthWest:
+				if(SouthEdge == false) {
+					newX = x;
+					newY = y - 1;
+					cousinDirection = VertexDirection.West;
+				}
+				else {
+					newX = x - 1;
+					newY = y - 1;
+					cousinDirection = VertexDirection.SouthEast;
+				}
+				break;
+
+			case West:
+				if(NorthEdge == false) {
+					newX = x - 1;
+					newY = y;
+					cousinDirection = VertexDirection.SouthWest;
+				}
+				else {
+					newX = x - 1;
+					newY = y - 1;
+					cousinDirection = VertexDirection.NorthWest;
+				}
+				break;
+		}
+		
+
+		
+		VertexLocation cousinLocation = null;
+
+		switch(point) {
+		
+			case NorthWest:
+				if(((x == -2 && y == 0)) || ((x == 0) && (y == 2)) || ((x == -1) && (y == 1))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+				
+			case NorthEast:
+				if(((x == 0 && y == 2)) || ((x == 1) && (y == 2)) || ((x == 2) && (y == 2))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+
+			case East:
+				if(((x == 2 && y == 2)) || ((x == 2) && (y == 1)) || ((x == 2) && (y == 0))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+				
+			case SouthEast:
+				if(((x == 2 && y == 0)) || ((x == 1) && (y == -1)) || ((x == 0) && (y == -2))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+				
+			case SouthWest:
+				if(((x == 0 && y == -2)) || ((x == -1) && (y == -2)) || ((x == -2) && (y == -2))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+				
+			case West:
+				if(((x == -2 && y == -2)) || ((x == -2) && (y == -1)) || ((x == -2) && (y == 0))) {
+					cousinLocation = null;
+				}
+				else {
+					cousinLocation = new VertexLocation(newX, newY, cousinDirection);
+				}
+				break;
+		}
+
+		
+		return cousinLocation;
+	}
+
 }
 

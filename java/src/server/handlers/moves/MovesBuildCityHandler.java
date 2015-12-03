@@ -5,9 +5,12 @@ import java.io.IOException;
 import com.sun.net.httpserver.HttpExchange;
 
 import server.command.BuildCityCommand;
+import server.facades.ServerGamesFacade;
 import server.handlers.IHandler;
+import shared.exceptions.ServerException;
 import shared.json.Converter;
 import shared.transferClasses.BuildCity;
+import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 
 public class MovesBuildCityHandler extends IHandler {
@@ -17,13 +20,26 @@ public class MovesBuildCityHandler extends IHandler {
 		// TODO Auto-generated method stub
 		BuildCity build = Converter.fromJson(exchange.getRequestBody(), BuildCity.class);
 		
-		//A problem. We need to make it so there's a gameID here we can see
-		BuildCityCommand command = new BuildCityCommand(0, build); //need to replace 0 with the correct ID for the game
+		try {
+			UserInfo cookieUser = getUserCookie(exchange);
+			
+			ServerGamesFacade.getInstance().verifyUserInformation(cookieUser);
 		
-		command.execute();
+			Integer cookieGame = getGameCookie(exchange);
 		
-		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-		exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());
+			ServerGamesFacade.getInstance().verifyUserIsInGame(cookieGame, cookieUser);
+		
+			BuildCityCommand command = new BuildCityCommand(0, build);
+			command.execute();
+		
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+			exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());
+			
+		} catch (ServerException e) {
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
+			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
+		}
+
 		
 		exchange.getResponseBody().close();
 	}

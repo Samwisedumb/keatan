@@ -41,9 +41,10 @@ public interface IMovesFacade {
 	 * @pre Somebody wants to build a city
 	 * @param gameID the ID of the game
 	 * @param build the information about where to build the city (and its owner)
+	 * @throws ServerException 
 	 * @post the city is built
 	 */
-	public void buildCity(int gameID, BuildCity build);
+	public void buildCity(int gameID, BuildCity build) throws ServerException;
 	
 	/**
 	 * @pre Somebody wants to build a road
@@ -58,9 +59,10 @@ public interface IMovesFacade {
 	 * @pre Somebody wants to build a settlement
 	 * @param gameID the ID of the game
 	 * @param build the information about where to build the settlement (and its owner)\
+	 * @throws ServerException 
 	 * @post the settlement is built
 	 */
-	public void buildSettlement(int gameID, BuildSettlement build);
+	public void buildSettlement(int gameID, BuildSettlement build) throws ServerException;
 	
 	/**
 	 * @pre Somebody wants to buy a devcard

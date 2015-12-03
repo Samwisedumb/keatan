@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuildSettlement;
 
 /**
@@ -24,8 +25,13 @@ public class BuildSettlementCommand implements Command {
 	}
 
 	@Override
-	public void execute() {
-		ServerMovesFacade.getInstance().buildSettlement(game, buildCommand);
+	public void execute() throws ServerException {
+		try {
+			ServerMovesFacade.getInstance().buildSettlement(game, buildCommand);
+		} catch (ServerException e) {
+			// TODO Auto-generated catch block
+			throw new ServerException(e.getReason());
+		}
 	}
 
 }

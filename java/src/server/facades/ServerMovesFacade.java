@@ -31,6 +31,8 @@ import client.model.ModelFacade;
 import client.model.Player;
 import client.model.ResourceList;
 import client.model.VertexLocation;
+import client.model.VertexObject;
+import client.model.VertexValue;
 
 /**
  * Server Facade that handles all "moves" commands for all games
@@ -85,8 +87,12 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 	
 	@Override
-	public void buildCity(int gameID, BuildCity build) {
+	public void buildCity(int gameID, BuildCity build) throws ServerException {
 		// TODO Auto-generated method stub
+		if(canBuildCity(build.getPlayerIndex(), build.getSpotOne(), gameID, build.getFree()) == false) {
+			throw new ServerException("Cities not allowed at this point");
+		}
+		
 		if(build.getFree() == false) {
 			games.get(gameID).payForCity(build.getPlayerIndex());
 		}
@@ -97,22 +103,24 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void buildRoad(int gameID, BuildRoad build) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canBuildRoad(build.getPlayerIndex(), build.getRoadLocation(), gameID) == false) {
+		if(canBuildRoad(build.getPlayerIndex(), build.getRoadLocation(), gameID, build.getFree()) == false) {
 			throw new ServerException("Can't put a road there, buddy");
 		}
 		
 		if(build.getFree() == false) {
-			//games.get(gameID).payForRoad(build.getPlayerIndex());
 			ServerData.getInstance().getGameModel(gameID).payForRoad(build.getPlayerIndex());
 		}
 		
-		//games.get(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
 		ServerData.getInstance().getGameModel(gameID).placeRoad(build.getRoadLocation(), build.getPlayerIndex());
 	}
 
 	@Override
-	public void buildSettlement(int gameID, BuildSettlement build) {
+	public void buildSettlement(int gameID, BuildSettlement build) throws ServerException {
 		// TODO Auto-generated method stub
+		if(canBuildSettlement(build.getPlayerIndex(), build.getSpotOne(), gameID, build.getFree())) {
+			throw new ServerException("Can't put a settlement there, pal");
+		}
+		
 		if(build.getFree() == false) {
 			games.get(gameID).payForSettlement(build.getPlayerIndex());
 		}
@@ -204,7 +212,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		return null;
 	}
 	
-	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID) {
+	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID, boolean free) {
 		// TODO Auto-generated method stub
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
@@ -219,7 +227,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
-		if(rList.getBrick() == 0 || rList.getWood() == 0) {
+		if((rList.getBrick() == 0 || rList.getWood() == 0) && (free == false)) {
 			return false;
 		}
 		
@@ -243,6 +251,75 @@ public class ServerMovesFacade implements IMovesFacade {
 			}
 		}
 		
+		return false;
+	}
+
+	public boolean canBuildSettlement(int playerIndex, VertexLocation vertLoc, int gameID, boolean free) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getVertices().get(vertLoc.getNormalizedLocation()).hasMunicipality() == true) {
+			return false;
+		}
+		
+		List<VertexLocation> nearbyVertices = thisGame.getAdjacentVertices(vertLoc);
+		
+		for(VertexLocation point : nearbyVertices) {
+			if(thisGame.getVertices().get(point.getNormalizedLocation()).hasMunicipality() == true) {
+				return false;
+			}
+		}
+		
+		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
+		
+		if((rList.getBrick() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0 || rList.getWood() == 0) && (free == false)) {
+			return false;		
+		}
+		
+		List<EdgeLocation> nearbyEdges = thisGame.getNearbyEdges(vertLoc);
+		
+		for(EdgeLocation face : nearbyEdges) {
+			if(thisGame.getEdges().get(face.getNormalizedLocation()).hasRoad() == true) {
+				if(thisGame.getEdges().get(face.getNormalizedLocation()).getRoad().getOwner() == playerIndex){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public boolean canBuildCity(int playerIndex, VertexLocation vertLoc, int gameID, boolean free) {
+		// TODO Auto-generated method stub
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		vertLoc = vertLoc.getNormalizedLocation();
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		
+		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
+		
+		if((rList.getOre() < 3 || rList.getWheat() < 2) && (free == false)) {
+			return false;
+		}
+		
+		VertexValue x = thisGame.getVertices().get(vertLoc.getNormalizedLocation());
+		
+		if(x.getSettlement() != null) {
+			if(x.getSettlement().getOwner() == playerIndex) {
+				return true;
+			}
+			
+			else {
+				return false;
+			}
+		}
+
 		return false;
 	}
 }

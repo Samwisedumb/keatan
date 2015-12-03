@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuildCity;
 
 /**
@@ -23,8 +24,13 @@ public class BuildCityCommand implements Command {
 	}
 
 	@Override
-	public void execute() {
-		ServerMovesFacade.getInstance().buildCity(game, buildCommand);
+	public void execute() throws ServerException {
+		try {
+			ServerMovesFacade.getInstance().buildCity(game, buildCommand);
+		} catch (ServerException e) {
+			// TODO Auto-generated catch block
+			throw new ServerException(e.getReason());
+		}
 	}
 
 }

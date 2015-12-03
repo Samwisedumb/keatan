@@ -6,7 +6,6 @@ import java.util.List;
 
 import shared.definitions.EdgeDirection;
 import shared.definitions.VertexDirection;
-import shared.transferClasses.Game;
 import shared.transferClasses.UserInfo;
 import client.data.GameInfo;
 import client.data.PlayerInfo;

@@ -1,7 +1,6 @@
 package client.model;
 
 import client.model.VertexLocation;
-import client.model.VertexObject; //MAKE CITY CLASS, MAKE SETTLEMENT CLASS
 
 /**
  *  An object representing the vertex of a Hex, containing information about what is located at that hex

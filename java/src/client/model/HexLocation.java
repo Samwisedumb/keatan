@@ -100,18 +100,25 @@ public class HexLocation {
 //				return null;
 //		}
 //	}
-	
-	
+
 	/**
-	 * Validates a HexLocation given a radius criteria
-	 * @param radius - the radius for which a hex is valid
-	 * @return true if hex is within radius, false if otherwise
+	 * The Catan Gui was oriented a little differently than we imagined.
+	 * This function returns the location as it corresponds to the gui.
+	 * @pre use this only on normal hex locations
+	 * @return hexLocation is gui coordinates
 	 */
-	public boolean validate(int radius) {
-		if (x > radius || x < -radius) return false;
-		if (y > radius || y < -radius) return false;
-		return true;
+	public HexLocation convertToGuiCoordinates() {
+		return new HexLocation(x, -y);
 	}
 	
+	/**
+	 * The Catan Gui was oriented a little differently than we imagined.
+	 * This function returns the location as it corresponds to the gui.
+	 * @pre use this only on locations from the gui
+	 * @return hexLocation in normal coordinates
+	 */
+	public HexLocation convertToNormalCoordinates() {
+		return new HexLocation(x, -y);
+	}
 }
 

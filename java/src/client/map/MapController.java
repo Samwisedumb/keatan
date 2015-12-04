@@ -7,6 +7,7 @@ import client.data.RobPlayerInfo;
 import client.map.states.MapControllerState;
 import client.map.states.MapControllerWaitingToStartState;
 import client.model.EdgeLocation;
+import client.model.Hex;
 import client.model.HexLocation;
 import client.model.ModelFacade;
 import client.model.VertexLocation;
@@ -49,8 +50,15 @@ public class MapController extends Controller implements IMapController {
 	 */
 	@Override
 	public void initFromModel() {
-		getView().addHex(new HexLocation(0,0), HexType.WOOD);
-		getView().addHex(new HexLocation(1,1), HexType.DESERT);
+		for (Hex hex : ModelFacade.getHexes()) {
+			getView().addHex(hex.getGuiLocation(), hex.getType());
+			
+			if (hex.getType() != HexType.DESERT) {
+				getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
+			}
+			
+			System.out.println(hex.toString());
+		}
 
 		drawWater();
 		

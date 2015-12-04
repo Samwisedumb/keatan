@@ -30,6 +30,19 @@ public class Hex {
 		this.location = newLocation;
 	}
 	
+	/**
+	 * The Catan Gui was oriented a little differently than we imagined.
+	 * This function returns the location as it corresponds to the gui.
+	 * @pre give this to the gui
+	 * @return hexLocation is gui coordinates
+	 */
+	public HexLocation getGuiLocation() {
+		return location.convertToGuiCoordinates();
+	}
+	
+	/**
+	 * @return hexLocation in conventional coordinates
+	 */
 	public HexLocation getLocation() {
 		return this.location;
 	}
@@ -57,5 +70,10 @@ public class Hex {
 		default:
 			return null;
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "Location: " + getLocation() + ", Type: " + getType().name() + ", Number: " + getChitNumber();
 	}
 }

@@ -23,18 +23,12 @@ public class MapControllerInitializeState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		// TODO Auto-generated method stub
-		// We need a can-do that allows a player to place a road disconnected,
-		// and ensure that placing the road will not force the user to be unable to place
-		// a settlement adjacent to it
-		System.err.println("canPlaceRoad()  for initialize state is unimplemented");
-		return true;
+		return ModelFacade.canBuildRoad(edgeLoc, true, true);
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		ModelFacade.canBuildSettlement(ModelFacade.whoseTurnIsItAnyway(), vertLoc.convertToNormalLocation());
-		return true;
+		return ModelFacade.canBuildSettlement(vertLoc.convertToNormalLocation(), true);
 	}
 
 	/**

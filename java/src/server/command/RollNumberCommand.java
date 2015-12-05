@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.RollNumber;
 
 /**
@@ -23,7 +24,7 @@ public class RollNumberCommand implements Command {
 	}
 	
 	@Override
-	public void execute() {
+	public void execute() throws ServerException {
 		// TODO Auto-generated method stub
 		ServerMovesFacade.getInstance().rollNumber(game, rollCommand);
 	}

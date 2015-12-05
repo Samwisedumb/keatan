@@ -15,6 +15,7 @@ import client.model.Port;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.VertexLocation;
+import client.model.VertexObject;
 
 /**
  * Implementation for the map controller
@@ -72,6 +73,10 @@ public class MapController extends Controller implements IMapController {
 		
 		for (City c : ModelFacade.getCities()) {
 			getView().placeSettlement(c.getLocation(), ModelFacade.getPlayer(c.getOwnerIndex()).getColor());
+		}
+			
+		for (Settlement s : ModelFacade.getSettlements()) {
+			getView().placeSettlement(s.getLocation(), ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
 		}
 
 		drawWater();

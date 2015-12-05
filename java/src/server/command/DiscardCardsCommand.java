@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.DiscardCards;
 
 /**
@@ -24,7 +25,7 @@ public class DiscardCardsCommand implements Command {
 	}
 	
 	@Override
-	public void execute() {
+	public void execute() throws ServerException {
 		// TODO Auto-generated method stub
 		ServerMovesFacade.getInstance().discardCards(game, discardCommand);
 	}

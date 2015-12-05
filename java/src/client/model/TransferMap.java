@@ -9,10 +9,13 @@ public class TransferMap {
 	private int radius;
 	private HexLocation robber;
 	
-	public TransferMap(List<Hex> hexList, List<VertexValue> vertexList, List<EdgeValue> edgeList) {
+	private List<Port> ports;
+	
+	public TransferMap(List<Hex> hexList, List<VertexValue> vertexList, List<EdgeValue> edgeList, List<Port> ports) {
 		this.hexes = hexList;
 		this.vertices = vertexList;
 		this.edges = edgeList;
+		this.ports = ports;
 	}
 	
 	public void addHex(Hex hex) {
@@ -45,5 +48,13 @@ public class TransferMap {
 
 	public HexLocation getRobber() {
 		return robber;
+	}
+
+	public List<Port> getPorts() {
+		return ports;
+	}
+
+	public void setPorts(List<Port> ports) {
+		this.ports = ports;
 	}
 }

@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import server.model.ServerModel;
+import shared.definitions.ResourceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.BuyDevCard;
-import shared.transferClasses.CreateGameRequest;
-import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.DiscardCards;
 import shared.transferClasses.FinishTurn;
 import shared.transferClasses.Game;
@@ -27,11 +26,11 @@ import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
 import client.model.EdgeLocation;
-import client.model.ModelFacade;
+import client.model.HexLocation;
 import client.model.Player;
 import client.model.ResourceList;
+import client.model.Status;
 import client.model.VertexLocation;
-import client.model.VertexObject;
 import client.model.VertexValue;
 
 /**
@@ -90,14 +89,14 @@ public class ServerMovesFacade implements IMovesFacade {
 	public void buildCity(int gameID, BuildCity build) throws ServerException {
 		// TODO Auto-generated method stub
 		if(canBuildCity(build.getPlayerIndex(), build.getSpotOne(), gameID, build.getFree()) == false) {
-			throw new ServerException("Cities not allowed at this point");
+			throw new ServerException("Can't put a city there, mate");
 		}
 		
 		if(build.getFree() == false) {
-			games.get(gameID).payForCity(build.getPlayerIndex());
+			ServerData.getInstance().getGameModel(gameID).payForCity(build.getPlayerIndex());
 		}
 		
-		games.get(gameID).placeCity(build.getSpotOne(), build.getPlayerIndex());
+		ServerData.getInstance().getGameModel(gameID).placeCity(build.getSpotOne(), build.getPlayerIndex());
 	}
 
 	@Override
@@ -117,27 +116,35 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void buildSettlement(int gameID, BuildSettlement build) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canBuildSettlement(build.getPlayerIndex(), build.getSpotOne(), gameID, build.getFree())) {
+		if(canBuildSettlement(build.getPlayerIndex(), build.getSpotOne(), gameID, build.getFree()) == false) {
 			throw new ServerException("Can't put a settlement there, pal");
 		}
 		
 		if(build.getFree() == false) {
-			games.get(gameID).payForSettlement(build.getPlayerIndex());
+			ServerData.getInstance().getGameModel(gameID).payForSettlement(build.getPlayerIndex());
 		}
 		
-		games.get(gameID).placeSettlement(build.getSpotOne(), build.getPlayerIndex());
+		ServerData.getInstance().getGameModel(gameID).placeSettlement(build.getSpotOne(), build.getPlayerIndex());
 	}
 
 	@Override
-	public void buyDevCard(int gameID, BuyDevCard buy) {
+	public void buyDevCard(int gameID, BuyDevCard buy) throws ServerException {
 		// TODO Auto-generated method stub
+		if(canBuyDevCard(buy.getPlayerIndex(), gameID)) {
+			throw new ServerException("Can't buy a dev card, homeslice");
+		}
 		
+		ServerData.getInstance().getGameModel(gameID).buyDevCard(buy.getPlayerIndex());
 	}
 
 	@Override
-	public void discardCards(int gameID, DiscardCards discard) {
+	public void discardCards(int gameID, DiscardCards discard) throws ServerException {
 		// TODO Auto-generated method stub
+		if(canDiscard(discard.getPlayerIndex(), discard.getDiscardedCards(), gameID) == true) {
+			throw new ServerException("Don't have to discard cards, my friend");
+		}
 		
+		ServerData.getInstance().getGameModel(gameID).discardCards(discard.getPlayerIndex(), discard.getDiscardedCards());
 	}
 
 	@Override
@@ -177,15 +184,21 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void robPlayer(int gameID, RobPlayer robbery) {
+	public void robPlayer(int gameID, RobPlayer robbery) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canRob(robbery.getPlayerIndex(), robbery.getVictimIndex(), robbery.getLocation(), gameID) == false) {
+			throw new ServerException("Can't steal from anyone, charlie");
+		}
 	}
 
 	@Override
-	public void rollNumber(int gameID, RollNumber roll) {
+	public void rollNumber(int gameID, RollNumber roll) throws ServerException {
 		// TODO Auto-generated method stub
+		if(canRoll(roll.getPlayerIndex(), gameID) == false) {
+			throw new ServerException("Can't roll dice now, brother");
+		}
 		
+		ServerData.getInstance().getGameModel(gameID).getResources(roll.getNumber(), roll.getPlayerIndex());
 	}
 
 	@Override
@@ -195,9 +208,11 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void soldier(int gameID, Soldier soldier) {
+	public void soldier(int gameID, Soldier soldier) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canPlaySoldier(soldier.getPlayerIndex(), soldier.getVictimIndex(), soldier.getLocation(), gameID)) {
+			throw new ServerException("You can't play this right now, amigo");
+		}
 	}
 
 	@Override
@@ -206,12 +221,6 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 	}
 
-	@Override
-	public CreateGameResponse createGame(CreateGameRequest createGame) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID, boolean free) {
 		// TODO Auto-generated method stub
 		
@@ -220,8 +229,13 @@ public class ServerMovesFacade implements IMovesFacade {
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
 			return false;
 		}
-		
-		if(thisGame.getEdges().get(edgeLoc.getNormalizedLocation()).hasRoad() == true) {
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(thisGame.getEdges().get(edgeLoc.getNormalizedLocation()).hasRoad() == true) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedRoads() == 0) {
 			return false;
 		}
 		
@@ -232,6 +246,18 @@ public class ServerMovesFacade implements IMovesFacade {
 		}
 		
 		List<VertexLocation> points = thisGame.getNearbyVertices(edgeLoc);
+		
+		if((thisGame.getTransferModel().getTurnTracker().getStatus() == Status.FirstRound) ||
+				(thisGame.getTransferModel().getTurnTracker().getStatus() == Status.SecondRound)) {
+			for(VertexLocation point : points) {
+				boolean wiggleRoom = false; //To see whether or not a settlement built next to this road could be a problem.
+				if(canBuildSettlement(playerIndex, point, gameID, true) == true) {
+					wiggleRoom = true; //If a settlement could hypothetically be placed near this road without breaking the rules, place road
+				}
+				
+				return wiggleRoom;
+			}
+		}
 		
 		for(VertexLocation point : points) {
 			if(thisGame.getVertices().get(point.getNormalizedLocation()).hasMunicipality() == true) {
@@ -245,7 +271,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		for(EdgeLocation nearbyEdge : nearbyEdges) {
 			if(thisGame.getEdges().get(nearbyEdge.getNormalizedLocation()).hasRoad() == true) {
-				if(thisGame.getEdges().get(nearbyEdge.getNormalizedLocation()).getRoad().getOwner() == playerIndex) {
+				if(thisGame.getEdges().get(nearbyEdge.getNormalizedLocation()).getRoad().getOwnerIndex() == playerIndex) {
 					return true;
 				}
 			}
@@ -261,7 +287,13 @@ public class ServerMovesFacade implements IMovesFacade {
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
 			return false;
 		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
 		else if(thisGame.getVertices().get(vertLoc.getNormalizedLocation()).hasMunicipality() == true) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedSettlements() == 0) {
 			return false;
 		}
 		
@@ -283,7 +315,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		for(EdgeLocation face : nearbyEdges) {
 			if(thisGame.getEdges().get(face.getNormalizedLocation()).hasRoad() == true) {
-				if(thisGame.getEdges().get(face.getNormalizedLocation()).getRoad().getOwner() == playerIndex){
+				if(thisGame.getEdges().get(face.getNormalizedLocation()).getRoad().getOwnerIndex() == playerIndex){
 					return true;
 				}
 			}
@@ -301,6 +333,12 @@ public class ServerMovesFacade implements IMovesFacade {
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
 			return false;
 		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedCities() == 0) {
+			return false;
+		}
 		
 		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
@@ -311,10 +349,9 @@ public class ServerMovesFacade implements IMovesFacade {
 		VertexValue x = thisGame.getVertices().get(vertLoc.getNormalizedLocation());
 		
 		if(x.getSettlement() != null) {
-			if(x.getSettlement().getOwner() == playerIndex) {
+			if(x.getSettlement().getOwnerIndex() == playerIndex) {
 				return true;
 			}
-			
 			else {
 				return false;
 			}
@@ -322,4 +359,194 @@ public class ServerMovesFacade implements IMovesFacade {
 
 		return false;
 	}
+
+	public boolean canRoll(int playerIndex, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Rolling) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	public boolean canRob(int playerIndex, int victimIndex, HexLocation robberMove, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Robbing) {
+			return false;
+		}
+		else if(robberMove.equals(thisGame.getRobber())) {
+			return false;
+		}
+		else if(victimIndex != -1) {
+			if(thisGame.getTransferModel().getPlayers().get(victimIndex).getResources().getTotalCards() == 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean canBuyDevCard(int playerIndex, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(rList.getOre() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getDeck().getTotalCards() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean canPlaySoldier(int playerIndex, int victimIndex, HexLocation robberMove, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getSoldier() == 0) {
+			return false;
+		}
+		else if(robberMove.equals(thisGame.getRobber())) {
+			return false;
+		}
+		else if(victimIndex != -1) {
+			if(thisGame.getTransferModel().getPlayers().get(victimIndex).getResources().getTotalCards() == 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean canMonument(int playerIndex, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public boolean canRoadBuilding(int playerIndex, EdgeLocation placeOne, EdgeLocation placeTwo, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getRoadBuilding() == 0) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedRoads() < 2) {
+			return false;
+		}
+		
+		if(canBuildRoad(playerIndex, placeOne, gameID, true) == true) {
+			if((canBuildRoad(playerIndex, placeTwo, gameID, true) == true) ||
+				(thisGame.getAdjacentEdges(placeTwo).contains(placeOne) == true)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean canMonopoly(int playerIndex, ResourceType mine, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public boolean canYearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		return false;
+	}
+	
+	public boolean canDiscard(int playerIndex, ResourceList discardList, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Discarding) {
+			return false;
+		}
+		
+		Player thisPlayer = thisGame.getTransferModel().getPlayers().get(playerIndex);
+		
+		if(thisPlayer.hasDiscarded() == true) {
+			return false;
+		}
+		
+		if((thisPlayer.getResources().hasResource(ResourceType.BRICK, discardList.getBrick())) == false ||
+		   (thisPlayer.getResources().hasResource(ResourceType.ORE, discardList.getOre()) == false) ||
+		   (thisPlayer.getResources().hasResource(ResourceType.SHEEP, discardList.getSheep()) == false) ||
+		   (thisPlayer.getResources().hasResource(ResourceType.WHEAT, discardList.getWheat()) == false) ||
+		   (thisPlayer.getResources().hasResource(ResourceType.WOOD, discardList.getWood()) == false)) {
+			return false;
+		}
+		
+		if(thisPlayer.getResources().getTotalCards() > 7) {
+			thisPlayer.setDiscarded(true);
+			return false;
+		}
+		
+		return true;
+	}
+
+	
 }

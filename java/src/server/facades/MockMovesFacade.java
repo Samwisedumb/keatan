@@ -123,11 +123,4 @@ public class MockMovesFacade implements IMovesFacade {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public CreateGameResponse createGame(CreateGameRequest createGame) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

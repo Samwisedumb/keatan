@@ -6,8 +6,6 @@ import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.BuyDevCard;
-import shared.transferClasses.CreateGameRequest;
-import shared.transferClasses.CreateGameResponse;
 import shared.transferClasses.DiscardCards;
 import shared.transferClasses.FinishTurn;
 import shared.transferClasses.MaritimeTrade;
@@ -20,14 +18,10 @@ import shared.transferClasses.RollNumber;
 import shared.transferClasses.SendChat;
 import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
-import client.data.GameInfo;
-
 /**
  * Server Facade that handles all "moves" commands for all games
  */
 public interface IMovesFacade {
-
-	public CreateGameResponse createGame(CreateGameRequest createGame);
 	
 	/**
 	 * @pre Somebody has accepted a trade
@@ -68,17 +62,19 @@ public interface IMovesFacade {
 	 * @pre Somebody wants to buy a devcard
 	 * @param gameID the ID of the game
 	 * @param buy the information about who wants to buy the devcard
+	 * @throws ServerException 
 	 * @post the player buys the dev card
 	 */
-	public void buyDevCard(int gameID, BuyDevCard buy);
+	public void buyDevCard(int gameID, BuyDevCard buy) throws ServerException;
 	
 	/**
 	 * @pre Somebody has to discard cards
 	 * @param gameID the ID of the game
 	 * @param discard the cards to discard and who is discarding them
+	 * @throws ServerException 
 	 * @post the player discards the cards
 	 */
-	public void discardCards(int gameID, DiscardCards discard);
+	public void discardCards(int gameID, DiscardCards discard) throws ServerException;
 	
 	/**
 	 * @pre Somebody ends their turn
@@ -134,16 +130,18 @@ public interface IMovesFacade {
      * @post The player steals a card as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+     * @throws ServerException 
      */
-	public void robPlayer(int gameID, RobPlayer robbery);
+	public void robPlayer(int gameID, RobPlayer robbery) throws ServerException;
 	
      /**
      * @pre A player begins their turn by rolling the dice
      * @post All players receive resources as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+     * @throws ServerException 
      */
-	public void rollNumber(int gameID, RollNumber roll);
+	public void rollNumber(int gameID, RollNumber roll) throws ServerException;
 	
      /**
      * @pre A player sends a chat message
@@ -158,8 +156,9 @@ public interface IMovesFacade {
      * @post The player moves the robber and robs a player as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+     * @throws ServerException 
      */
-	public void soldier(int gameID, Soldier soldier);
+	public void soldier(int gameID, Soldier soldier) throws ServerException;
 	
      /**
      * @pre A player plays a Year Of Plenty card

@@ -68,8 +68,8 @@ public class ServerModel {
 		transfer.setLog(new MessageList());
 		transfer.setMap(new TransferMap(new ArrayList<Hex>(hexes.values()),
 				new ArrayList<VertexValue>(vertices.values()),
-				new ArrayList<EdgeValue>(edges.values())));
-		transfer.setTurnTracker(new TurnTracker(0, -1, -1));
+				new ArrayList<EdgeValue>(edges.values()), ports));
+		transfer.setTurnTracker(new TurnTracker(0, 5, 3));
 		transfer.setVersion(0);
 		transfer.setWinner(-1);
 	}
@@ -88,6 +88,10 @@ public class ServerModel {
 	
 	public HashMap<VertexLocation, VertexValue> getVertices() {
 		return vertices;
+	}
+	
+	public HexLocation getRobber() {
+		return robber;
 	}
 	
 	private void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts) {		
@@ -446,12 +450,15 @@ public class ServerModel {
 		return newVertices;
 	}
 
-	public void getResources(int numberRoll) {
+	public void getResources(int numberRoll, int playerIndex) {
 		
 		if(numberRoll == 7) {
 			transfer.getTurnTracker().setStatus(Status.Discarding);
 			return;
 		}
+		
+		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + " rolled a " +
+		new Integer(numberRoll).toString(), transfer.getPlayers().get(playerIndex).getName()));
 		
 		List<ResourceList> spoils = new ArrayList<ResourceList>();
 		
@@ -490,11 +497,11 @@ public class ServerModel {
 				ResourceType spoilResource = hexes.get(new HexLocation(vertex.getX(), vertex.getY())).getResourceType();
 				
 				if(spoilVertex.getCity() == null) {
-					spoils.get(spoilVertex.getSettlement().getOwner()).changeResourceAmount(spoilResource, 1);
+					spoils.get(spoilVertex.getSettlement().getOwnerIndex()).changeResourceAmount(spoilResource, 1);
 					bankToll.changeResourceAmount(spoilResource, 1);
 				}
 				else {
-					spoils.get(spoilVertex.getCity().getOwner()).changeResourceAmount(spoilResource, 2);
+					spoils.get(spoilVertex.getCity().getOwnerIndex()).changeResourceAmount(spoilResource, 2);
 					bankToll.changeResourceAmount(spoilResource, 2);
 				}
 			}
@@ -531,7 +538,8 @@ public class ServerModel {
 	}
 	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
-		transfer.getLog().addLine(new MessageLine("played a road", transfer.getPlayers().get(playerIndex).getName()));
+		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+				" played a road", transfer.getPlayers().get(playerIndex).getName()));
 		edges.get(place).setRoad(new Road(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playRoad();
 	}
@@ -548,8 +556,9 @@ public class ServerModel {
 	}
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
-		transfer.getLog().addLine(new MessageLine("played a settlement", transfer.getPlayers().get(playerIndex).getName()));
-		vertices.get(place).setSettlement(new Settlement(playerIndex));
+		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + 
+				" played a settlement", transfer.getPlayers().get(playerIndex).getName()));
+		vertices.get(place).setSettlement(new Settlement(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playSettlement();
 	}
 	
@@ -561,8 +570,9 @@ public class ServerModel {
 	}
 	
 	public void placeCity(VertexLocation place, int playerIndex) {
-		transfer.getLog().addLine(new MessageLine("played a city", transfer.getPlayers().get(playerIndex).getName()));
-		vertices.get(place).setCity(new City(playerIndex));
+		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+				"played a city", transfer.getPlayers().get(playerIndex).getName()));
+		vertices.get(place).setCity(new City(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playCity();
 	}
 	
@@ -577,38 +587,50 @@ public class ServerModel {
 	
 	public void buyDevCard(int playerIndex) {
 		Player cardBuyer = transfer.getPlayers().get(playerIndex);
-
+		
 		int draw = devDeckDraw();
 		
 		switch(draw) {
 		case -1:
+			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break; //nothing happens. No dev cards to draw
 		case 0:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setMonopoly(transfer.getDeck().getMonopoly() - 1);
 			cardBuyer.getNewDevCards().setMonopoly(cardBuyer.getNewDevCards().getMonopoly() + 1);
+			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		case 1:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setMonument(transfer.getDeck().getMonument() - 1);
 			cardBuyer.getNewDevCards().setMonument(cardBuyer.getNewDevCards().getMonument() + 1);
+			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		case 2:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setRoadBuilding(transfer.getDeck().getRoadBuilding() - 1);
 			cardBuyer.getNewDevCards().setRoadBuilding(cardBuyer.getNewDevCards().getRoadBuilding() + 1);
+			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		case 3:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setSoldier(transfer.getDeck().getSoldier() - 1);
 			cardBuyer.getNewDevCards().setSoldier(cardBuyer.getNewDevCards().getSoldier() + 1);
+			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		case 4:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setYearOfPlenty(transfer.getDeck().getYearOfPlenty() - 1);
 			cardBuyer.getNewDevCards().setYearOfPlenty(cardBuyer.getNewDevCards().getYearOfPlenty() + 1);
+			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
+					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		default:
+			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", transfer.getPlayers().get(playerIndex).getName()));
 			break;
 		}
 		
@@ -678,7 +700,25 @@ public class ServerModel {
 		transfer.getBank().setWood(transfer.getBank().getWood() + discardList.getWood());
 		transfer.getBank().setOre(transfer.getBank().getOre() + discardList.getOre());
 		
-		transfer.getTurnTracker().setStatus(Status.Robbing);
+		if(allDiscarded() == true) {
+			transfer.getTurnTracker().setStatus(Status.Robbing);
+		}
+	}
+	
+	public boolean allDiscarded() {
+		int discarders = 0;
+		for(Player player : transfer.getPlayers()) {
+			if(player.hasDiscarded() == true) {
+				discarders++;
+			}
+		}
+		
+		if(discarders == 4) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	public void robPlayer(int playerIndex, int victimIndex, HexLocation robberMove) {
@@ -715,6 +755,7 @@ public class ServerModel {
 		
 		robber = robberMove;
 		
+		transfer.getTurnTracker().setStatus(Status.Playing);
 	}
 	
 	public ResourceType wheelOfSteal(Player victim) {
@@ -803,6 +844,10 @@ public class ServerModel {
 		robPlayer(playerIndex, victimIndex, robberMove);
 		
 		transfer.getPlayers().get(playerIndex).useSoldierCard();
+		
+		if(transfer.getPlayers().get(playerIndex).getNumSoldiers() > transfer.getTurnTracker().getLargestArmySize()) {
+			transfer.setLargestArmyOwnerIndex(playerIndex);
+		}
 	}
 	
 	public void monumentPlay(int playerIndex) {
@@ -813,6 +858,8 @@ public class ServerModel {
 		Player luckyPerson = transfer.getPlayers().get(playerIndex);
 		luckyPerson.addResource(resourceOne, 1);
 		luckyPerson.addResource(resourceTwo, 1);
+		transfer.getBank().changeResourceAmount(resourceOne, -1);
+		transfer.getBank().changeResourceAmount(resourceTwo, -1);
 		luckyPerson.useYearOfPlentyCard();
 	}
 	

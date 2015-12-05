@@ -81,6 +81,10 @@ public class Player {
 		this.roads = unplacedRoads;
 	}
 
+	public int getPlacedRoads() {
+		return 15 - roads;
+	}
+	
 	public int getUnplacedSettlements() {
 		return settlements;
 	}

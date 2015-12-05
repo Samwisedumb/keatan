@@ -29,7 +29,7 @@ public class MovesBuildCityHandler extends IHandler {
 		
 			ServerGamesFacade.getInstance().verifyUserIsInGame(cookieGame, cookieUser);
 		
-			BuildCityCommand command = new BuildCityCommand(0, build);
+			BuildCityCommand command = new BuildCityCommand(cookieGame, build);
 			command.execute();
 		
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);

@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.BuyDevCard;
 
 /**
@@ -23,8 +24,7 @@ public class BuyDevCardCommand implements Command {
 	}
 
 	@Override
-	public void execute() {
-		// TODO Auto-generated method stub
-		ServerMovesFacade.getInstance().buyDevCard(game, buyCommand);
+	public void execute() throws ServerException {
+			ServerMovesFacade.getInstance().buyDevCard(game, buyCommand);
 	}
 }

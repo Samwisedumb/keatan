@@ -20,9 +20,14 @@ public class TransferModel {
 	private int version;
 	private int winner;
 	
+	private int largestArmyOwnerIndex;
+	private int largestRoadOwnerIndex;
+	
 	public TransferModel() {
 		players = new ArrayList<Player>();
 		version = 0;
+		setLargestArmyOwnerIndex(-1);
+		setLargestRoadOwnerIndex(-1);
 	}
 			
 	public ResourceList getBank() {
@@ -103,5 +108,21 @@ public class TransferModel {
 	
 	public void setDeck(DevCardList deck) {
 		this.deck = deck;
+	}
+
+	public int getLargestArmyOwnerIndex() {
+		return largestArmyOwnerIndex;
+	}
+
+	public void setLargestArmyOwnerIndex(int largestArmyOwnerIndex) {
+		this.largestArmyOwnerIndex = largestArmyOwnerIndex;
+	}
+
+	public int getLargestRoadOwnerIndex() {
+		return largestRoadOwnerIndex;
+	}
+
+	public void setLargestRoadOwnerIndex(int largestRoadOwnerIndex) {
+		this.largestRoadOwnerIndex = largestRoadOwnerIndex;
 	}
 }

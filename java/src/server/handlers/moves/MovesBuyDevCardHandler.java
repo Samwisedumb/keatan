@@ -39,9 +39,7 @@ public class MovesBuyDevCardHandler extends IHandler {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}
-	
-		exchange.close();
 		
+		exchange.close();	
 	}
-
 }

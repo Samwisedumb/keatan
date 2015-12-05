@@ -13,6 +13,7 @@ import client.model.ModelFacade;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.VertexLocation;
+import client.model.VertexObject;
 
 /**
  * Implementation for the map controller
@@ -66,7 +67,7 @@ public class MapController extends Controller implements IMapController {
 			getView().placeRoad(r.getLocation(), ModelFacade.getPlayer(r.getOwnerIndex()).getColor());
 		}
 		
-		for (Settlement s : ModelFacade.getSettlements()) {
+		for (VertexObject s : ModelFacade.getSettlements()) {
 			getView().placeSettlement(s.getLocation(), );
 		}
 

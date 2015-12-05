@@ -111,5 +111,14 @@ public class VertexLocation {
 		}
 		return true;
 	}
+
+	/**
+	 * Converts a gui location to a normal location
+	 * @pre only use this get a normal location from the gui
+	 * @return a normal vertex location
+	 */
+	public VertexLocation convertToNormalLocation() {
+		return new VertexLocation(x, -y, direction);
+	}
 }
 

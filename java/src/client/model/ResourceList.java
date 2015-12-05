@@ -103,6 +103,46 @@ public class ResourceList {
 		}
 	}
 	
+	/**
+	 * See if a player has enough resources to build a road
+	 * @return true if the user has enough resources<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasEnoughForRoad() {
+		return brick > 0 && wood > 0;
+	}
+
+	/**
+	 * See if a player has enough resources to build a settlement
+	 * @return true if the user has enough resources<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasEnoughForSettlement() {
+		return brick > 0 && wood > 0 && wheat > 0 && sheep > 0;
+	}
+
+	/**
+	 * See if a player has enough resources to build a city
+	 * @return true if the user has enough resources<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasEnoughForCity() {
+		return wheat > 1 && ore > 3;
+	}
+	
+	/**
+	 * See if a player has enough resources to buy a development card
+	 * @return true if the user has enough resources<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasEnoughForDevCard() {
+		return wheat > 0 && sheep > 0 && ore > 0;
+	}
+	
 	public boolean validate() {
 		if (brick < 0 || brick > 24) return false;
 		if (ore < 0 || ore > 24) return false;

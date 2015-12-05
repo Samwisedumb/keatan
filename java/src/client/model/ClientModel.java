@@ -11,11 +11,10 @@ import client.data.GameInfo;
 import client.data.PlayerInfo;
 
 public class ClientModel {	
-	
 	private HashMap<HexLocation, Hex> hexes;
 	private HashMap<EdgeLocation, Road> roads;
-	private HashMap<VertexLocation, VertexObject> settlements;
-	private HashMap<VertexLocation, VertexObject> cities;
+	private HashMap<VertexLocation, Settlement> settlements;
+	private HashMap<VertexLocation, City> cities;
 	
 	/**
 	 * This is where we store the model that the server sends to the client for updates
@@ -70,8 +69,8 @@ public class ClientModel {
 	public ClientModel() {
 		hexes = new HashMap<HexLocation, Hex>();
 		roads = new HashMap<EdgeLocation, Road>();
-		settlements = new HashMap<VertexLocation, VertexObject>();
-		cities = new HashMap<VertexLocation, VertexObject>();
+		settlements = new HashMap<VertexLocation, Settlement>();
+		cities = new HashMap<VertexLocation, City>();
 		
 		user = new User();
 		
@@ -86,11 +85,11 @@ public class ClientModel {
 		return roads;
 	}
 
-	public HashMap<VertexLocation, VertexObject> getSettlements() {
+	public HashMap<VertexLocation, Settlement> getSettlements() {
 		return settlements;
 	}
 
-	public HashMap<VertexLocation, VertexObject> getCities() {
+	public HashMap<VertexLocation, City> getCities() {
 		return cities;
 	}
 
@@ -98,12 +97,36 @@ public class ClientModel {
 		return transferModel;
 	}
 	
+	/**
+	 * Updates the data in the model to what the server gave it
+	 * @param transferModel - the model to update to
+	 * @author djoshuac
+	 */
 	public void update(TransferModel transferModel) {
 		this.transferModel = transferModel;
-	
-		System.out.println("In client model update(transferModel) happened");
 			
 		user.update(transferModel);
+
+		cities.clear();
+		settlements.clear();
+		roads.clear();
+		
+		// add municipalities
+		for (VertexValue vertex : transferModel.getMap().getVertexValues()) {
+			if (vertex.getCity() != null) {
+				cities.put(vertex.getLocation(), vertex.getCity());
+			}
+			else if (vertex.getSettlement() != null) {
+				settlements.put(vertex.getLocation(), vertex.getSettlement());
+			}
+		}
+		
+		// add roads
+		for (EdgeValue edge : transferModel.getMap().getEdges()) {
+			if (edge.hasRoad()) {
+				roads.put(edge.getLocation(), edge.getRoad());
+			}
+		}
 	}
 	
 	
@@ -714,4 +737,101 @@ public class ClientModel {
 		
 		return nearbyEdges;
 	}
+
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a city or settlement at it
+	 * @author djoshuac
+	 */
+	public boolean hasMunicipality(VertexLocation vertex) {	
+		return hasCity(vertex) && hasSettlement(vertex);
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a city at it
+	 * @author djoshuac
+	 */
+	public boolean hasCity(VertexLocation vertex) {	
+		return getCity(vertex.getNormalizedLocation()) != null;
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a settlement at it
+	 * @author djoshuac
+	 */
+	public boolean hasSettlement(VertexLocation vertex) {
+		return getSettlement(vertex.getNormalizedLocation()) != null;
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param edge - the edge location to check
+	 * @return true if the edge location has a road
+	 * @author djoshuac
+	 */
+	public boolean hasRoad(EdgeLocation edge) {
+		return getRoad(edge.getNormalizedLocation()) != null;
+	}
+	
+	/**
+	 * This gets a road at the given location - works with non-normalized locations
+	 * @param edge - the edge location to check
+	 */
+	public Road getRoad(EdgeLocation edge) {
+		return roads.get(edge.getNormalizedLocation());
+	}
+	
+	/**
+	 * This gets a city at the given location - works with non-normalized locations
+	 * @param edge - the edge location to check
+	 */
+	public City getCity(VertexLocation vertex) {
+		return cities.get(vertex.getNormalizedLocation());
+	}
+	
+	/**
+	 * This gets a settlement at the given location - works with non-normalized locations
+	 * @param edge - the edge location to check
+	 */
+	public Settlement getSettlement(VertexLocation vertex) {
+		return settlements.get(vertex.getNormalizedLocation());
+	}
+	
+	/**
+	 * See if a vertex location is too close to another municipality for another municipality to be placed there
+	 * @param vertex - the location to check
+	 * @return true if the location is adjacent to a municipality
+	 * false if otherwise
+	 */
+	public boolean isTooCloseToAnotherMunicipality(VertexLocation vertex) {
+		for (VertexLocation adj : getAdjacentVertices(vertex)) {
+			if (hasMunicipality(adj)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * See if a vertex location is adjacent to a road owned by a given
+	 * @param edgeLoc - the edge location to check
+	 * @param player - the player in question
+	 * @return true if the given location is adjacent to a road owned by the given player<br>
+	 * false if otherwise
+	 */
+	public boolean isAdjacentToRoadOfPlayer(VertexLocation vertex, Player player) {
+		for (EdgeLocation edge : getNearbyEdges(vertex)) {
+			if (getRoad(edge) != null && getRoad(edge).getOwnerIndex() == player.getIndex()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
+
+

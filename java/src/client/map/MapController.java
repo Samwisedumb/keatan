@@ -10,6 +10,8 @@ import client.model.EdgeLocation;
 import client.model.Hex;
 import client.model.HexLocation;
 import client.model.ModelFacade;
+import client.model.Road;
+import client.model.Settlement;
 import client.model.VertexLocation;
 
 /**
@@ -58,6 +60,14 @@ public class MapController extends Controller implements IMapController {
 			}
 			
 			System.out.println(hex.toString());
+		}
+		
+		for (Road r : ModelFacade.getRoads()) {
+			getView().placeRoad(r.getLocation(), ModelFacade.getPlayer(r.getOwnerIndex()).getColor());
+		}
+		
+		for (Settlement s : ModelFacade.getSettlements()) {
+			getView().placeSettlement(s.getLocation(), );
 		}
 
 		drawWater();

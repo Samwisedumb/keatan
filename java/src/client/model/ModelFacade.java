@@ -1,6 +1,7 @@
 package client.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -43,16 +44,25 @@ public class ModelFacade {
 		notifyObserversOfChange();
 	}
 	
-	public static List<Hex> getHexes() {
+	public static Collection<Hex> getHexes() {
 		return model.getTransferModel().getMap().getHexes();
 	}
 	
-	public static List<Road> getRoads() {
-		//TODO
-		return null; //model.getTransferModel().getMap().getRoads();
+	public static Collection<Road> getRoads() {
+		return model.getRoads().values();
 	}
 	
-	public static List<VertexObject> getSettlements() {
+	/**
+	 * Get the player with the given index
+	 * @param index - the index to get
+	 * @return the player at the given index
+	 * @pre index must be within 0 and 4
+	 */
+	public static Player getPlayer(int index) {
+		return model.getTransferModel().getPlayers().get(index);
+	}
+	
+	public static Collection<VertexObject> getSettlements() {
 		//TODO
 		return null; //model.getTransferModel().getMap().getSettlements();
 	}
@@ -116,7 +126,10 @@ public class ModelFacade {
 	* @post see return
 	*/
 	public static boolean canProduceResource(int playerIndex, HexLocation location) {
-		Hex thisHex = null;
+		//TODO
+		System.err.println("canProduceResources() is unimplemented");
+		return false;
+		/*Hex thisHex = null;
 		Iterator<Entry<HexLocation, Hex>> hexes = model.getHexes().entrySet().iterator();
 		while (hexes.hasNext()) {
 			Entry<HexLocation, Hex> hex = hexes.next();
@@ -169,7 +182,7 @@ public class ModelFacade {
 			}
 		}
 		
-		return false; //Awwww... found no settlements or cities for you... how sad....
+		return false;*/
 	}
 	
 	public static boolean canReceiveResource(int resource_amount, ResourceType resource_type) {
@@ -203,258 +216,244 @@ public class ModelFacade {
 		return model.getTransferModel().getTurnTracker().getStatus();
 	}
 	
-	public static boolean canBuildSettlement(int playerIndex, VertexLocation vertLoc) {
-		
-		if(playerIndex != ModelFacade.whoseTurnIsItAnyway()) {
-			return false;
-		}
-		else if(model.getSettlements().get(vertLoc.getNormalizedLocation()) != null) {
-			return false;
-		}
-		
-		else if(model.getCities().get(vertLoc.getNormalizedLocation()) != null) {
-			return false;
-		}
-		
-		List<VertexLocation> nearbyVertices = model.getAdjacentVertices(vertLoc);
-		
-		for(VertexLocation point : nearbyVertices) {
-			if(model.getSettlements().get(point.getNormalizedLocation()) != null) {
-				return false;
-			}
-			else if(model.getCities().get(point.getNormalizedLocation()) != null) {
-				return false;
-			}
-		}
-		
-		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
-		
-		if(rList.getBrick() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0 || rList.getWood() == 0) {
-			return false;
-		}
-		
-		List<EdgeLocation> nearbyEdges = model.getNearbyEdges(vertLoc);
-		
-		for(EdgeLocation face : nearbyEdges) {
-			if(model.getRoads().get(face.getNormalizedLocation()) != null) {
-				if(model.getRoads().get(face.getNormalizedLocation()).getOwner() == playerIndex){
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
-	public static boolean canBuildCity(int playerIndex, VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
-		vertLoc = vertLoc.getNormalizedLocation();
-		if(playerIndex != ModelFacade.whoseTurnIsItAnyway()) {
-			return false;
-		}
-		
-		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
-		
-		if(rList.getOre() < 3 || rList.getWheat() < 2) {
-			return false;
-		}
-		
-		VertexObject x = model.getSettlements().get(vertLoc);
-		if(model.getSettlements().get(vertLoc) != null) {
-			if(model.getSettlements().get(vertLoc.getNormalizedLocation()).getOwner() == playerIndex) {
-				return true;
-			}
-			
-			else {
-				return false;
-			}
-		}
-
-		return false;
-	}
-
-	public static boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc) {
-		// TODO Auto-generated method stub
-		
-		if(playerIndex != ModelFacade.whoseTurnIsItAnyway()) {
-			return false;
-		}
-		
-		if(model.getRoads().get(edgeLoc.getNormalizedLocation()) != null) {
-			return false;
-		}
-		
-		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
-		
-		if(rList.getBrick() == 0 || rList.getWood() == 0) {
-			return false;
-		}
-		
-		List<VertexLocation> points = model.getNearbyVertices(edgeLoc);
-		
-		for(VertexLocation point : points) {
-			if(model.getSettlements().get(point.getNormalizedLocation()) != null) {
-				if(model.getSettlements().get(point.getNormalizedLocation()).getOwner() == playerIndex) {
-					return true;
-				}
-			}
-			else if(model.getCities().get(point.getNormalizedLocation()) != null) {
-				if(model.getCities().get(point.getNormalizedLocation()).getOwner() == playerIndex) {
-					return true;
-				}
-			}
-		}
-		
-		List<EdgeLocation> nearbyEdges = model.getAdjacentEdges(edgeLoc);
-		
-		for(EdgeLocation nearbyEdge : nearbyEdges) {
-			if(model.getRoads().get(nearbyEdge.getNormalizedLocation()) != null) {
-				if(model.getRoads().get(nearbyEdge.getNormalizedLocation()).getOwner() == playerIndex) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
-	public static boolean canDomesticTrade(TradeOffer offer) {
-		int currentPlayer = model.getTransferModel().getTurnTracker().getPlayerTurn();
-		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
-			return false;
-		}
-		
-		ResourceList theList = offer.getOffer();
-		
-		ResourceList theOffer = new ResourceList(0,0,0,0,0);
-		ResourceList theRequest = new ResourceList(0,0,0,0,0);
-		
-		
-		if(theList.getWood() >= 0) {
-			theRequest.setWood(theList.getWood());
-		}
-		else {
-			theOffer.setWood(Math.abs(theList.getWood()));
-		}
-		if(theList.getBrick() >= 0) {
-			theRequest.setBrick(theList.getBrick());
-		}
-		else {
-			theOffer.setBrick(Math.abs(theList.getBrick()));
-		}
-		if(theList.getSheep() >= 0) {
-			theRequest.setSheep(theList.getSheep());
-		}
-		else {
-			theOffer.setSheep(Math.abs(theList.getSheep()));
-		}
-		if(theList.getWheat() >= 0) {
-			theRequest.setWheat(theList.getWheat());
-		}
-		else  {
-			theOffer.setWheat(Math.abs(theList.getWheat()));
-		}
-		if(theList.getOre() >= 0) {
-			theRequest.setOre(theList.getOre());
-		}
-		else {
-			theOffer.setOre(Math.abs(theList.getOre()));
-		}
-		
-		
-		//Check if sender has enough resources
-		
-		ResourceList sendResources = model.getTransferModel().getPlayers().get(offer.getSender()).getResources();
-		if(theOffer.getBrick() > sendResources.getBrick()
-				|| theOffer.getOre() > sendResources.getOre()
-				|| theOffer.getSheep() > sendResources.getSheep()
-				|| theOffer.getWheat() > sendResources.getWheat()
-				|| theOffer.getWood() > sendResources.getWood()) {
-			return false;
-		}
-		
-		//Check if receiver has enough resources
-		
-		ResourceList receiveResources = model.getTransferModel().getPlayers().get(offer.getReceiver()).getResources();
-		if(theRequest.getBrick() > receiveResources.getBrick()
-				|| theRequest.getOre() > receiveResources.getOre()
-				|| theRequest.getSheep() > receiveResources.getSheep()
-				|| theRequest.getWheat() > receiveResources.getWheat()
-				|| theRequest.getWood() > receiveResources.getWood()) {
-			return false;
-		}
-		
-		//Passed all checks
-		return true;
-	}
 	
-	public static boolean canMaritimeTrade(int playerIndex, ResourceType tradeResource, ResourceType desiredResource) {
-		Player player = model.getTransferModel().getPlayers().get(playerIndex);
+	/**
+	 * See if the user can build a settlement
+	 * @param vertLoc - the vertex location to build at
+	 * @param isFree - does the settlement cost resources
+	 * @return true if the user can build there<br>
+	 * false if otherwise
+	 */
+	public static boolean canBuildSettlement(VertexLocation vertLoc, boolean isFree) {
+		Player user = getUserPlayer();
 		
-		int tradeRatio = getTradeRatio(playerIndex, tradeResource);
-		
-		return player.getResources().hasResource(tradeResource, tradeRatio) && model.getTransferModel().getBank().hasResource(desiredResource, 1);
-	}
-	
-	public static int getTradeRatio(int playerIndex, ResourceType tradeResource) {
-		
-		int ratio = 4;
-		
-		for (Port port : getPorts()) {
-			
-			int x = port.getLocation().getX();
-			int y = port.getLocation().getY();
-			
-			EdgeDirection direction = port.getDirection();
-			
-			EdgeLocation relativeEdge = (new EdgeLocation(x, y, direction)).getNormalizedLocation();
-			
-			for (VertexLocation vertex : model.getNearbyVertices(relativeEdge)) {
-				
-				if(model.getSettlements().get(vertex.getNormalizedLocation()) != null) {
-					if(model.getSettlements().get(vertex.getNormalizedLocation()).getOwner() == playerIndex) {
-						if (ratio == 4 && port.getRatio() == 3) {
-							ratio = 3;
-						}
-						else if (tradeResource == port.getPortResource()){
-							return 2;
-						}
-					}
-				}
-				
-				else if(model.getCities().get(vertex.getNormalizedLocation()) != null) {
-					if(model.getCities().get(vertex.getNormalizedLocation()).getOwner() == playerIndex) {
-						if (ratio == 4 && port.getRatio() == 3) {
-							ratio = 3;
-						}
-						else if (tradeResource == port.getPortResource()){
-							return 2;
-						}
-					}
-				}
-			}
-		}
-		return ratio;
-	}
-	
-	public static boolean canBuyDevelopmentCard(int playerIndex) {
-		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
-		if(model.getTransferModel().getTurnTracker().getPlayerTurn() != playerIndex) {
+		if (!isFree && !user.getResources().hasEnoughForSettlement()) {
 			return false;
 		}
-		else if(rList.getOre() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0) {
+		
+		if (model.isTooCloseToAnotherMunicipality(vertLoc)) {
 			return false;
 		}
-		else if(model.getTransferModel().getDeck().getTotalCards() > 0) {
+		
+		return model.isAdjacentToRoadOfPlayer(vertLoc, user);
+	}
+
+	/**
+	 * See if the user can build a city
+	 * @param vertLoc - the vetex location to build at
+	 * @return true if the user can build a settlement at given location<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public static boolean canBuildCity(VertexLocation vertLoc) {
+		Player user = getUserPlayer();
+		
+		if (!user.getResources().hasEnoughForCity()) {
+			return false;
+		}
+		
+		if (model.hasSettlement(vertLoc) && model.getSettlement(vertLoc).getOwnerIndex() == user.getIndex()) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
+
+	/**
+	 * @param playerIndex
+	 * @param edgeLoc - the edge location where the road is to be placed
+	 * @param isFree - does the road cost resources
+	 * @param isDisconnected - is the road allowed to be disconnected from all other roads (initial setup phase)
+	 * @pre the edge location must be valid
+	 * @return true when a player is allowed to build a road
+	 * @author djoshuac
+	 */
+	public static boolean canBuildRoad(EdgeLocation edgeLoc, boolean isFree, boolean isDisconnected) {
+		Player user = getUserPlayer();
+		
+		if (model.hasRoad(edgeLoc)) {
+			return false;
+		}
+		
+		if (!isFree && !user.getResources().hasEnoughForRoad()) {
+			return false;
+		}
+		
+		if (isDisconnected) { // when we are in the initial setup round - we want to make sure the placement of the road doesn't force an illegal settlement placement
+			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
+				if (model.isTooCloseToAnotherMunicipality(vertex)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		else { // normally - we want to ensure that the road is adjacent to another road
+			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
+				if (model.isAdjacentToRoadOfPlayer(vertex, user)) {
+					return true;
+				}
+			}
+			return false;
+			
+		}
+	}
+
+	public static boolean canDomesticTrade(TradeOffer offer) {
+		//TODO
+		System.err.println("canDomesticTrade() is unimplemented");
+		return false;
+//		
+//		int currentPlayer = model.getTransferModel().getTurnTracker().getPlayerTurn();
+//		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
+//			return false;
+//		}
+//		
+//		ResourceList theList = offer.getOffer();
+//		
+//		ResourceList theOffer = new ResourceList(0,0,0,0,0);
+//		ResourceList theRequest = new ResourceList(0,0,0,0,0);
+//		
+//		
+//		if(theList.getWood() >= 0) {
+//			theRequest.setWood(theList.getWood());
+//		}
+//		else {
+//			theOffer.setWood(Math.abs(theList.getWood()));
+//		}
+//		if(theList.getBrick() >= 0) {
+//			theRequest.setBrick(theList.getBrick());
+//		}
+//		else {
+//			theOffer.setBrick(Math.abs(theList.getBrick()));
+//		}
+//		if(theList.getSheep() >= 0) {
+//			theRequest.setSheep(theList.getSheep());
+//		}
+//		else {
+//			theOffer.setSheep(Math.abs(theList.getSheep()));
+//		}
+//		if(theList.getWheat() >= 0) {
+//			theRequest.setWheat(theList.getWheat());
+//		}
+//		else  {
+//			theOffer.setWheat(Math.abs(theList.getWheat()));
+//		}
+//		if(theList.getOre() >= 0) {
+//			theRequest.setOre(theList.getOre());
+//		}
+//		else {
+//			theOffer.setOre(Math.abs(theList.getOre()));
+//		}
+//		
+//		
+//		//Check if sender has enough resources
+//		
+//		ResourceList sendResources = model.getTransferModel().getPlayers().get(offer.getSender()).getResources();
+//		if(theOffer.getBrick() > sendResources.getBrick()
+//				|| theOffer.getOre() > sendResources.getOre()
+//				|| theOffer.getSheep() > sendResources.getSheep()
+//				|| theOffer.getWheat() > sendResources.getWheat()
+//				|| theOffer.getWood() > sendResources.getWood()) {
+//			return false;
+//		}
+//		
+//		//Check if receiver has enough resources
+//		
+//		ResourceList receiveResources = model.getTransferModel().getPlayers().get(offer.getReceiver()).getResources();
+//		if(theRequest.getBrick() > receiveResources.getBrick()
+//				|| theRequest.getOre() > receiveResources.getOre()
+//				|| theRequest.getSheep() > receiveResources.getSheep()
+//				|| theRequest.getWheat() > receiveResources.getWheat()
+//				|| theRequest.getWood() > receiveResources.getWood()) {
+//			return false;
+//		}
+//		
+//		//Passed all checks
+//		return true;
+	}
+	
+	public static boolean canMaritimeTrade(int playerIndex, ResourceType tradeResource, ResourceType desiredResource) {
+		//TODO
+		System.err.println("canmaritimeTrade() is unimplemented");
+		return false;
+//		
+//		Player player = model.getTransferModel().getPlayers().get(playerIndex);
+//		
+//		int tradeRatio = getTradeRatio(playerIndex, tradeResource);
+//		
+//		return player.getResources().hasResource(tradeResource, tradeRatio) && model.getTransferModel().getBank().hasResource(desiredResource, 1);
+	}
+	
+	public static int getTradeRatio(int playerIndex, ResourceType tradeResource) {
+
+		//TODO
+		System.err.println("getTradeRatio is unimplemented");
+		return -1;
+//		
+//		int ratio = 4;
+//		
+//		for (Port port : getPorts()) {
+//			
+//			int x = port.getLocation().getX();
+//			int y = port.getLocation().getY();
+//			
+//			EdgeDirection direction = port.getDirection();
+//			
+//			EdgeLocation relativeEdge = (new EdgeLocation(x, y, direction)).getNormalizedLocation();
+//			
+//			for (VertexLocation vertex : model.getNearbyVertices(relativeEdge)) {
+//				
+//				if(model.getSettlements().get(vertex.getNormalizedLocation()) != null) {
+//					if(model.getSettlements().get(vertex.getNormalizedLocation()).getOwnerIndex() == playerIndex) {
+//						if (ratio == 4 && port.getRatio() == 3) {
+//							ratio = 3;
+//						}
+//						else if (tradeResource == port.getPortResource()){
+//							return 2;
+//						}
+//					}
+//				}
+//				
+//				else if(model.getCities().get(vertex.getNormalizedLocation()) != null) {
+//					if(model.getCities().get(vertex.getNormalizedLocation()).getOwnerIndex() == playerIndex) {
+//						if (ratio == 4 && port.getRatio() == 3) {
+//							ratio = 3;
+//						}
+//						else if (tradeResource == port.getPortResource()){
+//							return 2;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return ratio;
+	}
+	
+	public static boolean canBuyDevelopmentCard(int playerIndex) {
+		//TODO
+		System.err.println("canBuyDevCard() is unimplemented");
+		return false;
+//		
+//		ResourceList rList = model.getTransferModel().getPlayers().get(playerIndex).getResources();
+//		if(model.getTransferModel().getTurnTracker().getPlayerTurn() != playerIndex) {
+//			return false;
+//		}
+//		else if(rList.getOre() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0) {
+//			return false;
+//		}
+//		else if(model.getTransferModel().getDeck().getTotalCards() > 0) {
+//			return true;
+//		}
+//		else {
+//			return false;
+//		}
+	}
 	
 	public static boolean canLoseCardsFromDieRoll(int playerIndex) {
-		return model.getTransferModel().getPlayers().get(playerIndex).getResources().getTotalCards() > 7;
+		//TODO
+		System.err.println("canLoseCardsFromDieRoll() is unimplemented");
+		return false;
 	}
 	
 	public static boolean canWin(int playerIndex) {

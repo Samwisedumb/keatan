@@ -1,23 +1,23 @@
 package client.model;
 
 public class Road {
-	private int owner;
+	private int ownerIndex;
 	private EdgeLocation location;
 	
-	public Road(int ownerId, EdgeLocation location) {
-		setOwner(ownerId);
+	public Road(int ownerIndex, EdgeLocation location) {
+		setOwnerIndex(ownerIndex);
 		setLocation(location);
 	}
 	public Road() {
 		
 	}
 
-	public int getOwner() {
-		return owner;
+	public int getOwnerIndex() {
+		return ownerIndex;
 	}
 
-	public void setOwner(int owner) {
-		this.owner = owner;
+	public void setOwnerIndex(int ownerIndex) {
+		this.ownerIndex = ownerIndex;
 	}
 
 	public EdgeLocation getLocation() {
@@ -26,12 +26,5 @@ public class Road {
 
 	public void setLocation(EdgeLocation location) {
 		this.location = location;
-	}
-	
-	
-	public boolean validate(int numPlayers, int radius) {
-		if (owner < 0 || owner > numPlayers - 1) return false;
-		if (location == null || !location.validate(radius)) return false;
-		return true;
 	}
 }

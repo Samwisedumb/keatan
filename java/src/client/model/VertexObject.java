@@ -1,6 +1,11 @@
 package client.model;
 
-
+/**
+ * A dumb data holder for a vertex of a settlers of Catan map<br>
+ * owner - the index of the player who owns the vertex object
+ * location - the location of the vertex object : must be a valid vertex location
+ * @author djoshuac
+ */
 public class VertexObject {
 	private int owner;
 	private VertexLocation location;

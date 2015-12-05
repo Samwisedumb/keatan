@@ -42,8 +42,6 @@ import client.server.ServerPoller;
  * track of what actions each player makes for the GameHistoryController.
  * Professor Woodfield recommenced that our ModelFacade shouldn't access the ClientServer.getSingleton() because
  * in Model-View-Presenter the controllers are the class responsible for ClientServer.getSingleton() communication.<br>
- * However, for this project we are required to show what actions each player makes. This requires a 
- * class to keep track of all ServerCommands.<br>
  * @author djoshuac
  */
 public class MasterController implements IServer {

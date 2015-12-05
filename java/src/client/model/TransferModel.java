@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * This is a dumb data holder used to transfer game information from the server to the client
+ * @author djoshuac
+ */
 public class TransferModel {
 	private DevCardList deck;
 	private ResourceList bank;

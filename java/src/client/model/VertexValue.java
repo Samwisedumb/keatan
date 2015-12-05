@@ -81,7 +81,7 @@ public class VertexValue {
 	
 	public boolean ownsMunicipality(int playerIndex) {
 		if(this.settlement != null) {
-			if(this.settlement.getOwner() == playerIndex) {
+			if(this.settlement.getOwnerIndex() == playerIndex) {
 				return true;
 			}
 			else {
@@ -90,7 +90,7 @@ public class VertexValue {
 		}
 		
 		else if(this.city != null) {
-			if(this.city.getOwner() == playerIndex) {
+			if(this.city.getOwnerIndex() == playerIndex) {
 				return true;
 			}
 			else {
@@ -100,6 +100,22 @@ public class VertexValue {
 		
 		else {
 			return false;
+		}
+	}
+	
+	/**
+	 * @return a vertex object that corresponds to a vertex value<br>
+	 * returns null if no player has a settlement or city
+	 */
+	public VertexObject toVertexObject() {
+		if (city != null) {
+			return new VertexObject(city.getOwnerIndex(), location);
+		}
+		else if (settlement != null) {
+			return new VertexObject(settlement.getOwnerIndex(), location);
+		}
+		else {
+			return null;
 		}
 	}
 	
@@ -115,11 +131,11 @@ public class VertexValue {
 				return -1;
 			}
 			else {
-				return this.city.getOwner();
+				return this.city.getOwnerIndex();
 			}
 		}
 		else {
-			return this.settlement.getOwner();
+			return this.settlement.getOwnerIndex();
 		}
 	}
 }

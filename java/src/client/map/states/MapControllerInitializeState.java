@@ -4,6 +4,7 @@ import shared.definitions.PieceType;
 import client.map.IMapController;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
+import client.model.ModelFacade;
 import client.model.VertexLocation;
 
 /**
@@ -32,12 +33,7 @@ public class MapControllerInitializeState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
-		// We need a can-do that forces the user to place the settlement adjacent to the road
-		// they just placed.  This may work automatically since if they have to place the settlement
-		// adjacent to a road, they will not be able to place it on the first road since that will mean
-		// the second settlement will be nearer than 2 vertices away from the first settlement
-		System.err.println("canPlaceSettlement() for initialize state is unimplemented");
+		ModelFacade.canBuildSettlement(ModelFacade.whoseTurnIsItAnyway(), vertLoc.convertToNormalLocation());
 		return true;
 	}
 

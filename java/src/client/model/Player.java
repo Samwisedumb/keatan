@@ -28,6 +28,9 @@ public class Player {
 	private int monuments;
 	private int victoryPoints;
 	
+	private boolean hasLargestArmy;
+	private boolean hasLongestRoad;
+	
 	/**
 	 * @pre newPlayerIndex must be in the range [0,3], and newName must not be in use
 	 * @param newName The player's name
@@ -51,6 +54,9 @@ public class Player {
 		soldiers = 0;
 		monuments = 0;
 		victoryPoints = 0;
+		
+		hasLargestArmy = false;
+		hasLongestRoad = false;
 	}
 	
 	public int getUnplacedCities() {
@@ -251,11 +257,13 @@ public class Player {
 	
 	public void playSettlement() {
 		this.settlements--;
+		this.victoryPoints++;
 	}
 	
 	public void playCity() {
 		this.cities--;
 		this.settlements++;
+		this.victoryPoints++;
 	}
 	
 	public void useRoadBuildingCard() {
@@ -289,6 +297,8 @@ public class Player {
 	
 	public void endTurn() {
 		playedDevCard = false;
+		discarded = false;
+		
 		oldDevCards.setRoadBuilding(oldDevCards.getRoadBuilding() + newDevCards.getRoadBuilding());
 		oldDevCards.setSoldier(oldDevCards.getSoldier() + newDevCards.getSoldier());
 		oldDevCards.setMonument(oldDevCards.getMonument() + newDevCards.getMonument());
@@ -300,5 +310,33 @@ public class Player {
 		newDevCards.setRoadBuilding(0);
 		newDevCards.setSoldier(0);
 		newDevCards.setYearOfPlenty(0);
+	}
+	
+	public void getLargestArmy() {
+		if(hasLargestArmy == false) {
+			this.victoryPoints += 2;
+			hasLargestArmy = true;
+		}
+	}
+	
+	public void getLongestRoad() {
+		if(hasLongestRoad == false) {
+			this.victoryPoints += 2;
+			hasLongestRoad = true;
+		}
+	}
+	
+	public void loseLargestArmy() {
+		if(hasLargestArmy == true) {
+			this.victoryPoints -= 2;
+			hasLargestArmy = false;
+		}
+	}
+	
+	public void loseLongestRoad() {
+		if(hasLongestRoad == true) {
+			this.victoryPoints -= 2;
+			hasLongestRoad = false;
+		}
 	}
 }

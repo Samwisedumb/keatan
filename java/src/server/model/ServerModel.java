@@ -38,6 +38,9 @@ import client.model.VertexValue;
  */
 public class ServerModel {
 	
+	//WHAT IS NEXT?
+	//WORKING ON VICTORY POINT WINNING STUFF! HOORAY!
+	
 	private String gameName;
 	
 	private HashMap<HexLocation, Hex> hexes;
@@ -560,8 +563,14 @@ public class ServerModel {
 		transfer.getPlayers().get(playerIndex).playRoad();
 		
 		if(transfer.getPlayers().get(playerIndex).getPlacedRoads() > transfer.getTurnTracker().getLongestRoadLength()) {
+			if(transfer.getLargestRoadOwnerIndex() != playerIndex) {
+				transfer.getPlayers().get(transfer.getLargestRoadOwnerIndex()).loseLongestRoad();
+			}
+			
 			transfer.setLargestRoadOwnerIndex(playerIndex);
+			transfer.getPlayers().get(playerIndex).getLongestRoad();
 			transfer.getTurnTracker().setLongestRoadLength(transfer.getPlayers().get(playerIndex).getPlacedRoads());
+			
 		}
 	}
 
@@ -828,28 +837,29 @@ public class ServerModel {
 	
 	public void acceptTrade(int offerer, boolean willAccept) {
 		if(willAccept == false) {
-			return; //nothing happens you silly person
+			
 		}
+		else {
+			Player sender = transfer.getPlayers().get(transfer.getTradeOffer().getSender());
+			Player receiver = transfer.getPlayers().get(transfer.getTradeOffer().getReceiver());
 		
-		Player sender = transfer.getPlayers().get(transfer.getTradeOffer().getSender());
-		Player receiver = transfer.getPlayers().get(transfer.getTradeOffer().getReceiver());
+			ResourceList trade = transfer.getTradeOffer().getOffer();
 		
-		ResourceList trade = transfer.getTradeOffer().getOffer();
+			sender.addResource(ResourceType.BRICK, trade.getBrick());
+			receiver.addResource(ResourceType.BRICK, trade.getBrick() * -1);
 		
-		sender.addResource(ResourceType.BRICK, trade.getBrick());
-		receiver.addResource(ResourceType.BRICK, trade.getBrick() * -1);
+			sender.addResource(ResourceType.ORE, trade.getOre());
+			receiver.addResource(ResourceType.ORE, trade.getOre() * -1);
 		
-		sender.addResource(ResourceType.ORE, trade.getOre());
-		receiver.addResource(ResourceType.ORE, trade.getOre() * -1);
+			sender.addResource(ResourceType.SHEEP, trade.getSheep());
+			receiver.addResource(ResourceType.SHEEP, trade.getSheep() * -1);
 		
-		sender.addResource(ResourceType.SHEEP, trade.getSheep());
-		receiver.addResource(ResourceType.SHEEP, trade.getSheep() * -1);
+			sender.addResource(ResourceType.WHEAT, trade.getWheat());
+			receiver.addResource(ResourceType.WHEAT, trade.getWheat() * -1);
 		
-		sender.addResource(ResourceType.WHEAT, trade.getWheat());
-		receiver.addResource(ResourceType.WHEAT, trade.getWheat() * -1);
-		
-		sender.addResource(ResourceType.WOOD, trade.getWood());
-		receiver.addResource(ResourceType.WOOD, trade.getWood() * -1);
+			sender.addResource(ResourceType.WOOD, trade.getWood());
+			receiver.addResource(ResourceType.WOOD, trade.getWood() * -1);
+		}
 		
 		transfer.setTradeOffer(null);
 	}
@@ -866,7 +876,12 @@ public class ServerModel {
 		transfer.getPlayers().get(playerIndex).useSoldierCard();
 		
 		if(transfer.getPlayers().get(playerIndex).getNumSoldiers() > transfer.getTurnTracker().getLargestArmySize()) {
+			if(transfer.getLargestArmyOwnerIndex() != playerIndex) {
+				transfer.getPlayers().get(transfer.getLargestArmyOwnerIndex()).loseLargestArmy();
+			}
+			
 			transfer.setLargestArmyOwnerIndex(playerIndex);
+			transfer.getPlayers().get(playerIndex).getLargestArmy();
 			transfer.getTurnTracker().setLargestArmySize(transfer.getPlayers().get(playerIndex).getNumSoldiers());
 		}
 	}

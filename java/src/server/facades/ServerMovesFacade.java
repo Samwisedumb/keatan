@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import server.model.ServerModel;
+import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.AcceptTrade;
@@ -28,8 +29,10 @@ import shared.transferClasses.YearOfPlenty;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.Player;
+import client.model.Port;
 import client.model.ResourceList;
 import client.model.Status;
+import client.model.TradeOffer;
 import client.model.VertexLocation;
 import client.model.VertexValue;
 
@@ -80,9 +83,12 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 	
 	@Override
-	public void acceptTrade(int gameID, AcceptTrade accept) {
+	public void acceptTrade(int gameID, AcceptTrade accept) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canAcceptTrade(gameID) == false) {
+			throw new ServerException("You can't trade, mon ami");
+		}
+		ServerData.getInstance().getGameModel(gameID).acceptTrade(accept.getPlayerIndex(), accept.getWillAccept());
 	}
 	
 	@Override
@@ -148,15 +154,22 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void finishTurn(int gameID, FinishTurn end) {
+	public void finishTurn(int gameID, FinishTurn end) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canEndTurn(end.getPlayerIndex(), gameID) == false) {
+			throw new ServerException("It's not over yet, slick!");
+		}
+		ServerData.getInstance().getGameModel(gameID).endTurn(end.getPlayerIndex());
 	}
 
 	@Override
-	public void maritimeTrade(int gameID, MaritimeTrade trade) {
+	public void maritimeTrade(int gameID, MaritimeTrade trade) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canMaritimeTrade(trade.getPlayerIndex(), trade.getInputResource(), trade.getOutputResource(), trade.getRatio(), gameID)) {
+			throw new ServerException("You can't trade, mon ami");
+		}
+		ServerData.getInstance().getGameModel(gameID).maritimeTrade(trade.getPlayerIndex(), trade.getRatio(),
+				trade.getInputResource(), trade.getOutputResource());
 	}
 
 	@Override
@@ -178,9 +191,12 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void offerTrade(int gameID, OfferTrade offer) {
+	public void offerTrade(int gameID, OfferTrade offer) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canDomesticTrade(new TradeOffer(offer.getPlayerIndex(), offer.getReciever(), offer.getOffer()), gameID) == false) {
+			throw new ServerException("You can't trade, mon ami");
+		}
+		ServerData.getInstance().getGameModel(gameID).offerTrade(offer.getPlayerIndex(), offer.getReciever(), offer.getOffer());
 	}
 
 	@Override
@@ -259,6 +275,10 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
+		if(thisGame.getEdges().containsKey(edgeLoc.getNormalizedLocation()) == false) {
+			return false;
+		}
+		
 		List<VertexLocation> points = thisGame.getNearbyVertices(edgeLoc);
 		
 		if((thisGame.getTransferModel().getTurnTracker().getStatus() == Status.FirstRound) ||
@@ -311,6 +331,10 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
+		if(thisGame.getVertices().containsKey(vertLoc.getNormalizedLocation()) == false) {
+			return false;
+		}
+		
 		List<VertexLocation> nearbyVertices = thisGame.getAdjacentVertices(vertLoc);
 		
 		for(VertexLocation point : nearbyVertices) {
@@ -357,6 +381,10 @@ public class ServerMovesFacade implements IMovesFacade {
 		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if((rList.getOre() < 3 || rList.getWheat() < 2) && (free == false)) {
+			return false;
+		}
+		
+		if(thisGame.getVertices().containsKey(vertLoc.getNormalizedLocation()) == false) {
 			return false;
 		}
 		
@@ -584,5 +612,150 @@ public class ServerMovesFacade implements IMovesFacade {
 		return true;
 	}
 
+	public boolean canDomesticTrade(TradeOffer offer, int gameID) {
+		//TODO
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		int currentPlayer = thisGame.getTransferModel().getTurnTracker().getPlayerTurn();
+		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
+			return false;
+		}
+		
+		ResourceList theList = offer.getOffer();
+		
+		ResourceList theOffer = new ResourceList(0,0,0,0,0);
+		ResourceList theRequest = new ResourceList(0,0,0,0,0);
+		
+		
+		if(theList.getWood() >= 0) {
+			theRequest.setWood(theList.getWood());
+		}
+		else {
+			theOffer.setWood(Math.abs(theList.getWood()));
+		}
+		if(theList.getBrick() >= 0) {
+			theRequest.setBrick(theList.getBrick());
+		}
+		else {
+			theOffer.setBrick(Math.abs(theList.getBrick()));
+		}
+		if(theList.getSheep() >= 0) {
+			theRequest.setSheep(theList.getSheep());
+		}
+		else {
+			theOffer.setSheep(Math.abs(theList.getSheep()));
+		}
+		if(theList.getWheat() >= 0) {
+			theRequest.setWheat(theList.getWheat());
+		}
+		else  {
+			theOffer.setWheat(Math.abs(theList.getWheat()));
+		}
+		if(theList.getOre() >= 0) {
+			theRequest.setOre(theList.getOre());
+		}
+		else {
+			theOffer.setOre(Math.abs(theList.getOre()));
+		}
+		
+		
+		//Check if sender has enough resources
+		
+		ResourceList sendResources = thisGame.getTransferModel().getPlayers().get(offer.getSender()).getResources();
+		if(theOffer.getBrick() > sendResources.getBrick()
+				|| theOffer.getOre() > sendResources.getOre()
+				|| theOffer.getSheep() > sendResources.getSheep()
+				|| theOffer.getWheat() > sendResources.getWheat()
+				|| theOffer.getWood() > sendResources.getWood()) {
+			return false;
+		}
+		
+		//Check if receiver has enough resources
+		
+		ResourceList receiveResources = thisGame.getTransferModel().getPlayers().get(offer.getReceiver()).getResources();
+		if(theRequest.getBrick() > receiveResources.getBrick()
+				|| theRequest.getOre() > receiveResources.getOre()
+				|| theRequest.getSheep() > receiveResources.getSheep()
+				|| theRequest.getWheat() > receiveResources.getWheat()
+				|| theRequest.getWood() > receiveResources.getWood()) {
+			return false;
+		}
+		
+		//Passed all checks
+		return true;
+	}
+
+	public boolean canAcceptTrade(int gameID) {
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(thisGame.getTransferModel().getTradeOffer() == null) {
+			return false;
+		}
+		else {
+			return canDomesticTrade(thisGame.getTransferModel().getTradeOffer(), gameID);
+		}
+	}
+
+	public boolean canMaritimeTrade(int playerIndex, ResourceType tradeResource, ResourceType desiredResource, int supposedRatio, int gameID) {
+		//TODO
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		Player player = thisGame.getTransferModel().getPlayers().get(playerIndex);
+		
+		int tradeRatio = getTradeRatio(playerIndex, tradeResource, thisGame);
 	
+		if(supposedRatio != tradeRatio) {
+			return false;
+		}
+		
+		return player.getResources().hasResource(tradeResource, tradeRatio) &&
+				thisGame.getTransferModel().getBank().hasResource(desiredResource, 1);
+	}
+	
+	public int getTradeRatio(int playerIndex, ResourceType tradeResource, ServerModel thisGame) {
+		//TODO
+		
+		int ratio = 4;
+		
+		for (Port port : thisGame.getTransferModel().getMap().getPorts()) {
+			
+			int x = port.getLocation().getX();
+			int y = port.getLocation().getY();
+			
+			EdgeDirection direction = port.getDirection();
+			
+			EdgeLocation relativeEdge = (new EdgeLocation(x, y, direction)).getNormalizedLocation();
+			
+			for (VertexLocation vertex : thisGame.getNearbyVertices(relativeEdge)) {
+				
+				if(thisGame.getVertices().get(vertex.getNormalizedLocation()).hasMunicipality() == true) {
+					if(thisGame.getVertices().get(vertex.getNormalizedLocation()).ownsMunicipality(playerIndex) == true) {
+						if (ratio == 4 && port.getRatio() == 3) {
+							ratio = 3;
+						}
+						else if (tradeResource == port.getPortResource()){
+							return 2;
+						}
+					}
+				}
+			}
+		}
+		return ratio;
+	}
+
+	public boolean canEndTurn(int playerIndex, int gameID) {
+		
+		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		return true;
+	}
 }

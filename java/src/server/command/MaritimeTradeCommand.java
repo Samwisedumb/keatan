@@ -1,6 +1,7 @@
 package server.command;
 
 import server.facades.ServerMovesFacade;
+import shared.exceptions.ServerException;
 import shared.transferClasses.MaritimeTrade;
 
 /**
@@ -24,7 +25,7 @@ public class MaritimeTradeCommand implements Command {
 	}
 	
 	@Override
-	public void execute() {
+	public void execute() throws ServerException {
 		ServerMovesFacade.getInstance().maritimeTrade(game, tradeCommand);
 	}
 

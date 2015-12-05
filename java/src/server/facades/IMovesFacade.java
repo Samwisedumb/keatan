@@ -27,9 +27,10 @@ public interface IMovesFacade {
 	 * @pre Somebody has accepted a trade
 	 * @param gameID the ID of the game
 	 * @param accept the information regarding the trade
+	 * @throws ServerException 
 	 * @post the trade is accepted
 	 */
-	public void acceptTrade(int gameID, AcceptTrade accept);
+	public void acceptTrade(int gameID, AcceptTrade accept) throws ServerException;
 	
 	/**
 	 * @pre Somebody wants to build a city
@@ -80,18 +81,20 @@ public interface IMovesFacade {
 	 * @pre Somebody ends their turn
 	 * @param gameID the ID of the game
 	 * @param end information about who ended the turn
+	 * @throws ServerException 
 	 * @post the game goes to the next player's turn
 	 */
-	public void finishTurn(int gameID, FinishTurn end);
+	public void finishTurn(int gameID, FinishTurn end) throws ServerException;
 	
 	/**
 	 * @pre Somebody does maritime trade
 	 * @param gameID the ID of the game
 	 * @param trade the requested resource, the desired resource, and the player doing the trade
+	 * @throws ServerException 
 	 * @post the player completes the trade
 	 */
 	
-	public void maritimeTrade(int gameID, MaritimeTrade trade);
+	public void maritimeTrade(int gameID, MaritimeTrade trade) throws ServerException;
 	
 	/**
 	 * @pre A player plays a monopoly dev card
@@ -116,8 +119,9 @@ public interface IMovesFacade {
      * @post All players begin trading as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+	 * @throws ServerException 
      */
-	public void offerTrade(int gameID, OfferTrade offer);
+	public void offerTrade(int gameID, OfferTrade offer) throws ServerException;
 	
      /**
      * @pre A player plays a Road Building card

@@ -56,8 +56,6 @@ public class ServerModel {
 		this.radius = 2;
 		this.gameName = gameName;
 		
-		createMap(randomHexes, randomChits, randomPorts);
-		
 		transfer = new TransferModel();
 		
 		transfer.setDeck(new DevCardList(2, 5, 2, 14, 2));
@@ -70,6 +68,8 @@ public class ServerModel {
 		transfer.setTurnTracker(new TurnTracker(0, 5, 3));
 		transfer.setVersion(0);
 		transfer.setWinner(-1);
+		
+		createMap(randomHexes, randomChits, randomPorts);
 	}
 	
 	public TransferModel getTransferModel() {

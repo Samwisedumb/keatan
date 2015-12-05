@@ -174,6 +174,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		if(canMonument(monument.getPlayerIndex(), gameID) == false) {
 			throw new ServerException("You haven't won yet, boy");
 		}
+		ServerData.getInstance().getGameModel(gameID).monument(monument.getPlayerIndex());
 	}
 
 	@Override

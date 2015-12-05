@@ -47,8 +47,6 @@ public class ServerModel {
 	
 	private List<Port> ports;
 	
-	private HexLocation robber;
-	
 	private int radius;
 	
 	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
@@ -91,7 +89,7 @@ public class ServerModel {
 	}
 	
 	public HexLocation getRobber() {
-		return robber;
+		return transfer.getMap().getRobber();
 	}
 	
 	private void createMap(boolean randomHexes, boolean randomChits, boolean randomPorts) {		
@@ -102,8 +100,6 @@ public class ServerModel {
 		setUpMap(theHexes, theChits);
 			
 		setUpPorts(randomPorts);
-		
-		transfer = new TransferModel();
 	}
 
 	/**
@@ -318,7 +314,7 @@ public class ServerModel {
 		theHexes.get(0).setLocation(coordinates); //Set the hex's location to the coordinates
 		
 		if (theHexes.get(0).getType() == HexType.DESERT) {
-			robber = coordinates;
+			transfer.getMap().setRobber(coordinates);
 		}
 		else {
 			theHexes.get(0).setChitNumber(theChits.get(0).intValue());
@@ -491,7 +487,7 @@ public class ServerModel {
 		List<HexLocation> chitLocs = new ArrayList<HexLocation>();
 		
 		for(Hex theHex : hexes.values()) {
-			if(robber.equals(theHex.getLocation())) {
+			if(transfer.getMap().getRobber().equals(theHex.getLocation())) {
 				//Do nothing
 			}
 			else if(theHex.getChitNumber() == numberRoll) {
@@ -778,8 +774,7 @@ public class ServerModel {
 			break;
 		}
 		
-		robber = robberMove;
-		
+		transfer.getMap().setRobber(robberMove);
 		transfer.getTurnTracker().setStatus(Status.Playing);
 	}
 	

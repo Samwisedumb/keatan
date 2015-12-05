@@ -130,7 +130,7 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void buyDevCard(int gameID, BuyDevCard buy) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canBuyDevCard(buy.getPlayerIndex(), gameID)) {
+		if(canBuyDevCard(buy.getPlayerIndex(), gameID) == false) {
 			throw new ServerException("Can't buy a dev card, homeslice");
 		}
 		
@@ -140,7 +140,7 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void discardCards(int gameID, DiscardCards discard) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canDiscard(discard.getPlayerIndex(), discard.getDiscardedCards(), gameID) == true) {
+		if(canDiscard(discard.getPlayerIndex(), discard.getDiscardedCards(), gameID) == false) {
 			throw new ServerException("Don't have to discard cards, my friend");
 		}
 		
@@ -160,15 +160,20 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void monopoly(int gameID, Monopoly monoploy) {
+	public void monopoly(int gameID, Monopoly monopoly) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canMonopoly(monopoly.getPlayerIndex(), monopoly.getResource(), gameID) == false) {
+			throw new ServerException("You can't play this right now, amigo");
+		}
+		ServerData.getInstance().getGameModel(gameID).monopoly(monopoly.getPlayerIndex(), monopoly.getResource());
 	}
 
 	@Override
-	public void monument(int gameID, Monument monument) {
+	public void monument(int gameID, Monument monument) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canMonument(monument.getPlayerIndex(), gameID) == false) {
+			throw new ServerException("You haven't won yet, boy");
+		}
 	}
 
 	@Override
@@ -178,9 +183,12 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	@Override
-	public void roadBuilding(int gameID, RoadBuilding roadBuild) {
+	public void roadBuilding(int gameID, RoadBuilding roadBuild) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canRoadBuilding(roadBuild.getPlayerIndex(), roadBuild.getSpotOne(), roadBuild.getSpotTwo(), gameID) == false) {
+			throw new ServerException("You can't play this right now, amigo");
+		}
+		ServerData.getInstance().getGameModel(gameID).roadBuilding(roadBuild.getPlayerIndex(), roadBuild.getSpotOne(), roadBuild.getSpotTwo());
 	}
 
 	@Override
@@ -189,6 +197,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		if(canRob(robbery.getPlayerIndex(), robbery.getVictimIndex(), robbery.getLocation(), gameID) == false) {
 			throw new ServerException("Can't steal from anyone, charlie");
 		}
+		ServerData.getInstance().getGameModel(gameID).robPlayer(robbery.getPlayerIndex(), robbery.getVictimIndex(), robbery.getLocation());
 	}
 
 	@Override
@@ -210,15 +219,19 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void soldier(int gameID, Soldier soldier) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canPlaySoldier(soldier.getPlayerIndex(), soldier.getVictimIndex(), soldier.getLocation(), gameID)) {
+		if(canPlaySoldier(soldier.getPlayerIndex(), soldier.getVictimIndex(), soldier.getLocation(), gameID) == false) {
 			throw new ServerException("You can't play this right now, amigo");
 		}
+		ServerData.getInstance().getGameModel(gameID).soldier(soldier.getPlayerIndex(),  soldier.getVictimIndex(), soldier.getLocation());
 	}
 
 	@Override
-	public void yearOfPlenty(int gameID, YearOfPlenty plenty) {
+	public void yearOfPlenty(int gameID, YearOfPlenty plenty) throws ServerException {
 		// TODO Auto-generated method stub
-		
+		if(canYearOfPlenty(plenty.getPlayerIndex(), plenty.getResourceOne(), plenty.getResourceTwo(), gameID) == false) {
+			throw new ServerException("You can't play this right now, amigo");
+		}
+		ServerData.getInstance().getGameModel(gameID).yearOfPlenty(plenty.getPlayerIndex(), plenty.getResourceOne(), plenty.getResourceTwo());
 	}
 
 	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID, boolean free) {
@@ -457,6 +470,11 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
+		if((thisGame.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() +
+				thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonument() == 10)) {
+			return true;
+		}
+		
 		return false;
 	}
 	
@@ -500,8 +518,14 @@ public class ServerMovesFacade implements IMovesFacade {
 		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
 			return false;
 		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonopoly() == 0) {
+			return false;
+		}
 		
-		return false;
+		return true;
 	}
 	
 	public boolean canYearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo, int gameID) {
@@ -513,6 +537,17 @@ public class ServerMovesFacade implements IMovesFacade {
 		}
 		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
 			return false;
+		}
+		
+		if(resourceOne == resourceTwo) {
+			if(thisGame.getTransferModel().getBank().hasResource(resourceOne, 2)) {
+				return true;
+			}
+		}
+		else if(thisGame.getTransferModel().getBank().hasResource(resourceOne, 1)) {
+			if(thisGame.getTransferModel().getBank().hasResource(resourceTwo, 1)) {
+				return true;
+			}
 		}
 		
 		return false;

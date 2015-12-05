@@ -97,17 +97,19 @@ public interface IMovesFacade {
 	 * @pre A player plays a monopoly dev card
 	 * @param gameID the ID of the game
 	 * @param monoploy the player who played the card, the desired monopoly
+	 * @throws ServerException 
 	 * @post the player gets all of the desired resource
 	 */
-	public void monopoly(int gameID, Monopoly monoploy);
+	public void monopoly(int gameID, Monopoly monoploy) throws ServerException;
 	
 	/**
 	 * @pre A player plays a monument dev card
 	 * @param gameID the ID of the game
 	 * @param monument the player who played the monument card
+	 * @throws ServerException 
 	 * @post the player gets a victory point
 	 */
-	public void monument(int gameID, Monument monument);
+	public void monument(int gameID, Monument monument) throws ServerException;
 
 	/**
      * @pre A player offers a trade
@@ -122,8 +124,9 @@ public interface IMovesFacade {
      * @post The player places two roads as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+     * @throws ServerException 
      */
-	public void roadBuilding(int gameID, RoadBuilding roadBuild);
+	public void roadBuilding(int gameID, RoadBuilding roadBuild) throws ServerException;
 	
      /**
      * @pre A player plays a soldier or rolls a seven
@@ -165,6 +168,7 @@ public interface IMovesFacade {
      * @post The player receives resources as described in the rules
      * @param gameID The ID of the game to modify
      * @param plenty The transfer object containing relevant data
+     * @throws ServerException 
      */
-	public void yearOfPlenty(int gameID, YearOfPlenty plenty);
+	public void yearOfPlenty(int gameID, YearOfPlenty plenty) throws ServerException;
 }

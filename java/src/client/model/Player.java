@@ -269,10 +269,12 @@ public class Player {
 		this.soldiers++;
 	}
 	
-	public void useMonumentCard() {
-		oldDevCards.setMonument(oldDevCards.getMonument() - 1);
-		playedDevCard = true;
-		this.victoryPoints++;
+	public void useMonumentCards() {
+		int cardsToPlay = oldDevCards.getMonument();
+
+		oldDevCards.setMonument(0);
+		
+		this.victoryPoints += cardsToPlay;
 	}
 	
 	public void useYearOfPlentyCard() {

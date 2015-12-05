@@ -230,7 +230,7 @@ public class ServerModel {
 		ports = new ArrayList<Port>();
 		
 		//add ports to ports array list, based on list of port types. The edge locations never change
-		
+		/*
 		ports.add(new Port(types.remove(0), new HexLocation(0,2), EdgeDirection.North));
 		
 		ports.add(new Port(types.remove(0), new HexLocation(1,2), EdgeDirection.NorthEast));
@@ -248,6 +248,26 @@ public class ServerModel {
 		ports.add(new Port(types.remove(0), new HexLocation(-2,-1), EdgeDirection.NorthWest));
 		
 		ports.add(new Port(types.remove(0), new HexLocation(-2,1), EdgeDirection.NorthWest));
+		*/
+		
+		//BLAH
+		ports.add(new Port(types.remove(0), new HexLocation(0,3), EdgeDirection.South));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(2,3), EdgeDirection.SouthWest));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(3,2), EdgeDirection.SouthWest));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(3,0), EdgeDirection.NorthWest));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(1,-2), EdgeDirection.North));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(-1,-3), EdgeDirection.North));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(-3,-3), EdgeDirection.NorthEast));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(-3,-1), EdgeDirection.SouthEast));
+		
+		ports.add(new Port(types.remove(0), new HexLocation(-2,1), EdgeDirection.SouthEast));
 
 	}
 	/**
@@ -542,6 +562,11 @@ public class ServerModel {
 				" played a road", transfer.getPlayers().get(playerIndex).getName()));
 		edges.get(place).setRoad(new Road(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playRoad();
+		
+		if(transfer.getPlayers().get(playerIndex).getPlacedRoads() > transfer.getTurnTracker().getLongestRoadLength()) {
+			transfer.setLargestRoadOwnerIndex(playerIndex);
+			transfer.getTurnTracker().setLongestRoadLength(transfer.getPlayers().get(playerIndex).getPlacedRoads());
+		}
 	}
 
 	public void payForSettlement(int playerIndex) {
@@ -847,11 +872,12 @@ public class ServerModel {
 		
 		if(transfer.getPlayers().get(playerIndex).getNumSoldiers() > transfer.getTurnTracker().getLargestArmySize()) {
 			transfer.setLargestArmyOwnerIndex(playerIndex);
+			transfer.getTurnTracker().setLargestArmySize(transfer.getPlayers().get(playerIndex).getNumSoldiers());
 		}
 	}
 	
-	public void monumentPlay(int playerIndex) {
-		transfer.getPlayers().get(playerIndex).useMonumentCard();
+	public void monument(int playerIndex) {
+		transfer.getPlayers().get(playerIndex).useMonumentCards();
 	}
 	
 	public void yearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo) {

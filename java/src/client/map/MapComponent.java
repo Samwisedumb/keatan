@@ -347,14 +347,14 @@ public class MapComponent extends JComponent
 		// Compute edge points for the new hex
 		for (EdgeDirection edgeDir : EdgeDirection.values())
 		{
-			EdgeLocation edgeLoc = new EdgeLocation(hexLoc.getX(), hexLoc.getY(), edgeDir).getNormalizedLocation();
+			EdgeLocation edgeLoc = new EdgeLocation(hexLoc.getX(), hexLoc.getY(), edgeDir).getGuiNormalizedLocation();
 			allEdgePoints.put(edgeLoc, getEdgePoint(edgeLoc));
 		}
 		
 		// Compute vertex points for the new hex
 		for (VertexDirection vertDir : VertexDirection.values())
 		{
-			VertexLocation vertLoc = new VertexLocation(hexLoc.getX(), hexLoc.getY(), vertDir).getNormalizedLocation();
+			VertexLocation vertLoc = new VertexLocation(hexLoc.getX(), hexLoc.getY(), vertDir).getGuiNormalizedLocation();
 			allVertexPoints.put(vertLoc, getVertexPoint(vertLoc));
 		}
 		

@@ -23,6 +23,7 @@ public enum EdgeDirection {
 	SouthEast;
 	
 	private EdgeDirection opposite;
+	private EdgeDirection gui;
 		
 	static {
 		NorthEast.opposite = SouthWest;
@@ -33,7 +34,25 @@ public enum EdgeDirection {
 		SouthEast.opposite = NorthWest;
 	}
 	
+	static {
+		North.gui = SouthWest;
+		SouthWest.gui = North;
+		
+		NorthEast.gui = South;
+		South.gui = NorthEast;
+		
+		NorthWest.gui = NorthWest;
+		SouthEast.gui = SouthEast;
+	}
+	
 	public EdgeDirection getOppositeDirection() {
 		return opposite;
+	}
+	
+	/**
+	 * Our person who designed the model used up as positive y
+	 */
+	public EdgeDirection getGui() {
+		return gui;
 	}
 }

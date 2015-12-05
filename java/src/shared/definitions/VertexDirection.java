@@ -23,6 +23,7 @@ public enum VertexDirection {
 	NorthWest;
 	
 	private VertexDirection opposite;
+	private VertexDirection gui;
 	
 	static {
 		West.opposite = East;
@@ -33,7 +34,25 @@ public enum VertexDirection {
 		SouthWest.opposite = NorthEast;
 	}
 	
+	static {
+		West.gui = NorthWest;
+		NorthWest.gui = West;
+		
+		East.gui = SouthEast;
+		SouthEast.gui = East;
+		
+		NorthEast.gui = SouthWest;
+		SouthWest.gui = NorthEast;
+	}
+	
 	public VertexDirection getOppositeDirection() {
 		return opposite;
+	}
+	
+	/**
+	 * Our person who designed the model used up as positive y
+	 */
+	public VertexDirection getGui() {
+		return gui;
 	}
 }

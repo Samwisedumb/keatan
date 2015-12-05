@@ -6,6 +6,8 @@ import server.handlers.games.GameModelHandler;
 import server.handlers.games.GamesCreateHandler;
 import server.handlers.games.GamesJoinHandler;
 import server.handlers.games.GamesListHandler;
+import server.handlers.moves.MovesBuildRoadHandler;
+import server.handlers.moves.MovesBuildSettlementHandler;
 import server.handlers.user.UserLoginHandler;
 import server.handlers.user.UserRegisterHandler;
 
@@ -111,5 +113,7 @@ public class ServerCommunicator {
 		server.createContext("/games/list", new GamesListHandler());
 		server.createContext("/games/join", new GamesJoinHandler());
 		server.createContext("/game/model", new GameModelHandler());
+		server.createContext("/moves/buildRoad", new MovesBuildRoadHandler());
+		server.createContext("/moves/buildSettlement", new MovesBuildSettlementHandler());
 	}
 }

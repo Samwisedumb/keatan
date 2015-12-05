@@ -6,6 +6,7 @@ import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import client.base.MasterController;
 import client.map.IMapController;
+import client.map.MapController;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;
@@ -22,22 +23,19 @@ public class MapControllerInitializeState extends MapControllerState {
 	public MapControllerInitializeState(IMapController controller) {
 		super(controller);
 
-		Player user = ModelFacade.getUserPlayer();
-		
-		getMapView().startDrop(PieceType.SETTLEMENT, user.getColor(), false);
-		getMapView().startDrop(PieceType.ROAD, user.getColor(), false);
+		if (controller.getState().getClass() != this.getClass()) {
+			getMapView().startDrop(PieceType.ROAD, ModelFacade.getUserPlayer().getColor(), false);
+		}
 	}
 
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		System.out.println(edgeLoc.toString());
 		return ModelFacade.canBuildRoad(edgeLoc, true, true);
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		System.out.println(vertLoc.toString());
-		return ModelFacade.canBuildSettlement(vertLoc.convertToNormalLocation(), true);
+		return ModelFacade.canBuildSettlement(vertLoc, true);
 	}
 	
 	/**
@@ -47,11 +45,10 @@ public class MapControllerInitializeState extends MapControllerState {
 	public void placeRoad(EdgeLocation edge) {
 		try {
 			MasterController.getSingleton().buildRoad(new BuildRoad(ModelFacade.getUserPlayer().getIndex(), edge, true));
+			getMapView().startDrop(PieceType.SETTLEMENT, ModelFacade.getUserPlayer().getColor(), false);
 		}
 		catch (ServerException e) {
-			e.printStackTrace();
 			System.err.println(e.getReason());
-			// Gee. It would be nice to tell the client, don't you think?
 		}
 	}
 	
@@ -64,9 +61,7 @@ public class MapControllerInitializeState extends MapControllerState {
 			MasterController.getSingleton().buildSettlement(new BuildSettlement(ModelFacade.getUserPlayer().getIndex(), vertex, true));
 		}
 		catch (ServerException e) {
-			e.printStackTrace();
 			System.err.println(e.getReason());
-			// Gee. It would be nice to tell the client, don't you think?
 		}
 	}
 	

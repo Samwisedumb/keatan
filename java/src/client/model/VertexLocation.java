@@ -60,43 +60,70 @@ public class VertexLocation {
 			case NorthEast:
 				return this;
 			case West:
-				hex = (new HexLocation(x, y)).getNeighborLocation(EdgeDirection.SouthWest);
+				hex = (new HexLocation(x, y)).getNeighborLoc(EdgeDirection.SouthWest);
 				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthEast);
 			case SouthWest:
-				hex = (new HexLocation(x, y)).getNeighborLocation(EdgeDirection.South);
+				hex = (new HexLocation(x, y)).getNeighborLoc(EdgeDirection.South);
 				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthWest);
 			case SouthEast:
-				hex = (new HexLocation(x, y)).getNeighborLocation(EdgeDirection.South);
+				hex = (new HexLocation(x, y)).getNeighborLoc(EdgeDirection.South);
 				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthEast);
 			case East:
-				hex = (new HexLocation(x, y)).getNeighborLocation(EdgeDirection.SouthEast);
+				hex = (new HexLocation(x, y)).getNeighborLoc(EdgeDirection.SouthEast);
 				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthWest);
 			default:
 				assert false;
 				return null;
 		}
 	}
-	
+
 	/**
-	 * Validates a VertexLocation based on a radius criteria
-	 * @pre none
-	 * @param radius - the radius within which a VertexLocation is valid, note the normalized directions can equal radius on the negative side
-	 * @return returns true if valid location given radius, false if otherwise
-	 * @post see return
+	 * Our person who designed the model used up as positive y
 	 */
-	public boolean validate(int radius) {
-		assert false; //unimplemented
-		return false;
+	public VertexLocation getGuiNormalizedLocation() {
+		HexLocation hex;
+		switch (direction) {
+			case NorthWest:
+			case NorthEast:
+				return this;
+			case West:
+				hex = (new HexLocation(x, y)).getGuiNeighbor(EdgeDirection.SouthWest);
+				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthEast);
+			case SouthWest:
+				hex = (new HexLocation(x, y)).getGuiNeighbor(EdgeDirection.South);
+				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthWest);
+			case SouthEast:
+				hex = (new HexLocation(x, y)).getGuiNeighbor(EdgeDirection.South);
+				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthEast);
+			case East:
+				hex = (new HexLocation(x, y)).getGuiNeighbor(EdgeDirection.SouthEast);
+				return new VertexLocation(hex.getX(), hex.getY(), VertexDirection.NorthWest);
+			default:
+				assert false;
+				return null;
+		}
 	}
-	
+
+	/**
+	 * Our person who designed the model used up as positive y
+	 */
+	public VertexLocation convertFromGui() {
+		return new VertexLocation(x, -y, direction);
+	}
+
+	/**
+	 * Our person who designed the model used up as positive y
+	 */
+	public VertexLocation convertToGui() {
+		return new VertexLocation(x, -y, direction);
+	}
+
 	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((direction == null) ? 0 : direction.hashCode());
-		return result;
+	public String toString() {
+		return "VertexLocation [x=" + x + ", y=" + y + ", direction="
+				+ direction + "]";
 	}
+
 	
 	@Override
 	public boolean equals(Object o){
@@ -117,23 +144,20 @@ public class VertexLocation {
 		if (me.y != other.y) {
 			return false;
 		}
-		if (!me.direction.equals(other)) {
+		if (me.direction != other.direction) {
 			return false;
 		}
 		return true;
 	}
 
-	/**
-	 * Converts a gui location to a normal location
-	 * @pre only use this get a normal location from the gui
-	 * @return a normal vertex location
-	 */
-	public VertexLocation convertToNormalLocation() {
-		return new VertexLocation(x, -y, direction);
-	}
-
-	public VertexLocation convertToGui() {
-		return new VertexLocation(x, -y, direction);
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((direction == null) ? 0 : direction.hashCode());
+		return result;
 	}
 }
 

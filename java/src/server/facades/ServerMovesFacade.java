@@ -253,44 +253,49 @@ public class ServerMovesFacade implements IMovesFacade {
 
 	public boolean canBuildRoad(int playerIndex, EdgeLocation edgeLoc, int gameID, boolean free) {
 		// TODO Auto-generated method stub
-		
+		System.out.print("Build Road: ");
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 		
+		Status status = thisGame.getTransferModel().getTurnTracker().getStatus();
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			System.out.println("Not their turn");
 			return false;
 		}
-		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+		else if(status != Status.Playing && status != Status.FirstRound && status != Status.SecondRound) {
+			System.out.println("Invalid game status status " + status);
 			return false;
 		}
 		else if(thisGame.getEdges().get(edgeLoc.getNormalizedLocation()).hasRoad() == true) {
+			System.out.println("Already has road");
 			return false;
 		}
 		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedRoads() == 0) {
+			System.out.println("No roads left to place");
 			return false;
 		}
 		
 		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if((rList.getBrick() == 0 || rList.getWood() == 0) && (free == false)) {
+			System.out.println("Not rich enough");
 			return false;
 		}
 		
 		if(thisGame.getEdges().containsKey(edgeLoc.getNormalizedLocation()) == false) {
+			System.out.println("Location does not exist");
 			return false;
 		}
 		
 		List<VertexLocation> points = thisGame.getNearbyVertices(edgeLoc);
 		
-		if((thisGame.getTransferModel().getTurnTracker().getStatus() == Status.FirstRound) ||
-				(thisGame.getTransferModel().getTurnTracker().getStatus() == Status.SecondRound)) {
-			for(VertexLocation point : points) {
-				boolean wiggleRoom = false; //To see whether or not a settlement built next to this road could be a problem.
-				if(canBuildSettlement(playerIndex, point, gameID, true) == true) {
-					wiggleRoom = true; //If a settlement could hypothetically be placed near this road without breaking the rules, place road
+		if((status == Status.FirstRound) || (status == Status.SecondRound)) {
+			for (VertexLocation vertex : points) {
+				if (!thisGame.isTooCloseToAnotherMunicipality(vertex)) {
+					return true;
 				}
-				
-				return wiggleRoom;
 			}
+			System.out.println("forces illegal move");
+			return false;
 		}
 		
 		for(VertexLocation point : points) {
@@ -311,17 +316,19 @@ public class ServerMovesFacade implements IMovesFacade {
 			}
 		}
 		
+		System.out.println("I don't understand this part, Stephen.");
 		return false;
 	}
 
 	public boolean canBuildSettlement(int playerIndex, VertexLocation vertLoc, int gameID, boolean free) {
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
-		
+
+		Status status = thisGame.getTransferModel().getTurnTracker().getStatus();
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
 			return false;
 		}
-		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+		else if(status != Status.Playing && status != Status.FirstRound && status != Status.SecondRound) {
 			return false;
 		}
 		else if(thisGame.getVertices().get(vertLoc.getNormalizedLocation()).hasMunicipality() == true) {

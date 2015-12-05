@@ -18,6 +18,12 @@ public class Hex {
 		this.number = -1; //For desert
 	}
 	
+	public Hex(HexLocation hexLoc, HexType type, int chitNumber) {
+		setLocation(hexLoc);
+		setType(type);
+		setChitNumber(chitNumber);
+	}
+
 	public void setType(HexType type) {
 		this.resource = type;
 	}
@@ -37,7 +43,7 @@ public class Hex {
 	 * @return hexLocation is gui coordinates
 	 */
 	public HexLocation getGuiLocation() {
-		return location.convertToGuiCoordinates();
+		return location.convertToGui();
 	}
 	
 	/**

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import shared.definitions.CatanColor;
-import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.transferClasses.UserInfo;
 import client.base.MasterController;
@@ -13,7 +12,6 @@ import client.base.Observer;
 import client.communication.LogEntry;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
-
 
 
 public class ModelFacade {
@@ -190,6 +188,7 @@ public class ModelFacade {
 	/**
 	 * Returns the transfer model's version, -1 if current transfer model is null
 	 * @returns -1 if no model version yet, otherwise it returns the models version
+	 * @author djoshuac
 	 */
 	public static int getModelVersion() {
 		if (model.getTransferModel() == null) {
@@ -205,6 +204,7 @@ public class ModelFacade {
 
 	/**
 	 * @return The index of the player whose turn it is
+	 * @author djoshuac
 	 */
 	public static int whoseTurnIsItAnyway() {
 		return model.getTransferModel().getTurnTracker().getPlayerTurn();
@@ -221,23 +221,32 @@ public class ModelFacade {
 	 * @param isFree - does the settlement cost resources
 	 * @return true if the user can build there<br>
 	 * false if otherwise
+	 * @author djoshuac
 	 */
 	public static boolean canBuildSettlement(VertexLocation vertLoc, boolean isFree) {
 		Player user = getUserPlayer();
 		
 		if (!isWithinBounds(vertLoc)) {
+			System.out.println("OUTOFBOUNDS: " + vertLoc);
 			return false;
 		}
 		
 		if (!isFree && !user.getResources().hasEnoughForSettlement()) {
+			System.out.println("Not enough resources");
 			return false;
 		}
 		
 		if (model.isTooCloseToAnotherMunicipality(vertLoc)) {
+			System.out.println("Too close to another municipality");
 			return false;
 		}
 		
-		return model.isAdjacentToRoadOfPlayer(vertLoc, user);
+		if (!model.isAdjacentToRoadOfPlayer(vertLoc, user)) {
+			System.out.println("Not adjacent to a road owned by user");
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
@@ -279,9 +288,10 @@ public class ModelFacade {
 		Player user = getUserPlayer();
 
 		if (!isWithinBounds(edgeLoc)) {
-			System.out.println("OUTOFBOUNDS");
+			System.out.println("OUTOFBOUNDS: " + edgeLoc);
 			return false;
 		}
+		System.out.println("In bounds : " + edgeLoc);
 		
 		if (model.hasRoad(edgeLoc)) {
 			System.out.println("alreadythere");
@@ -294,12 +304,12 @@ public class ModelFacade {
 		
 		if (isDisconnected) { // when we are in the initial setup round - we want to make sure the placement of the road doesn't force an illegal settlement placement
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
-				if (model.isTooCloseToAnotherMunicipality(vertex)) {
-					System.out.println("forces illegal move");
-					return false;
+				if (!model.isTooCloseToAnotherMunicipality(vertex)) {
+					return true;
 				}
 			}
-			return true;
+			System.out.println("forces illegal move");
+			return false;
 		}
 		else { // normally - we want to ensure that the road is adjacent to another road
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
@@ -309,7 +319,6 @@ public class ModelFacade {
 			}
 			System.out.println("not adjacent to road owned by player");
 			return false;
-			
 		}
 	}
 
@@ -480,6 +489,7 @@ public class ModelFacade {
 	 * @pre ModelFacade.updateModel() must have been called with a valid model
 	 * @post see return
 	 * @return the hex location of the robber
+	 * @author djoshuac
 	 */
 	public static HexLocation findRobber() {
 		return model.getTransferModel().getMap().getRobber();
@@ -489,6 +499,7 @@ public class ModelFacade {
 	 * @post sets the user information for the user
 	 * @param userInfo - the userInfo to set it to
 	 * @pre model must not be null
+	 * @author djoshuac
 	 */
 	public static void setUserInfo(UserInfo userInfo) {
 		model.setUserInfo(userInfo);
@@ -502,6 +513,7 @@ public class ModelFacade {
 	 * @pre model must not be null
 	 * @post game info is set to given
 	 * @param game - the game info to store
+	 * @author djoshuac
 	 */
 	public static void setGameInfo(GameInfo game) {
 		model.setGameInfo(game);
@@ -511,6 +523,7 @@ public class ModelFacade {
 	 * @return the game info for the game the user has joined or is trying to join
 	 * @pre model must not be null
 	 * @post see return
+	 * @author djoshuac
 	 */
 	public static GameInfo getGameInfo() {
 		return model.getGameInfo();
@@ -519,6 +532,7 @@ public class ModelFacade {
 	 * This function clears the current game info the user is trying to interact with.
 	 * @pre model must not be null
 	 * @post game info is set to null
+	 * @author djoshuac
 	 */
 	public static void clearGameInfo() {
 		model.setGameInfo(null);
@@ -566,6 +580,7 @@ public class ModelFacade {
 	/**
 	 * @pre Model must be initialized
 	 * @return the list of players in the game
+	 * @author djoshuac
 	 */
 	public static List<Player> getPlayers() {
 		return model.getTransferModel().getPlayers();
@@ -574,6 +589,7 @@ public class ModelFacade {
 	/**
 	 * @return the player object of the owner of the longest road<br>
 	 * null if no player has the longest road
+	 * @author djoshuac
 	 */
 	public static Player getPlayerWithLongestRoad() {
 		return getPlayer(model.getTransferModel().getLargestRoadOwnerIndex());
@@ -582,6 +598,7 @@ public class ModelFacade {
 	/**
 	 * @return the player object of the owner of the largest army<br>
 	 * null if no player has largest army
+	 * @author djoshuac
 	 */
 	public static Player getPlayerWithLargestArmy() {
 		return getPlayer(model.getTransferModel().getLargestArmyOwnerIndex());
@@ -589,6 +606,7 @@ public class ModelFacade {
 	
 	/**
 	 * @return the player whose turn it is
+	 * @author djoshuac
 	 */
 	public static Player getPlayerWhoseTurnItIs() {
 		return getPlayer(whoseTurnIsItAnyway());
@@ -597,6 +615,7 @@ public class ModelFacade {
 	/**
 	 * @return true is the location is within bounds<br>
 	 * false if without
+	 * @author djoshuac
 	 */
 	public static boolean isWithinBounds(EdgeLocation edge) {
 		return model.getTransferModel().getMap().getEdges().contains(new EdgeValue(edge));
@@ -605,6 +624,7 @@ public class ModelFacade {
 	/**
 	 * @return true is the location is within bounds<br>
 	 * false if without
+	 * @author djoshuac
 	 */
 	public static boolean isWithinBounds(VertexLocation vertex) {
 		return model.getTransferModel().getMap().getVertexValues().contains(new VertexValue(vertex));

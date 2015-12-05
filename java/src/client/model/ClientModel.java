@@ -64,8 +64,6 @@ public class ClientModel {
 		return user.getPlayerInfo();
 	}
 
-	
-	// Otherstuff
 	public ClientModel() {
 		hexes = new HashMap<HexLocation, Hex>();
 		roads = new HashMap<EdgeLocation, Road>();
@@ -111,7 +109,6 @@ public class ClientModel {
 		settlements.clear();
 		roads.clear();
 		
-		// add municipalities
 		for (VertexValue vertex : transferModel.getMap().getVertexValues()) {
 			if (vertex.getCity() != null) {
 				cities.put(vertex.getLocation(), vertex.getCity());
@@ -121,7 +118,6 @@ public class ClientModel {
 			}
 		}
 		
-		// add roads
 		for (EdgeValue edge : transferModel.getMap().getEdges()) {
 			if (edge.hasRoad()) {
 				roads.put(edge.getLocation(), edge.getRoad());
@@ -130,7 +126,6 @@ public class ClientModel {
 	}
 	
 	
-	///THINGS!
 	public List<EdgeLocation> getAdjacentEdges(EdgeLocation checkEdge) {
 		
 		List<EdgeLocation> adjacentEdges = new ArrayList<EdgeLocation>();
@@ -741,7 +736,8 @@ public class ClientModel {
 	/**
 	 * This works for normalized an non-normalized locations
 	 * @param vertex - the vertex location to check
-	 * @return true if the vertex location has a city or settlement at it
+	 * @return true if the vertex location has a city or settlement at it<br>
+	 * false if otherwise
 	 * @author djoshuac
 	 */
 	public boolean hasMunicipality(VertexLocation vertex) {	
@@ -751,7 +747,8 @@ public class ClientModel {
 	/**
 	 * This works for normalized an non-normalized locations
 	 * @param vertex - the vertex location to check
-	 * @return true if the vertex location has a city at it
+	 * @return true if the vertex location has a city at it<br>
+	 * false if otherwise
 	 * @author djoshuac
 	 */
 	public boolean hasCity(VertexLocation vertex) {	
@@ -761,7 +758,8 @@ public class ClientModel {
 	/**
 	 * This works for normalized an non-normalized locations
 	 * @param vertex - the vertex location to check
-	 * @return true if the vertex location has a settlement at it
+	 * @return true if the vertex location has a settlement at it<br>
+	 * false if otherwise
 	 * @author djoshuac
 	 */
 	public boolean hasSettlement(VertexLocation vertex) {
@@ -771,7 +769,8 @@ public class ClientModel {
 	/**
 	 * This works for normalized an non-normalized locations
 	 * @param edge - the edge location to check
-	 * @return true if the edge location has a road
+	 * @return true if the edge location has a road<br>
+	 * false if otherwise
 	 * @author djoshuac
 	 */
 	public boolean hasRoad(EdgeLocation edge) {
@@ -781,14 +780,20 @@ public class ClientModel {
 	/**
 	 * This gets a road at the given location - works with non-normalized locations
 	 * @param edge - the edge location to check
+	 * @return the road at the given location<br>
+	 * null if no road exists at location
+	 * @author djoshuac
 	 */
 	public Road getRoad(EdgeLocation edge) {
 		return roads.get(edge.getNormalizedLocation());
 	}
-	
+
 	/**
-	 * This gets a city at the given location - works with non-normalized locations
-	 * @param edge - the edge location to check
+	 * This gets a settlement at the given location - works with non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return the city that corresponds to location<br>
+	 * null if no city exists at location
+	 * @author djoshuac
 	 */
 	public City getCity(VertexLocation vertex) {
 		return cities.get(vertex.getNormalizedLocation());
@@ -796,7 +801,10 @@ public class ClientModel {
 	
 	/**
 	 * This gets a settlement at the given location - works with non-normalized locations
-	 * @param edge - the edge location to check
+	 * @param vertex - the vertex location to check
+	 * @return the settlement that corresponds to location<br>
+	 * null if none found
+	 * @author djoshuac
 	 */
 	public Settlement getSettlement(VertexLocation vertex) {
 		return settlements.get(vertex.getNormalizedLocation());
@@ -807,6 +815,7 @@ public class ClientModel {
 	 * @param vertex - the location to check
 	 * @return true if the location is adjacent to a municipality
 	 * false if otherwise
+	 * @author djoshuac
 	 */
 	public boolean isTooCloseToAnotherMunicipality(VertexLocation vertex) {
 		for (VertexLocation adj : getAdjacentVertices(vertex)) {
@@ -823,10 +832,11 @@ public class ClientModel {
 	 * @param player - the player in question
 	 * @return true if the given location is adjacent to a road owned by the given player<br>
 	 * false if otherwise
+	 * @author djoshuac
 	 */
 	public boolean isAdjacentToRoadOfPlayer(VertexLocation vertex, Player player) {
-		for (EdgeLocation edge : getNearbyEdges(vertex)) {
-			if (getRoad(edge) != null && getRoad(edge).getOwnerIndex() == player.getIndex()) {
+		for (EdgeLocation edge : getNearbyEdges(vertex)) {			
+			if (hasRoad(edge) && getRoad(edge).getOwnerIndex() == player.getIndex()) {
 				return true;
 			}
 		}

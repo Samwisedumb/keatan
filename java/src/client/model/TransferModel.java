@@ -125,4 +125,8 @@ public class TransferModel {
 	public void setLargestRoadOwnerIndex(int largestRoadOwnerIndex) {
 		this.largestRoadOwnerIndex = largestRoadOwnerIndex;
 	}
+
+	public void incrementVersion() {
+		version++;
+	}
 }

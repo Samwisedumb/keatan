@@ -32,14 +32,5 @@ public class VertexObject {
 
 	public void setLocation(VertexLocation location) {
 		this.location = location;
-	}
-	
-	
-	public boolean validate(int numPlayers, int radius) {
-		if (owner < 0 || owner > numPlayers - 1) return false;
-		if (location == null || !location.validate(radius)) return false;
-		return true;
-	}
-	
-	
+	}	
 }

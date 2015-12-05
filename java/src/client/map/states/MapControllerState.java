@@ -1,7 +1,6 @@
 package client.map.states;
 
 import shared.definitions.PieceType;
-import shared.transferClasses.BuildRoad;
 import client.base.IView;
 import client.base.MasterController;
 import client.data.PlayerInfo;
@@ -27,7 +26,7 @@ public abstract class MapControllerState implements IMapController {
 	public MapControllerState(IMapController controller) {
 		this.controller = controller;
 	}
-	
+
 	abstract public boolean canPlaceRoad(EdgeLocation edgeLoc);
 	
 	abstract public boolean canPlaceSettlement(VertexLocation vertLoc);
@@ -110,6 +109,8 @@ public abstract class MapControllerState implements IMapController {
 			PlayerInfo user = ModelFacade.getUserPlayerInfo();
 			Status gameStatus = ModelFacade.whatStateMightItBe();
 			
+			MapControllerState newState;
+			
 			if (ModelFacade.whoseTurnIsItAnyway() != user.getIndex()) {
 				System.out.println("It is not my turn to do stuff");
 				controller.setState(new MapControllerNotTurnState(controller));
@@ -171,5 +172,10 @@ public abstract class MapControllerState implements IMapController {
 	@Override
 	public final IView getView() {
 		return controller.getView();
+	}
+	
+	@Override
+	public final MapControllerState getState() {
+		return this;
 	}
 }

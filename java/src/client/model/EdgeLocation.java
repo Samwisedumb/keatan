@@ -45,11 +45,13 @@ public class EdgeLocation {
 		return new HexLocation(x, y);
 	}
 	
+	
 	@Override
 	public String toString() {
-		return "EdgeLocation [hexLoc=(" + x + "," + y + "), direction=" + direction + "]";
+		return "EdgeLocation [x=" + x + ", y=" + y + ", direction=" + direction
+				+ "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -102,7 +104,7 @@ public class EdgeLocation {
 			case SouthWest:
 			case South:
 			case SouthEast:
-				HexLocation hex = (new HexLocation(x, y).getNeighborLocation(direction));
+				HexLocation hex = (new HexLocation(x, y).getNeighborLoc(direction));
 				return new EdgeLocation(hex.getX(), hex.getY(), direction.getOppositeDirection());
 			default:
 				assert false;
@@ -111,15 +113,38 @@ public class EdgeLocation {
 	}
 
 	/**
-	 * Converts an edge location to a gui edge location
-	 * @return
+	 * Our person who designed the model used up as positive y
+	 */
+	public EdgeLocation getGuiNormalizedLocation() {		
+		switch (direction)
+		{
+			case NorthWest:
+			case North:
+			case NorthEast:
+				return this;
+			case SouthWest:
+			case South:
+			case SouthEast:
+				HexLocation hex = (new HexLocation(x, y).getGuiNeighbor(direction));
+				return new EdgeLocation(hex.getX(), hex.getY(), direction.getOppositeDirection());
+			default:
+				assert false;
+				return null;
+		}
+	}
+	
+	/**
+	 * Our person who designed the model used up as positive y
 	 */
 	public EdgeLocation convertToGui() {
-		return new EdgeLocation(x, -y, direction.getOppositeDirection());
+		return new EdgeLocation(x, -y, direction);
 	}
 
-	public EdgeLocation convertToNormalLocation() {
-		return new EdgeLocation(x, -y, direction.getOppositeDirection());
+	/**
+	 * Our person who designed the model used up as positive y
+	 */
+	public EdgeLocation convertFromGui() {
+		return new EdgeLocation(x, -y, direction);
 	}
 }
 

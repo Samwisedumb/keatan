@@ -143,14 +143,7 @@ public class ClientCommunicator {
 			requestBody.close();
 			
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				InputStream responseBody = connection.getInputStream();
-				
-//				java.util.Scanner s = new java.util.Scanner(responseBody).useDelimiter("\\A");
-//			    String joe = s.hasNext() ? s.next() : "";
-//			    System.out.println(joe);
-//			    
-//				responseBody = new ByteArrayInputStream(joe.getBytes(StandardCharsets.UTF_8));
-				
+				InputStream responseBody = connection.getInputStream();	
 				setLastResponseHeaders(connection.getHeaderFields());
 				return Converter.fromJson(responseBody, classOfReturnObject);
 			}

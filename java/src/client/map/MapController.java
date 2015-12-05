@@ -34,6 +34,8 @@ public class MapController extends Controller implements IMapController {
 		state = new MapControllerWaitingToStartState(this);
 		
 		ModelFacade.addObserver(this);
+		
+		mapIsDrawn = false;
 	}
 
 	@Override
@@ -51,22 +53,26 @@ public class MapController extends Controller implements IMapController {
 		return robView;
 	}
 
+	private boolean mapIsDrawn;
+	
 	/**
 	 * Initializes the map from the model
 	 */
 	@Override
 	public void initFromModel() {
-		for (Hex hex : ModelFacade.getHexes()) {
-			getView().addHex(hex.getGuiLocation(), hex.getType());
-			
-			System.out.println(hex.getGuiLocation());
-			
-			if (hex.getType() != HexType.DESERT) {
-				getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
+		if (!mapIsDrawn) {
+			for (Hex hex : ModelFacade.getHexes()) {
+				getView().addHex(hex.getGuiLocation(), hex.getType());
+				
+				if (hex.getType() != HexType.DESERT) {
+					getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
+				}
 			}
+			drawWater();
 		}
 		
-		getView().placeRobber(ModelFacade.findRobber().convertToGuiCoordinates());
+		getView().placeRobber(ModelFacade.findRobber().convertToGui());
+		getView().placeRobber(new HexLocation(0,0));
 		
 		for (Road r : ModelFacade.getRoads()) {
 			EdgeLocation location = r.getLocation().convertToGui();
@@ -82,8 +88,6 @@ public class MapController extends Controller implements IMapController {
 			VertexLocation location = s.getLocation().convertToGui();
 			getView().placeSettlement(location, ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
 		}
-
-		drawWater();
 		
 		for (Port p : ModelFacade.getPorts()) {
 			EdgeLocation location = new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection()).convertToGui();
@@ -119,42 +123,42 @@ public class MapController extends Controller implements IMapController {
 	
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		return state.canPlaceRoad(edgeLoc.convertToNormalLocation());
+		return state.canPlaceRoad(edgeLoc.convertFromGui());
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		return state.canPlaceSettlement(vertLoc.convertToNormalLocation());
+		return state.canPlaceSettlement(vertLoc.convertFromGui());
 	}
 
 	@Override
 	public boolean canPlaceCity(VertexLocation vertLoc) {
-		return state.canPlaceCity(vertLoc.convertToNormalLocation());
+		return state.canPlaceCity(vertLoc.convertFromGui());
 	}
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		return state.canPlaceRobber(hexLoc.convertToNormalCoordinates());
+		return state.canPlaceRobber(hexLoc.convertFromGui());
 	}
 
 	@Override
 	public final void placeRoad(EdgeLocation edgeLoc) {
-		state.placeRoad(edgeLoc.convertToNormalLocation());
+		state.placeRoad(edgeLoc.convertFromGui());
 	}
 
 	@Override
 	public void placeSettlement(VertexLocation vertLoc) {
-		state.placeSettlement(vertLoc.convertToNormalLocation());
+		state.placeSettlement(vertLoc.convertFromGui());
 	}
 
 	@Override
 	public void placeCity(VertexLocation vertLoc) {
-		state.placeCity(vertLoc.convertToNormalLocation());
+		state.placeCity(vertLoc.convertFromGui());
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		state.placeRobber(hexLoc.convertToNormalCoordinates());
+		state.placeRobber(hexLoc.convertFromGui());
 	}
 
 	@Override
@@ -190,6 +194,11 @@ public class MapController extends Controller implements IMapController {
 	@Override
 	public IMapView getMapView() {
 		return mapView;
+	}
+
+	@Override
+	public MapControllerState getState() {
+		return state;
 	}
 }
 

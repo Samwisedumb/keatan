@@ -27,7 +27,7 @@ public class BuildRoadCommand implements Command {
 
 	@Override
 	public void execute() throws ServerException {
-			ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
+		ServerMovesFacade.getInstance().buildRoad(game, buildCommand);
 	}
 
 }

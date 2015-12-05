@@ -157,5 +157,7 @@ public interface IMapController extends IController
 	IRobView getRobView();
 
 	IMapView getMapView();
+
+	public MapControllerState getState();
 }
 

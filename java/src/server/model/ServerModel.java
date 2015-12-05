@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Random;
 
 import shared.definitions.CatanColor;
+import shared.definitions.EdgeDirection;
 import shared.definitions.HexType;
 import shared.definitions.PortType;
-import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import client.model.City;
 import client.model.DevCardList;
-import client.model.MessageLine;
-import client.model.MessageList;
-import client.model.Player;
-import client.model.Port;
 import client.model.EdgeLocation;
 import client.model.EdgeValue;
 import client.model.Hex;
 import client.model.HexLocation;
+import client.model.MessageLine;
+import client.model.MessageList;
+import client.model.Player;
+import client.model.Port;
 import client.model.ResourceList;
 import client.model.Road;
 import client.model.Settlement;
@@ -285,16 +285,16 @@ public class ServerModel {
 			for(int j = -2; j <= 2; j++) {
 				if(((i > 0) && !(j > 0)) || (!(i > 0) && (j > 0))) { //If either i or j (but not both) is greater than 0...
 					if((Math.abs(i) + Math.abs(j)) <= radius) { //If the sum of the absolute values is less than or equal to the radius...
-						Hex newHex = addToMap(i, j, theHexes, theChits);
-						HashMap<EdgeDirection, EdgeValue> newEdges = addEdges(i, j);
-						HashMap<VertexDirection, VertexValue> newVertices = addVertices(i, j);
+						addToMap(i, j, theHexes, theChits);
+						addEdges(i, j);
+						addVertices(i, j);
 					}
 				}
 				else
 				{
-					Hex newHex = addToMap(i, j, theHexes, theChits);
-					HashMap<EdgeDirection, EdgeValue> newEdges = addEdges(i, j);
-					HashMap<VertexDirection, VertexValue> newVertices = addVertices(i, j);
+					addToMap(i, j, theHexes, theChits);
+					addEdges(i, j);
+					addVertices(i, j);
 				}
 			}
 		}
@@ -341,8 +341,7 @@ public class ServerModel {
 		
 		HashMap<EdgeDirection, EdgeValue> newEdges = new HashMap<EdgeDirection, EdgeValue>();
 		
-		//Create new edges in the six directions
-		
+		//Create new edges in the six directions		
 		EdgeLocation northwestLocation = new EdgeLocation(x, y, EdgeDirection.NorthWest);
 		EdgeValue northwestEdge = new EdgeValue(northwestLocation);
 		
@@ -572,6 +571,8 @@ public class ServerModel {
 			transfer.getTurnTracker().setLongestRoadLength(transfer.getPlayers().get(playerIndex).getPlacedRoads());
 			
 		}
+		
+		transfer.incrementVersion();
 	}
 
 	public void payForSettlement(int playerIndex) {
@@ -583,6 +584,8 @@ public class ServerModel {
 		transfer.getBank().setBrick(transfer.getBank().getBrick() + 1);
 		transfer.getBank().setSheep(transfer.getBank().getSheep() + 1);
 		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
+		
+		transfer.incrementVersion();
 	}
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
@@ -590,6 +593,8 @@ public class ServerModel {
 				" played a settlement", transfer.getPlayers().get(playerIndex).getName()));
 		vertices.get(place).setSettlement(new Settlement(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playSettlement();
+
+		transfer.incrementVersion();
 	}
 	
 	public void payForCity(int playerIndex) {
@@ -1533,6 +1538,103 @@ public class ServerModel {
 		
 		return cousinLocation;
 	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a city or settlement at it<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasMunicipality(VertexLocation vertex) {	
+		return hasCity(vertex) && hasSettlement(vertex);
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a city at it<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasCity(VertexLocation vertex) {	
+		return isWithinBounds(vertex) && getVertex(vertex).getCity() != null;
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param vertex - the vertex location to check
+	 * @return true if the vertex location has a settlement at it<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasSettlement(VertexLocation vertex) {
+		return isWithinBounds(vertex) && getVertex(vertex).getSettlement() != null;
+	}
+	
+	/**
+	 * This works for normalized an non-normalized locations
+	 * @param edge - the edge location to check
+	 * @return true if the edge location has a road<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean hasRoad(EdgeLocation edge) {
+		return isWithinBounds(edge) && getEdge(edge).hasRoad();
+	}
 
+	/**
+	 * See if a vertex location is too close to another municipality for another municipality to be placed there
+	 * @param vertex - the location to check
+	 * @return true if the location is adjacent to a municipality
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean isTooCloseToAnotherMunicipality(VertexLocation vertex) {
+		for (VertexLocation adj : getAdjacentVertices(vertex)) {
+			if (hasMunicipality(adj)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Gets an edge from a location
+	 * @param location - the location to get
+	 * @return the corresponding edge value<br>
+	 * null if location is out of bounds
+	 */
+	public EdgeValue getEdge(EdgeLocation location) {
+		return edges.get(location);
+	}
+
+	/**
+	 * Gets a vertex from a location
+	 * @param location - the location to get
+	 * @return the corresponding vertex value<br>
+	 * null if location is out of bounds
+	 */
+	public VertexValue getVertex(VertexLocation location) {
+		return vertices.get(location);
+	}
+	
+	/**
+	 * @return true is the location is within bounds<br>
+	 * false if without
+	 * @author djoshuac
+	 */
+	public boolean isWithinBounds(EdgeLocation edge) {
+		return edges.get(edge) != null;
+	}
+	
+	/**
+	 * @return true is the location is within bounds<br>
+	 * false if without
+	 * @author djoshuac
+	 */
+	public boolean isWithinBounds(VertexLocation vertex) {
+		return vertices.get(vertex) != null;
+	}
 }
 

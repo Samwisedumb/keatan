@@ -13,9 +13,7 @@ import shared.transferClasses.BuildRoad;
 import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 
-public class MovesBuildRoadHandler extends IHandler {
-
-	
+public class MovesBuildRoadHandler extends IHandler {	
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
@@ -36,8 +34,8 @@ public class MovesBuildRoadHandler extends IHandler {
 			
 			command.execute();
 		
-			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-			exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());	
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);			
+			exchange.getResponseBody().write(Converter.toJson(ServerGamesFacade.getInstance().getTransferModel(cookieGame)).getBytes());	
 		} catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());

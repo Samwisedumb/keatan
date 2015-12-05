@@ -236,7 +236,11 @@ public class MapView extends PanelView implements IMapView
 
 		@Override
 		public IMapView getMapView() {
-			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public MapControllerState getState() {
 			return null;
 		}
 	};

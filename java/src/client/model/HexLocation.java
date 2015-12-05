@@ -60,7 +60,7 @@ public class HexLocation {
 		return true;
 	}
 	
-	public HexLocation getNeighborLocation(EdgeDirection direction) {
+	public HexLocation getNeighborLoc(EdgeDirection direction) {
 		switch (direction) {
 			case NorthWest:
 				return new HexLocation(x - 1, (y));
@@ -79,45 +79,41 @@ public class HexLocation {
 				return null;
 		}
 	}
-//	public HexLocation getNeighborLoc(EdgeDirection direction) //What ta's wrote it, we changed it a little
-//	{
-//		switch (direction)
-//		{
-//			case NorthWest:
-//				return new HexLocation(x - 1, y);
-//			case North:
-//				return new HexLocation(x, y - 1);
-//			case NorthEast:
-//				return new HexLocation(x + 1, y - 1);
-//			case SouthWest:
-//				return new HexLocation(x - 1, y + 1);
-//			case South:
-//				return new HexLocation(x, y + 1);
-//			case SouthEast:
-//				return new HexLocation(x + 1, y);
-//			default:
-//				assert false;
-//				return null;
-//		}
-//	}
+	
+	public HexLocation getGuiNeighbor(EdgeDirection direction) //What ta's wrote it, we changed it a little
+	{
+		switch (direction)
+		{
+			case NorthWest:
+				return new HexLocation(x - 1, y);
+			case North:
+				return new HexLocation(x, y - 1);
+			case NorthEast:
+				return new HexLocation(x + 1, y - 1);
+			case SouthWest:
+				return new HexLocation(x - 1, y + 1);
+			case South:
+				return new HexLocation(x, y + 1);
+			case SouthEast:
+				return new HexLocation(x + 1, y);
+			default:
+				assert false;
+				return null;
+		}
+	}
 
 	/**
-	 * The Catan Gui was oriented a little differently than we imagined.
-	 * This function returns the location as it corresponds to the gui.
-	 * @pre use this only on normal hex locations
-	 * @return hexLocation is gui coordinates
+	 * Our person who designed the model used up as positive y
 	 */
-	public HexLocation convertToGuiCoordinates() {
+	public HexLocation convertToGui() {
 		return new HexLocation(x, -y);
 	}
 	
+
 	/**
-	 * The Catan Gui was oriented a little differently than we imagined.
-	 * This function returns the location as it corresponds to the gui.
-	 * @pre use this only on locations from the gui
-	 * @return hexLocation in normal coordinates
+	 * Our person who designed the model used up as positive y
 	 */
-	public HexLocation convertToNormalCoordinates() {
+	public HexLocation convertFromGui() {
 		return new HexLocation(x, -y);
 	}
 }

@@ -6,10 +6,12 @@ import client.base.Controller;
 import client.data.RobPlayerInfo;
 import client.map.states.MapControllerState;
 import client.map.states.MapControllerWaitingToStartState;
+import client.model.City;
 import client.model.EdgeLocation;
 import client.model.Hex;
 import client.model.HexLocation;
 import client.model.ModelFacade;
+import client.model.Port;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.VertexLocation;
@@ -58,8 +60,6 @@ public class MapController extends Controller implements IMapController {
 			if (hex.getType() != HexType.DESERT) {
 				getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
 			}
-			
-			System.out.println(hex.toString());
 		}
 		
 		for (Road r : ModelFacade.getRoads()) {
@@ -67,10 +67,18 @@ public class MapController extends Controller implements IMapController {
 		}
 		
 		for (Settlement s : ModelFacade.getSettlements()) {
-			getView().placeSettlement(s.getLocation(), );
+			getView().placeSettlement(s.getLocation(), ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
+		}
+		
+		for (City c : ModelFacade.getCities()) {
+			getView().placeSettlement(c.getLocation(), ModelFacade.getPlayer(c.getOwnerIndex()).getColor());
 		}
 
 		drawWater();
+		
+		for (Port p : ModelFacade.getPorts()) {
+			getView().addPort(new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection()), p.getResource());
+		}
 		
 		getView().paintMap();
 	}

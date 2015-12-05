@@ -1,4 +1,5 @@
 import server.ServerCommunicator;
+import server.facades.ServerMovesFacade;
 import shared.definitions.CatanColor;
 import shared.exceptions.ServerException;
 import shared.json.Converter;
@@ -13,6 +14,7 @@ import client.server.ServerProxy;
 public class TestingMain {	
 	public static void main(String[] args) {
 		ServerCommunicator server = new ServerCommunicator(); // uses default localhost:8081
+		
 		ClientServer.setTargetServer(new ServerProxy());
 		
 		UserCredentials hill = new UserCredentials("Hillary", "davis");

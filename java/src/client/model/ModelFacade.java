@@ -62,19 +62,16 @@ public class ModelFacade {
 		return model.getTransferModel().getPlayers().get(index);
 	}
 	
-	public static Collection<VertexObject> getSettlements() {
-		//TODO
-		return null; //model.getTransferModel().getMap().getSettlements();
+	public static Collection<Settlement> getSettlements() {
+		return model.getSettlements().values();
 	}
 	
-	public static List<VertexObject> getCities() {
-		//TODO
-		return null;//model.getTransferModel().getMap().getCities();
+	public static Collection<City> getCities() {
+		return model.getCities().values();
 	}
 	
-	public static List<Port> getPorts() {
-		//TODO
-		return null;//model.getTransferModel().getMap().getPorts();
+	public static Collection<Port> getPorts() {
+		return null;// model.getTransferModel().
 	}
 	
 	/**

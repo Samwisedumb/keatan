@@ -46,6 +46,7 @@ public class ServerModel {
 	private HashMap<VertexLocation, VertexValue> vertices;
 	
 	private List<Port> ports;
+	private HexLocation robber;
 	
 	private int radius;
 	
@@ -56,20 +57,19 @@ public class ServerModel {
 		this.radius = 2;
 		this.gameName = gameName;
 		
-		transfer = new TransferModel();
+		createMap(randomHexes, randomChits, randomPorts);
 		
+		transfer = new TransferModel();
 		transfer.setDeck(new DevCardList(2, 5, 2, 14, 2));
 		transfer.setBank(new ResourceList(19,19,19,19,19));
 		transfer.setChat(new MessageList());
 		transfer.setLog(new MessageList());
 		transfer.setMap(new TransferMap(new ArrayList<Hex>(hexes.values()),
 				new ArrayList<VertexValue>(vertices.values()),
-				new ArrayList<EdgeValue>(edges.values()), ports));
+				new ArrayList<EdgeValue>(edges.values()), ports, robber));
 		transfer.setTurnTracker(new TurnTracker(0, 5, 3));
 		transfer.setVersion(0);
 		transfer.setWinner(-1);
-		
-		createMap(randomHexes, randomChits, randomPorts);
 	}
 	
 	public TransferModel getTransferModel() {
@@ -314,7 +314,7 @@ public class ServerModel {
 		theHexes.get(0).setLocation(coordinates); //Set the hex's location to the coordinates
 		
 		if (theHexes.get(0).getType() == HexType.DESERT) {
-			transfer.getMap().setRobber(coordinates);
+			robber = coordinates;
 		}
 		else {
 			theHexes.get(0).setChitNumber(theChits.get(0).intValue());
@@ -774,7 +774,7 @@ public class ServerModel {
 			break;
 		}
 		
-		transfer.getMap().setRobber(robberMove);
+		robber = robberMove;
 		transfer.getTurnTracker().setStatus(Status.Playing);
 	}
 	

@@ -11,11 +11,12 @@ public class TransferMap {
 	
 	private List<Port> ports;
 	
-	public TransferMap(List<Hex> hexList, List<VertexValue> vertexList, List<EdgeValue> edgeList, List<Port> ports) {
+	public TransferMap(List<Hex> hexList, List<VertexValue> vertexList, List<EdgeValue> edgeList, List<Port> ports, HexLocation robberLoc) {
 		this.hexes = hexList;
 		this.vertices = vertexList;
 		this.edges = edgeList;
 		this.ports = ports;
+		this.robber = robberLoc;
 	}
 	
 	public void addHex(Hex hex) {

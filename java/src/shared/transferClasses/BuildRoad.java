@@ -7,6 +7,7 @@ import client.model.EdgeLocation;
  * This class builds a road at the specified location
  * @param playerIndex the player building the road
  * @param roadLocation the location to build
+ * @param free - whether the road si free or not
  * @author willvdb
  *
  */

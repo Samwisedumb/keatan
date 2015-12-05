@@ -1,11 +1,13 @@
 package client.map.states;
 
 import shared.definitions.PieceType;
+import shared.transferClasses.BuildRoad;
 import client.base.IView;
 import client.base.MasterController;
 import client.data.PlayerInfo;
 import client.data.RobPlayerInfo;
 import client.map.IMapController;
+import client.map.IMapView;
 import client.map.IRobView;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
@@ -147,9 +149,8 @@ public abstract class MapControllerState implements IMapController {
 		}
 	}
 	
-	@Override
-	public final IView getView() {
-		return controller.getView();
+	public final IMapView getMapView() {
+		return controller.getMapView();
 	}
 
 	@Override
@@ -165,5 +166,10 @@ public abstract class MapControllerState implements IMapController {
 	@Override
 	public final IRobView getRobView() {
 		return controller.getRobView();
+	}
+	
+	@Override
+	public final IView getView() {
+		return controller.getView();
 	}
 }

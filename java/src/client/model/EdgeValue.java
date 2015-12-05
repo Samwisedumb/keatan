@@ -50,7 +50,7 @@ public class EdgeValue {
 		
 		else {
 			EdgeValue otherEdge = (EdgeValue) obj;
-			return (this.getLocation() == otherEdge.getLocation());
+			return (this.getLocation().equals(otherEdge.getLocation()));
 		}
 	}
 

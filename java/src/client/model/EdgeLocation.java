@@ -69,12 +69,14 @@ public class EdgeLocation {
 		if(getClass() != obj.getClass())
 			return false;
 		EdgeLocation other = (EdgeLocation)obj;
-		if(direction != other.direction)
+		other = other.getNormalizedLocation();
+		EdgeLocation me = this.getNormalizedLocation();
+		if(me.direction != other.direction)
 			return false;
-		if (x != other.x) {
+		if (me.x != other.x) {
 			return false;
 		}
-		if (y != other.y) {
+		if (me.y != other.y) {
 			return false;
 		}
 		return true;
@@ -108,9 +110,16 @@ public class EdgeLocation {
 		}
 	}
 
-	public boolean validate(int radius) {
-		assert false; // unimplemented
-		return false;
+	/**
+	 * Converts an edge location to a gui edge location
+	 * @return
+	 */
+	public EdgeLocation convertToGui() {
+		return new EdgeLocation(x, -y, direction.getOppositeDirection());
+	}
+
+	public EdgeLocation convertToNormalLocation() {
+		return new EdgeLocation(x, -y, direction.getOppositeDirection());
 	}
 }
 

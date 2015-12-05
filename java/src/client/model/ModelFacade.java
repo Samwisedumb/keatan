@@ -2,14 +2,11 @@ package client.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import shared.definitions.CatanColor;
 import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
-import shared.definitions.VertexDirection;
 import shared.transferClasses.UserInfo;
 import client.base.MasterController;
 import client.base.Observer;
@@ -48,17 +45,21 @@ public class ModelFacade {
 		return model.getTransferModel().getMap().getHexes();
 	}
 	
-	public static Collection<Road> getRoads() {
+	public static Collection<Road> getRoads() {		
 		return model.getRoads().values();
 	}
 	
 	/**
 	 * Get the player with the given index
 	 * @param index - the index to get
-	 * @return the player at the given index
-	 * @pre index must be within 0 and 4
+	 * @return the player at the given index<br>
+	 * null if the index is out of range
 	 */
 	public static Player getPlayer(int index) {
+		if (index < 0 || index > 4) {
+			return null;
+		}
+		
 		return model.getTransferModel().getPlayers().get(index);
 	}
 	
@@ -71,7 +72,7 @@ public class ModelFacade {
 	}
 	
 	public static Collection<Port> getPorts() {
-		return null;// model.getTransferModel().
+		return model.getTransferModel().getMap().getPorts();
 	}
 	
 	/**
@@ -224,6 +225,10 @@ public class ModelFacade {
 	public static boolean canBuildSettlement(VertexLocation vertLoc, boolean isFree) {
 		Player user = getUserPlayer();
 		
+		if (!isWithinBounds(vertLoc)) {
+			return false;
+		}
+		
 		if (!isFree && !user.getResources().hasEnoughForSettlement()) {
 			return false;
 		}
@@ -244,6 +249,10 @@ public class ModelFacade {
 	 */
 	public static boolean canBuildCity(VertexLocation vertLoc) {
 		Player user = getUserPlayer();
+		
+		if (!isWithinBounds(vertLoc)) {
+			return false;
+		}
 		
 		if (!user.getResources().hasEnoughForCity()) {
 			return false;
@@ -268,8 +277,14 @@ public class ModelFacade {
 	 */
 	public static boolean canBuildRoad(EdgeLocation edgeLoc, boolean isFree, boolean isDisconnected) {
 		Player user = getUserPlayer();
+
+		if (!isWithinBounds(edgeLoc)) {
+			System.out.println("OUTOFBOUNDS");
+			return false;
+		}
 		
 		if (model.hasRoad(edgeLoc)) {
+			System.out.println("alreadythere");
 			return false;
 		}
 		
@@ -280,6 +295,7 @@ public class ModelFacade {
 		if (isDisconnected) { // when we are in the initial setup round - we want to make sure the placement of the road doesn't force an illegal settlement placement
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
 				if (model.isTooCloseToAnotherMunicipality(vertex)) {
+					System.out.println("forces illegal move");
 					return false;
 				}
 			}
@@ -291,6 +307,7 @@ public class ModelFacade {
 					return true;
 				}
 			}
+			System.out.println("not adjacent to road owned by player");
 			return false;
 			
 		}
@@ -545,4 +562,53 @@ public class ModelFacade {
 		
 		return chatLog;
 	}
+
+	/**
+	 * @pre Model must be initialized
+	 * @return the list of players in the game
+	 */
+	public static List<Player> getPlayers() {
+		return model.getTransferModel().getPlayers();
+	}
+	
+	/**
+	 * @return the player object of the owner of the longest road<br>
+	 * null if no player has the longest road
+	 */
+	public static Player getPlayerWithLongestRoad() {
+		return getPlayer(model.getTransferModel().getLargestRoadOwnerIndex());
+	}
+	
+	/**
+	 * @return the player object of the owner of the largest army<br>
+	 * null if no player has largest army
+	 */
+	public static Player getPlayerWithLargestArmy() {
+		return getPlayer(model.getTransferModel().getLargestArmyOwnerIndex());
+	}
+	
+	/**
+	 * @return the player whose turn it is
+	 */
+	public static Player getPlayerWhoseTurnItIs() {
+		return getPlayer(whoseTurnIsItAnyway());
+	}
+	
+	/**
+	 * @return true is the location is within bounds<br>
+	 * false if without
+	 */
+	public static boolean isWithinBounds(EdgeLocation edge) {
+		return model.getTransferModel().getMap().getEdges().contains(new EdgeValue(edge));
+	}
+	
+	/**
+	 * @return true is the location is within bounds<br>
+	 * false if without
+	 */
+	public static boolean isWithinBounds(VertexLocation vertex) {
+		return model.getTransferModel().getMap().getVertexValues().contains(new VertexValue(vertex));
+	}
 }
+
+

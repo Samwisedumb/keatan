@@ -155,5 +155,7 @@ public interface IMapController extends IController
 	 * Gets the IRobView
 	 */
 	IRobView getRobView();
+
+	IMapView getMapView();
 }
 

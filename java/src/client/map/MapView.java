@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -232,6 +231,12 @@ public class MapView extends PanelView implements IMapView
 		@Override
 		public IRobView getRobView() {
 			assert false;
+			return null;
+		}
+
+		@Override
+		public IMapView getMapView() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	};

@@ -15,7 +15,6 @@ import client.model.Port;
 import client.model.Road;
 import client.model.Settlement;
 import client.model.VertexLocation;
-import client.model.VertexObject;
 
 /**
  * Implementation for the map controller
@@ -23,12 +22,14 @@ import client.model.VertexObject;
 public class MapController extends Controller implements IMapController {
 	
 	private IRobView robView;
+	private IMapView mapView;
 	
 	private MapControllerState state;
 
 	public MapController(IMapView view, IRobView robView) {
 		super(view);
 		this.robView = robView;
+		this.mapView = view;		
 		
 		state = new MapControllerWaitingToStartState(this);
 		
@@ -58,31 +59,35 @@ public class MapController extends Controller implements IMapController {
 		for (Hex hex : ModelFacade.getHexes()) {
 			getView().addHex(hex.getGuiLocation(), hex.getType());
 			
+			System.out.println(hex.getGuiLocation());
+			
 			if (hex.getType() != HexType.DESERT) {
 				getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
 			}
 		}
 		
-		for (Road r : ModelFacade.getRoads()) {
-			getView().placeRoad(r.getLocation(), ModelFacade.getPlayer(r.getOwnerIndex()).getColor());
-		}
+		getView().placeRobber(ModelFacade.findRobber().convertToGuiCoordinates());
 		
-		for (Settlement s : ModelFacade.getSettlements()) {
-			getView().placeSettlement(s.getLocation(), ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
+		for (Road r : ModelFacade.getRoads()) {
+			EdgeLocation location = r.getLocation().convertToGui();
+			getView().placeRoad(location, ModelFacade.getPlayer(r.getOwnerIndex()).getColor());
 		}
 		
 		for (City c : ModelFacade.getCities()) {
-			getView().placeSettlement(c.getLocation(), ModelFacade.getPlayer(c.getOwnerIndex()).getColor());
+			VertexLocation location = c.getLocation().convertToGui();
+			getView().placeSettlement(location, ModelFacade.getPlayer(c.getOwnerIndex()).getColor());
 		}
 			
 		for (Settlement s : ModelFacade.getSettlements()) {
-			getView().placeSettlement(s.getLocation(), ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
+			VertexLocation location = s.getLocation().convertToGui();
+			getView().placeSettlement(location, ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
 		}
 
 		drawWater();
 		
 		for (Port p : ModelFacade.getPorts()) {
-			getView().addPort(new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection()), p.getResource());
+			EdgeLocation location = new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection()).convertToGui();
+			getView().addPort(location, p.getResource());
 		}
 		
 		getView().paintMap();
@@ -114,42 +119,42 @@ public class MapController extends Controller implements IMapController {
 	
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		return state.canPlaceRoad(edgeLoc);
+		return state.canPlaceRoad(edgeLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		return state.canPlaceSettlement(vertLoc);
+		return state.canPlaceSettlement(vertLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public boolean canPlaceCity(VertexLocation vertLoc) {
-		return state.canPlaceCity(vertLoc);
+		return state.canPlaceCity(vertLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		return state.canPlaceRobber(hexLoc);
+		return state.canPlaceRobber(hexLoc.convertToNormalCoordinates());
 	}
 
 	@Override
-	public void placeRoad(EdgeLocation edgeLoc) {
-		state.placeRoad(edgeLoc);
+	public final void placeRoad(EdgeLocation edgeLoc) {
+		state.placeRoad(edgeLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public void placeSettlement(VertexLocation vertLoc) {
-		state.placeSettlement(vertLoc);
+		state.placeSettlement(vertLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public void placeCity(VertexLocation vertLoc) {
-		state.placeCity(vertLoc);
+		state.placeCity(vertLoc.convertToNormalLocation());
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		state.placeRobber(hexLoc);
+		state.placeRobber(hexLoc.convertToNormalCoordinates());
 	}
 
 	@Override
@@ -180,6 +185,11 @@ public class MapController extends Controller implements IMapController {
 	@Override
 	public void update() {
 		state.update();
+	}
+	
+	@Override
+	public IMapView getMapView() {
+		return mapView;
 	}
 }
 

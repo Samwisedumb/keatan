@@ -106,7 +106,18 @@ public class VertexLocation {
 		if (o.getClass() != this.getClass()){
 			return false;
 		}
-		if (((VertexLocation)o).getX() != this.getX() || ((VertexLocation)o).getY() != this.getY() || ((VertexLocation)o).getDirection() != this.getDirection()){
+		
+		VertexLocation other = (VertexLocation)o;
+		other = other.getNormalizedLocation();
+		VertexLocation me = this.getNormalizedLocation();
+		
+		if (me.x != other.x) {
+			return false;
+		}
+		if (me.y != other.y) {
+			return false;
+		}
+		if (!me.direction.equals(other)) {
 			return false;
 		}
 		return true;
@@ -118,6 +129,10 @@ public class VertexLocation {
 	 * @return a normal vertex location
 	 */
 	public VertexLocation convertToNormalLocation() {
+		return new VertexLocation(x, -y, direction);
+	}
+
+	public VertexLocation convertToGui() {
 		return new VertexLocation(x, -y, direction);
 	}
 }

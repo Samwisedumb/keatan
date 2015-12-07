@@ -4,9 +4,9 @@ import shared.definitions.PieceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
+import shared.transferClasses.FinishTurn;
 import client.base.MasterController;
 import client.map.IMapController;
-import client.map.MapController;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
 import client.model.ModelFacade;
@@ -63,6 +63,7 @@ public class MapControllerInitializeState extends MapControllerState {
 			Player user = ModelFacade.getUserPlayer();
 			getMapView().placeSettlement(vertex, user.getColor());
 			MasterController.getSingleton().buildSettlement(new BuildSettlement(user.getIndex(), vertex, true));
+			MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());

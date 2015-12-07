@@ -63,51 +63,49 @@ public class MapView extends PanelView implements IMapView
 	@Override
 	public void addHex(HexLocation hexLoc, HexType hexType)
 	{
-		map.addHex(hexLoc, hexType);
+		map.addHex(hexLoc.convertToGui(), hexType);
 	}
 	
 	@Override
 	public void addNumber(HexLocation hexLoc, int num)
 	{
-		map.addNumber(hexLoc, num);
+		map.addNumber(hexLoc.convertToGui(), num);
 	}
 	
 	@Override
 	public void addPort(EdgeLocation edgeLoc, PortType portType)
 	{
-		map.placePort(edgeLoc, portType);
+		map.placePort(edgeLoc.convertToGui(), portType);
 	}
 	
 	@Override
 	public void placeRoad(EdgeLocation edgeLoc, CatanColor color)
 	{
-		map.placeRoad(edgeLoc, color);
+		map.placeRoad(edgeLoc.convertToGui(), color);
 	}
 	
 	@Override
 	public void placeSettlement(VertexLocation vertLoc, CatanColor color)
 	{
-		map.placeSettlement(vertLoc, color);
+		map.placeSettlement(vertLoc.convertToGui(), color);
 	}
 	
 	@Override
 	public void placeCity(VertexLocation vertLoc, CatanColor color)
 	{
-		map.placeCity(vertLoc, color);
+		map.placeCity(vertLoc.convertToGui(), color);
 	}
 	
 	@Override
 	public void placeRobber(HexLocation hexLoc)
 	{
-		map.placeRobber(hexLoc);
+		map.placeRobber(hexLoc.convertToGui());
 	}
 	
 	@Override
 	public void startDrop(PieceType pieceType, CatanColor pieceColor,
 						  boolean isCancelAllowed)
-	{
-		System.out.println("Drop Started!");
-		
+	{		
 		overlay = new MapOverlay(map);
 		overlay.setController(overlayController);
 		overlay.startDrop(pieceType, pieceColor, isCancelAllowed);
@@ -126,25 +124,25 @@ public class MapView extends PanelView implements IMapView
 		@Override
 		public boolean canPlaceRoad(EdgeLocation edgeLoc)
 		{
-			return getController().canPlaceRoad(edgeLoc);
+			return getController().canPlaceRoad(edgeLoc.convertFromGui());
 		}
 		
 		@Override
 		public boolean canPlaceSettlement(VertexLocation vertLoc)
 		{
-			return getController().canPlaceSettlement(vertLoc);
+			return getController().canPlaceSettlement(vertLoc.convertFromGui());
 		}
 		
 		@Override
 		public boolean canPlaceCity(VertexLocation vertLoc)
 		{
-			return getController().canPlaceCity(vertLoc);
+			return getController().canPlaceCity(vertLoc.convertFromGui());
 		}
 		
 		@Override
 		public boolean canPlaceRobber(HexLocation hexLoc)
 		{
-			return getController().canPlaceRobber(hexLoc);
+			return getController().canPlaceRobber(hexLoc.convertFromGui());
 		}
 		
 		@Override
@@ -152,7 +150,7 @@ public class MapView extends PanelView implements IMapView
 		{
 			
 			closeModal();
-			getController().placeRoad(edgeLoc);
+			getController().placeRoad(edgeLoc.convertFromGui());
 		}
 		
 		@Override
@@ -160,7 +158,7 @@ public class MapView extends PanelView implements IMapView
 		{
 			
 			closeModal();
-			getController().placeSettlement(vertLoc);
+			getController().placeSettlement(vertLoc.convertFromGui());
 		}
 		
 		@Override
@@ -168,7 +166,7 @@ public class MapView extends PanelView implements IMapView
 		{
 			
 			closeModal();
-			getController().placeCity(vertLoc);
+			getController().placeCity(vertLoc.convertFromGui());
 		}
 		
 		@Override
@@ -176,7 +174,7 @@ public class MapView extends PanelView implements IMapView
 		{
 			
 			closeModal();
-			getController().placeRobber(hexLoc);
+			getController().placeRobber(hexLoc.convertFromGui());
 		}
 		
 		@Override

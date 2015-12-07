@@ -62,35 +62,35 @@ public class MapController extends Controller implements IMapController {
 	public void initFromModel() {
 		if (!mapIsDrawn) {
 			for (Hex hex : ModelFacade.getHexes()) {
-				getView().addHex(hex.getGuiLocation(), hex.getType());
+				getView().addHex(hex.getLocation(), hex.getType());
 				
 				if (hex.getType() != HexType.DESERT) {
-					getView().addNumber(hex.getGuiLocation(), hex.getChitNumber());
+					getView().addNumber(hex.getLocation(), hex.getChitNumber());
 				}
 			}
 			drawWater();
 		}
 		
-		getView().placeRobber(ModelFacade.findRobber().convertToGui());
+		getView().placeRobber(ModelFacade.findRobber());
 		getView().placeRobber(new HexLocation(0,0));
 		
 		for (Road r : ModelFacade.getRoads()) {
-			EdgeLocation location = r.getLocation().convertToGui();
+			EdgeLocation location = r.getLocation();
 			getView().placeRoad(location, ModelFacade.getPlayer(r.getOwnerIndex()).getColor());
 		}
 		
 		for (City c : ModelFacade.getCities()) {
-			VertexLocation location = c.getLocation().convertToGui();
+			VertexLocation location = c.getLocation();
 			getView().placeSettlement(location, ModelFacade.getPlayer(c.getOwnerIndex()).getColor());
 		}
 			
 		for (Settlement s : ModelFacade.getSettlements()) {
-			VertexLocation location = s.getLocation().convertToGui();
+			VertexLocation location = s.getLocation();
 			getView().placeSettlement(location, ModelFacade.getPlayer(s.getOwnerIndex()).getColor());
 		}
 		
 		for (Port p : ModelFacade.getPorts()) {
-			EdgeLocation location = new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection()).convertToGui();
+			EdgeLocation location = new EdgeLocation(p.getLocation().getX(), p.getLocation().getY(), p.getDirection());
 			getView().addPort(location, p.getResource());
 		}
 		
@@ -101,64 +101,64 @@ public class MapController extends Controller implements IMapController {
 	 * Adds all the water hexes to the map
 	 */
 	private void drawWater() {
-		getView().addHex(new HexLocation(0, 3), HexType.WATER);
-		getView().addHex(new HexLocation(-1, 3), HexType.WATER);
-		getView().addHex(new HexLocation(-2, 3), HexType.WATER);
-		getView().addHex(new HexLocation(-3, 3), HexType.WATER);
-		getView().addHex(new HexLocation(-3, 2), HexType.WATER);
-		getView().addHex(new HexLocation(-3, 1), HexType.WATER);
-		getView().addHex(new HexLocation(-3, 0), HexType.WATER);
-		getView().addHex(new HexLocation(-2, -1), HexType.WATER);
-		getView().addHex(new HexLocation(-1, -2), HexType.WATER);
 		getView().addHex(new HexLocation(0, -3), HexType.WATER);
-		getView().addHex(new HexLocation(1, -3), HexType.WATER);
-		getView().addHex(new HexLocation(2, -3), HexType.WATER);
-		getView().addHex(new HexLocation(3, -3), HexType.WATER);
-		getView().addHex(new HexLocation(3, -2), HexType.WATER);
-		getView().addHex(new HexLocation(3, -1), HexType.WATER);
+		getView().addHex(new HexLocation(-1, -3), HexType.WATER);
+		getView().addHex(new HexLocation(-2, -3), HexType.WATER);
+		getView().addHex(new HexLocation(-3, -3), HexType.WATER);
+		getView().addHex(new HexLocation(-3, -2), HexType.WATER);
+		getView().addHex(new HexLocation(-3, -1), HexType.WATER);
+		getView().addHex(new HexLocation(-3, 0), HexType.WATER);
+		getView().addHex(new HexLocation(-2, 1), HexType.WATER);
+		getView().addHex(new HexLocation(-1, 2), HexType.WATER);
+		getView().addHex(new HexLocation(0, 3), HexType.WATER);
+		getView().addHex(new HexLocation(1, 3), HexType.WATER);
+		getView().addHex(new HexLocation(2, 3), HexType.WATER);
+		getView().addHex(new HexLocation(3, 3), HexType.WATER);
+		getView().addHex(new HexLocation(3, 2), HexType.WATER);
+		getView().addHex(new HexLocation(3, 1), HexType.WATER);
 		getView().addHex(new HexLocation(3, 0), HexType.WATER);
-		getView().addHex(new HexLocation(2, 1), HexType.WATER);
-		getView().addHex(new HexLocation(1, 2), HexType.WATER);
+		getView().addHex(new HexLocation(2, -1), HexType.WATER);
+		getView().addHex(new HexLocation(1, -2), HexType.WATER);
 	}
 	
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		return state.canPlaceRoad(edgeLoc.convertFromGui());
+		return state.canPlaceRoad(edgeLoc);
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		return state.canPlaceSettlement(vertLoc.convertFromGui());
+		return state.canPlaceSettlement(vertLoc);
 	}
 
 	@Override
 	public boolean canPlaceCity(VertexLocation vertLoc) {
-		return state.canPlaceCity(vertLoc.convertFromGui());
+		return state.canPlaceCity(vertLoc);
 	}
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		return state.canPlaceRobber(hexLoc.convertFromGui());
+		return state.canPlaceRobber(hexLoc);
 	}
 
 	@Override
 	public final void placeRoad(EdgeLocation edgeLoc) {
-		state.placeRoad(edgeLoc.convertFromGui());
+		state.placeRoad(edgeLoc);
 	}
 
 	@Override
 	public void placeSettlement(VertexLocation vertLoc) {
-		state.placeSettlement(vertLoc.convertFromGui());
+		state.placeSettlement(vertLoc);
 	}
 
 	@Override
 	public void placeCity(VertexLocation vertLoc) {
-		state.placeCity(vertLoc.convertFromGui());
+		state.placeCity(vertLoc);
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		state.placeRobber(hexLoc.convertFromGui());
+		state.placeRobber(hexLoc);
 	}
 
 	@Override

@@ -15,7 +15,9 @@ import client.model.ModelFacade;
 public class GameHistoryController extends Controller implements IGameHistoryController {
 
 	public GameHistoryController(IGameHistoryView view) {
-		super(view);		
+		super(view);
+		
+		ModelFacade.addObserver(this);
 	}
 	
 	@Override
@@ -28,6 +30,8 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
 		if (MasterController.getSingleton().hasGameBegun()) {
 			List<LogEntry> gameLog = new ArrayList<LogEntry>();
 			
+			gameLog.add(new LogEntry(ModelFacade.getUserPlayer().getColor(), "Game has Begun"));
+			
 			for (MessageLine line : ModelFacade.getGameHistory().getLines()) {
 				gameLog.add(new LogEntry(ModelFacade.getPlayer(line.getSource()).getColor(), line.getMessage()));
 			}
@@ -35,7 +39,10 @@ public class GameHistoryController extends Controller implements IGameHistoryCon
 			getView().setEntries(gameLog);
 		}
 		else {
-			getView().setEntries(new ArrayList<LogEntry>());
+			List<LogEntry> gameLog = new ArrayList<LogEntry>();
+			gameLog.add(new LogEntry(ModelFacade.getUserPlayer().getColor(), "Waiting for players..."));
+			
+			getView().setEntries(gameLog);
 		}
 	}
 	

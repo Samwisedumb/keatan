@@ -11,7 +11,6 @@ import client.server.ServerProxy;
 
 public class TestingMain {	
 	public static void main(String[] args) {
-		//ServerCommunicator server = new ServerCommunicator(); // uses default localhost:8081
 		ClientServer.setTargetServer(new ServerProxy());
 		
 		UserCredentials hill = new UserCredentials("Hillary", "davis");

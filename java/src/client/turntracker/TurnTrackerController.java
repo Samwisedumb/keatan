@@ -53,7 +53,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 				for (Player p : players) {
 					getView().initializePlayer(p.getIndex(), p.getName(), p.getColor());
 				}
-				playersAreDrawn = false;
+				playersAreDrawn = true;
 			}
 
 			Player thierTurn = ModelFacade.getPlayerWhoseTurnItIs();

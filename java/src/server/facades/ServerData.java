@@ -33,6 +33,9 @@ public class ServerData {
 
 		games = new ArrayList<ServerModel>();
 		gameTags = new ArrayList<Game>();
+		
+		ServerModel firstGame = new ServerModel(false, false, false, "Default Game");
+		addGame("Default Game", firstGame);
 	}
 	
 	// Users

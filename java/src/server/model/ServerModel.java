@@ -1560,7 +1560,7 @@ public class ServerModel {
 	 * @author djoshuac
 	 */
 	public boolean hasMunicipality(VertexLocation vertex) {	
-		return hasCity(vertex) && hasSettlement(vertex);
+		return hasCity(vertex) || hasSettlement(vertex);
 	}
 	
 	/**

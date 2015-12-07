@@ -346,6 +346,7 @@ public class Player {
 	
 	/**
 	 * @return the number of roads the user has placed
+	 * @author djoshuac
 	 */
 	public int getNumPlacedRoads() {
 		return TOTAL_ROADS - getUnplacedRoads();
@@ -353,6 +354,7 @@ public class Player {
 
 	/**
 	 * @return the number of settlements the user has placed
+	 * @author djoshuac
 	 */
 	public int getNumPlacedSettlements() {
 		return TOTAL_SETTLEMENTS - getUnplacedSettlements();
@@ -360,6 +362,7 @@ public class Player {
 	
 	/**
 	 * @return the number of cities the user has placed
+	 * @author djoshuac
 	 */
 	public int getNumbPlacedCities() {
 		return TOTAL_CITIES - getUnplacedCities();

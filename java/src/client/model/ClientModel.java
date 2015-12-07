@@ -741,7 +741,7 @@ public class ClientModel {
 	 * @author djoshuac
 	 */
 	public boolean hasMunicipality(VertexLocation vertex) {	
-		return hasCity(vertex) && hasSettlement(vertex);
+		return hasCity(vertex) || hasSettlement(vertex);
 	}
 	
 	/**
@@ -818,7 +818,9 @@ public class ClientModel {
 	 * @author djoshuac
 	 */
 	public boolean isTooCloseToAnotherMunicipality(VertexLocation vertex) {
+		System.out.println("loc=" + vertex);
 		for (VertexLocation adj : getAdjacentVertices(vertex)) {
+			System.out.println("   " + adj);
 			if (hasMunicipality(adj)) {
 				return true;
 			}

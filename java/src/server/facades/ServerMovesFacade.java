@@ -752,6 +752,13 @@ public class ServerMovesFacade implements IMovesFacade {
 		return ratio;
 	}
 
+	/**
+	 * See if the player is allowed to end their turn
+	 * @param playerIndex - the player to end their turn
+	 * @param gameID - the game of the player
+	 * @return true if the player is allowed to end their turn<br>
+	 * false if otherwise
+	 */
 	public boolean canEndTurn(int playerIndex, int gameID) {
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 		System.out.print("End turn: ");

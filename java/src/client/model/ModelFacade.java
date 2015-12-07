@@ -626,6 +626,7 @@ public class ModelFacade {
 	 * Get the game history for the game
 	 * @pre the model must be initialized
 	 * @return the game log.
+	 * @author djoshuac
 	 */
 	public static MessageList getGameHistory() {
 		return model.getTransferModel().getLog();

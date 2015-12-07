@@ -122,7 +122,7 @@ public abstract class MapControllerState implements IMapController {
 					controller.setState(new MapControllerRollingDiceState(controller));
 					break;
 				case Discarding:
-					System.err.println("Discarding state is not made yet");
+					System.err.println("Discarding state is not a class yet");
 					break;
 				case FirstRound:
 					System.out.println("I'm in first round (initial place state)");

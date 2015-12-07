@@ -13,7 +13,7 @@ import shared.transferClasses.SendChat;
 import shared.transferClasses.UserInfo;
 import sun.net.www.protocol.http.HttpURLConnection;
 
-public class MoveSendChatHandler extends IHandler {
+public class MovesSendChatHandler extends IHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {

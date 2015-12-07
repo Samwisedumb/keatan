@@ -571,7 +571,7 @@ public class ServerModel {
 			transfer.getTurnTracker().setLongestRoadLength(transfer.getPlayers().get(playerIndex).getPlacedRoads());
 			
 		}
-		
+
 		transfer.incrementVersion();
 	}
 
@@ -584,8 +584,6 @@ public class ServerModel {
 		transfer.getBank().setBrick(transfer.getBank().getBrick() + 1);
 		transfer.getBank().setSheep(transfer.getBank().getSheep() + 1);
 		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
-		
-		transfer.incrementVersion();
 	}
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
@@ -609,6 +607,8 @@ public class ServerModel {
 				"played a city", transfer.getPlayers().get(playerIndex).getName()));
 		vertices.get(place).setCity(new City(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playCity();
+	
+		transfer.incrementVersion();
 	}
 	
 	public void payForDevCard(Player cardBuyer) {
@@ -669,6 +669,7 @@ public class ServerModel {
 			break;
 		}
 		
+		transfer.incrementVersion();
 	}
 	
 	private int devDeckDraw() {
@@ -738,6 +739,8 @@ public class ServerModel {
 		if(allDiscarded() == true) {
 			transfer.getTurnTracker().setStatus(Status.Robbing);
 		}
+		
+		transfer.incrementVersion();
 	}
 	
 	public boolean allDiscarded() {
@@ -790,6 +793,7 @@ public class ServerModel {
 		
 		robber = robberMove;
 		transfer.getTurnTracker().setStatus(Status.Playing);
+		transfer.incrementVersion();
 	}
 	
 	public ResourceType wheelOfSteal(Player victim) {
@@ -834,10 +838,12 @@ public class ServerModel {
 		transfer.getPlayers().get(playerIndex).addResource(output, 1);
 		transfer.getBank().changeResourceAmount(input, ratio);
 		transfer.getBank().changeResourceAmount(output, -1);
+		transfer.incrementVersion();
 	}
 	
 	public void offerTrade(int sender, int receiver, ResourceList offer) {
 		transfer.setTradeOffer(new TradeOffer(sender, receiver, offer));
+		transfer.incrementVersion();
 	}
 	
 	public void acceptTrade(int offerer, boolean willAccept) {
@@ -867,6 +873,7 @@ public class ServerModel {
 		}
 		
 		transfer.setTradeOffer(null);
+		transfer.incrementVersion();
 	}
 	
 	public void roadBuilding(int playerIndex, EdgeLocation placeOne, EdgeLocation placeTwo) {
@@ -889,10 +896,13 @@ public class ServerModel {
 			transfer.getPlayers().get(playerIndex).getLargestArmy();
 			transfer.getTurnTracker().setLargestArmySize(transfer.getPlayers().get(playerIndex).getNumSoldiers());
 		}
+		
+		transfer.incrementVersion();
 	}
 	
 	public void monument(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).useMonumentCards();
+		transfer.incrementVersion();
 	}
 	
 	public void yearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo) {
@@ -902,6 +912,7 @@ public class ServerModel {
 		transfer.getBank().changeResourceAmount(resourceOne, -1);
 		transfer.getBank().changeResourceAmount(resourceTwo, -1);
 		luckyPerson.useYearOfPlentyCard();
+		transfer.incrementVersion();
 	}
 	
 	public void monopoly(int playerIndex, ResourceType mine) {
@@ -919,11 +930,13 @@ public class ServerModel {
 		
 		players.get(playerIndex).addResource(mine, winnings);
 		players.get(playerIndex).useMonopolyCard();
+		transfer.incrementVersion();
 	}
 	
 	public void sendChat(int playerIndex, String message) {
 		MessageLine chatMessage = new MessageLine(message, transfer.getPlayers().get(playerIndex).getName());
 		transfer.getChat().addLine(chatMessage);
+		transfer.incrementVersion();
 	}
 	
 	public void endTurn(int playerIndex) {

@@ -6,8 +6,23 @@ import server.handlers.games.GameModelHandler;
 import server.handlers.games.GamesCreateHandler;
 import server.handlers.games.GamesJoinHandler;
 import server.handlers.games.GamesListHandler;
+import server.handlers.moves.MovesAcceptTradeHandler;
+import server.handlers.moves.MovesBuildCityHandler;
 import server.handlers.moves.MovesBuildRoadHandler;
 import server.handlers.moves.MovesBuildSettlementHandler;
+import server.handlers.moves.MovesBuyDevCardHandler;
+import server.handlers.moves.MovesDiscardCardsHandler;
+import server.handlers.moves.MovesFinishTurnHandler;
+import server.handlers.moves.MovesMaritimeTradeHandler;
+import server.handlers.moves.MovesMonopolyHandler;
+import server.handlers.moves.MovesMonumentHandler;
+import server.handlers.moves.MovesOfferTradeHandler;
+import server.handlers.moves.MovesRoadBuildingHandler;
+import server.handlers.moves.MovesRobPlayerHandler;
+import server.handlers.moves.MovesRollNumberHandler;
+import server.handlers.moves.MovesSendChatHandler;
+import server.handlers.moves.MovesSoldierHandler;
+import server.handlers.moves.MovesYearOfPlentyHandler;
 import server.handlers.user.UserLoginHandler;
 import server.handlers.user.UserRegisterHandler;
 
@@ -113,7 +128,22 @@ public class ServerCommunicator {
 		server.createContext("/games/list", new GamesListHandler());
 		server.createContext("/games/join", new GamesJoinHandler());
 		server.createContext("/game/model", new GameModelHandler());
+		server.createContext("/moves/rollNumber", new MovesRollNumberHandler());
+		server.createContext("/moves/sendChat", new MovesSendChatHandler());
+		server.createContext("/moves/discardCards", new MovesDiscardCardsHandler());
+		server.createContext("/moves/robPlayer", new MovesRobPlayerHandler());
+		server.createContext("/moves/buyDevCard", new MovesBuyDevCardHandler());
+		server.createContext("/moves/Year_Of_Plenty", new MovesYearOfPlentyHandler());
+		server.createContext("/moves/Road_Building", new MovesRoadBuildingHandler());
+		server.createContext("/moves/Soldier", new MovesSoldierHandler());
+		server.createContext("/moves/Monopoly", new MovesMonopolyHandler());
+		server.createContext("/moves/Monument", new MovesMonumentHandler());
+		server.createContext("/moves/maritimeTrade", new MovesMaritimeTradeHandler());
+		server.createContext("/moves/offerTrade", new MovesOfferTradeHandler());
+		server.createContext("/moves/acceptTrade", new MovesAcceptTradeHandler());
 		server.createContext("/moves/buildRoad", new MovesBuildRoadHandler());
 		server.createContext("/moves/buildSettlement", new MovesBuildSettlementHandler());
+		server.createContext("/moves/buildCity", new MovesBuildCityHandler());
+		server.createContext("/moves/finishTurn", new MovesFinishTurnHandler());
 	}
 }

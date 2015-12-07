@@ -28,14 +28,40 @@ public class TurnTracker {
 	 * @post The next player gains control
 	 */
 	public void endPlayerTurn() {
+		if(this.status == Status.FirstRound) {
+			endFirstRoundTurn();
+		}
+		else if(this.status == Status.SecondRound) {
+			endSecondRoundTurn();
+		}
+		else {
+			if(currentPlayer == 3) {
+				currentPlayer = 0;
+			}
+			else {
+				currentPlayer++;
+			}
+		
+			this.status = Status.Rolling;
+		}
+	}
+	
+	public void endFirstRoundTurn() {
 		if(currentPlayer == 3) {
-			currentPlayer = 0;
+			this.status = Status.SecondRound;
 		}
 		else {
 			currentPlayer++;
 		}
-		
-		this.status = Status.Rolling;
+	}
+	
+	public void endSecondRoundTurn() {
+		if(currentPlayer == 0) {
+			this.status = Status.Rolling;
+		}
+		else {
+			currentPlayer--;
+		}
 	}
 	
 	/**

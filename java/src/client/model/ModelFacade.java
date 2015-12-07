@@ -235,6 +235,11 @@ public class ModelFacade {
 			return false;
 		}
 		
+		if (getUserPlayer().getUnplacedSettlements() < 1) {
+			System.out.println("Not enough unplaced settlements");
+			return false;
+		}
+		
 		if (!isFree && !user.getResources().hasEnoughForSettlement()) {
 			System.out.println("Not enough resources");
 			return false;
@@ -264,6 +269,11 @@ public class ModelFacade {
 		Player user = getUserPlayer();
 		
 		if (!isWithinBounds(vertLoc)) {
+			return false;
+		}
+		
+		if (getUserPlayer().getUnplacedCities() < 1) {
+			System.out.println("Not enough unplaced cities");
 			return false;
 		}
 		
@@ -301,14 +311,19 @@ public class ModelFacade {
 			return false;
 		}
 		
+		if (getUserPlayer().getUnplacedRoads() < 1) {
+			System.out.println("No more unplaced roads");
+			return false;
+		}
+		
 		if (!isFree && !user.getResources().hasEnoughForRoad()) {
 			System.out.println("Not enough resources");
 			return false;
 		}
 		
-		if (isDisconnected) { // when we are in the initial setup round - we want to make sure the placement of the road doesn't force an illegal settlement placement
+		if (isDisconnected) { // when we are in the initial setup stage - we want to make sure the placement of the road doesn't force an illegal settlement placement
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
-				if (!model.isTooCloseToAnotherMunicipality(vertex)) {
+				if (canBuildSettlement(vertex, true)) {
 					return true;
 				}
 			}

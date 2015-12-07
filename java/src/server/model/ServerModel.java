@@ -476,7 +476,7 @@ public class ServerModel {
 		}
 		
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + " rolled a " +
-		new Integer(numberRoll).toString(), transfer.getPlayers().get(playerIndex).getName()));
+		new Integer(numberRoll).toString(), playerIndex));
 		
 		List<ResourceList> spoils = new ArrayList<ResourceList>();
 		
@@ -557,7 +557,7 @@ public class ServerModel {
 	
 	public void placeRoad(EdgeLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-				" played a road", transfer.getPlayers().get(playerIndex).getName()));
+				" played a road", playerIndex));
 		edges.get(place).setRoad(new Road(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playRoad();
 		
@@ -588,7 +588,7 @@ public class ServerModel {
 	
 	public void placeSettlement(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + 
-				" played a settlement", transfer.getPlayers().get(playerIndex).getName()));
+				" played a settlement", playerIndex));
 		vertices.get(place).setSettlement(new Settlement(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playSettlement();
 
@@ -604,7 +604,7 @@ public class ServerModel {
 	
 	public void placeCity(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-				"played a city", transfer.getPlayers().get(playerIndex).getName()));
+				"played a city", playerIndex));
 		vertices.get(place).setCity(new City(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playCity();
 	
@@ -627,45 +627,45 @@ public class ServerModel {
 		
 		switch(draw) {
 		case -1:
-			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", transfer.getPlayers().get(playerIndex).getName()));
+			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", playerIndex));
 			break; //nothing happens. No dev cards to draw
 		case 0:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setMonopoly(transfer.getDeck().getMonopoly() - 1);
 			cardBuyer.getNewDevCards().setMonopoly(cardBuyer.getNewDevCards().getMonopoly() + 1);
 			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
+					"bought a dev card", playerIndex));
 			break;
 		case 1:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setMonument(transfer.getDeck().getMonument() - 1);
 			cardBuyer.getNewDevCards().setMonument(cardBuyer.getNewDevCards().getMonument() + 1);
 			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
+					"bought a dev card", playerIndex));
 			break;
 		case 2:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setRoadBuilding(transfer.getDeck().getRoadBuilding() - 1);
 			cardBuyer.getNewDevCards().setRoadBuilding(cardBuyer.getNewDevCards().getRoadBuilding() + 1);
 			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
+					"bought a dev card", playerIndex));
 			break;
 		case 3:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setSoldier(transfer.getDeck().getSoldier() - 1);
 			cardBuyer.getNewDevCards().setSoldier(cardBuyer.getNewDevCards().getSoldier() + 1);
 			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
+					"bought a dev card", playerIndex));
 			break;
 		case 4:
 			payForDevCard(cardBuyer);
 			transfer.getDeck().setYearOfPlenty(transfer.getDeck().getYearOfPlenty() - 1);
 			cardBuyer.getNewDevCards().setYearOfPlenty(cardBuyer.getNewDevCards().getYearOfPlenty() + 1);
 			transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
-					"bought a dev card", transfer.getPlayers().get(playerIndex).getName()));
+					"bought a dev card", playerIndex));
 			break;
 		default:
-			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", transfer.getPlayers().get(playerIndex).getName()));
+			transfer.getLog().addLine(new MessageLine("Can't buy a dev card", playerIndex));
 			break;
 		}
 		
@@ -934,7 +934,7 @@ public class ServerModel {
 	}
 	
 	public void sendChat(int playerIndex, String message) {
-		MessageLine chatMessage = new MessageLine(message, transfer.getPlayers().get(playerIndex).getName());
+		MessageLine chatMessage = new MessageLine(message, playerIndex);
 		transfer.getChat().addLine(chatMessage);
 		transfer.incrementVersion();
 	}

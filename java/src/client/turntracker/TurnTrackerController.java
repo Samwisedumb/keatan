@@ -22,6 +22,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 		getView().setLocalPlayerColor(CatanColor.WHITE);
 		
 		ModelFacade.addObserver(this);
+		
+		playersAreDrawn = false;
 	}
 	
 	@Override
@@ -35,6 +37,8 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
 	}
 	
+	boolean playersAreDrawn;
+	
 	@Override
 	public void update() {
 		PlayerInfo user = ModelFacade.getUserPlayerInfo();
@@ -44,9 +48,12 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 		
 		if (MasterController.getSingleton().hasGameBegun()) {
 			List<Player> players = ModelFacade.getPlayers();
-			for (Player p : players) {
-				System.out.println(p.getIndex());
-				getView().initializePlayer(p.getIndex(), p.getName(), p.getColor());
+			
+			if (!playersAreDrawn) {
+				for (Player p : players) {
+					getView().initializePlayer(p.getIndex(), p.getName(), p.getColor());
+				}
+				playersAreDrawn = false;
 			}
 
 			Player thierTurn = ModelFacade.getPlayerWhoseTurnItIs();

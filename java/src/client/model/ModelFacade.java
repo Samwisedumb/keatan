@@ -565,16 +565,8 @@ public class ModelFacade {
 	 * @return the chat log for the given game
 	 * @pre model must not be null
 	 */
-	public static List<LogEntry> getChatLog() {
-		MessageList chat = model.getTransferModel().getChat();
-		List<LogEntry> chatLog = new ArrayList<LogEntry>();
-		
-		for (MessageLine line : chat.getLines()) {
-			CatanColor color = getGameInfo().getPlayerInfoByName(line.getSource()).getColor();
-			chatLog.add(new LogEntry(color, line.getMessage()));
-		}
-		
-		return chatLog;
+	public static MessageList getChatLog() {
+		return model.getTransferModel().getChat();
 	}
 
 	/**
@@ -628,6 +620,15 @@ public class ModelFacade {
 	 */
 	public static boolean isWithinBounds(VertexLocation vertex) {
 		return model.getTransferModel().getMap().getVertexValues().contains(new VertexValue(vertex));
+	}
+	
+	/**
+	 * Get the game history for the game
+	 * @pre the model must be initialized
+	 * @return the game log.
+	 */
+	public static MessageList getGameHistory() {
+		return model.getTransferModel().getLog();
 	}
 }
 

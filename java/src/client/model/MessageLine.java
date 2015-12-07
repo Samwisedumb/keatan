@@ -5,16 +5,16 @@ package client.model;
  */
 public class MessageLine {
 	private String message;
-	private String source;
+	private int playerIndex;
 	
 	/**
-	 * @param message The message to send.
-	 * @param source The identity of the message sender.
+	 * @param message - The message to send.
+	 * @param playerIndex - the index of the player who sent it
 	 * @post The stored message and source match the given params.
 	 */
-	public MessageLine(String message, String source) {
+	public MessageLine(String message, int playerIndex) {
 		this.message = message;
-		this.source = source;
+		this.playerIndex = playerIndex;
 	}
 	
 	public String getMessage() {
@@ -23,10 +23,10 @@ public class MessageLine {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public String getSource() {
-		return source;
+	public int getSource() {
+		return playerIndex;
 	}
-	public void setSource(String source) {
-		this.source = source;
+	public void setSource(int playerIndex) {
+		this.playerIndex = playerIndex;
 	}
 }

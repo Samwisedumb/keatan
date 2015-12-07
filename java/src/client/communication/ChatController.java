@@ -1,11 +1,13 @@
 package client.communication;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import shared.exceptions.ServerException;
 import shared.transferClasses.SendChat;
 import client.base.Controller;
 import client.base.MasterController;
+import client.model.MessageLine;
 import client.model.ModelFacade;
 
 
@@ -38,7 +40,13 @@ public class ChatController extends Controller implements IChatController {
 	@Override
 	public void update() {
 		if (MasterController.getSingleton().hasGameBegun()) {
-			getView().setEntries(ModelFacade.getChatLog());
+			List<LogEntry> chatLog = new ArrayList<LogEntry>();
+			
+			for (MessageLine line : ModelFacade.getChatLog().getLines()) {
+				chatLog.add(new LogEntry(ModelFacade.getPlayer(line.getSource()).getColor(), line.getMessage()));
+			}
+			
+			getView().setEntries(chatLog);
 		}
 		else {
 			getView().setEntries(new ArrayList<LogEntry>());

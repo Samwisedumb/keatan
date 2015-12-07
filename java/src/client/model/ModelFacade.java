@@ -237,12 +237,12 @@ public class ModelFacade {
 		}
 		
 		if (model.isTooCloseToAnotherMunicipality(vertLoc)) {
-			System.out.println("Too close to another municipality");
+			System.out.println("Too close to another municipality: " + vertLoc);
 			return false;
 		}
 		
 		if (!model.isAdjacentToRoadOfPlayer(vertLoc, user)) {
-			System.out.println("Not adjacent to a road owned by user");
+			System.out.println("Not adjacent to a road owned by user: " + vertLoc);
 			return false;
 		}
 		
@@ -291,14 +291,14 @@ public class ModelFacade {
 			System.out.println("OUTOFBOUNDS: " + edgeLoc);
 			return false;
 		}
-		System.out.println("In bounds : " + edgeLoc);
 		
 		if (model.hasRoad(edgeLoc)) {
-			System.out.println("alreadythere");
+			System.out.println("A road already is there");
 			return false;
 		}
 		
 		if (!isFree && !user.getResources().hasEnoughForRoad()) {
+			System.out.println("Not enough resources");
 			return false;
 		}
 		
@@ -308,7 +308,7 @@ public class ModelFacade {
 					return true;
 				}
 			}
-			System.out.println("forces illegal move");
+			System.out.println("Forces illegal settlement placement");
 			return false;
 		}
 		else { // normally - we want to ensure that the road is adjacent to another road
@@ -317,7 +317,7 @@ public class ModelFacade {
 					return true;
 				}
 			}
-			System.out.println("not adjacent to road owned by player");
+			System.out.println("Not adjacent to road owned by the player");
 			return false;
 		}
 	}

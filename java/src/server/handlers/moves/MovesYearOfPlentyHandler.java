@@ -33,7 +33,7 @@ public class MovesYearOfPlentyHandler extends IHandler {
 			command.execute();
 			
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-			exchange.getResponseBody().write(Converter.toJson("Success!").getBytes());
+			exchange.getResponseBody().write(Converter.toJson(ServerGamesFacade.getInstance().getTransferModel(cookieGame)).getBytes());
 			
 		} catch (ServerException e) {
 			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);

@@ -44,8 +44,10 @@ public class MapControllerInitializeState extends MapControllerState {
 	@Override
 	public void placeRoad(EdgeLocation edge) {
 		try {
-			MasterController.getSingleton().buildRoad(new BuildRoad(ModelFacade.getUserPlayer().getIndex(), edge, true));
-			getMapView().startDrop(PieceType.SETTLEMENT, ModelFacade.getUserPlayer().getColor(), false);
+			Player user = ModelFacade.getUserPlayer();
+			getMapView().placeRoad(edge, user.getColor());
+			MasterController.getSingleton().buildRoad(new BuildRoad(user.getIndex(), edge, true));
+			getMapView().startDrop(PieceType.SETTLEMENT, user.getColor(), false);
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());
@@ -58,7 +60,9 @@ public class MapControllerInitializeState extends MapControllerState {
 	@Override
 	public void placeSettlement(VertexLocation vertex) {
 		try {
-			MasterController.getSingleton().buildSettlement(new BuildSettlement(ModelFacade.getUserPlayer().getIndex(), vertex, true));
+			Player user = ModelFacade.getUserPlayer();
+			getMapView().placeSettlement(vertex, user.getColor());
+			MasterController.getSingleton().buildSettlement(new BuildSettlement(user.getIndex(), vertex, true));
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());

@@ -19,9 +19,11 @@ import client.model.VertexLocation;
  * @author djoshuac
  */
 public class MapControllerInitializeState extends MapControllerState {
+	private IMapController controller;
 	
 	public MapControllerInitializeState(IMapController controller) {
 		super(controller);
+		this.controller = controller;
 
 		if (controller.getState().getClass() != this.getClass()) {
 			getMapView().startDrop(PieceType.ROAD, ModelFacade.getUserPlayer().getColor(), false);
@@ -64,6 +66,7 @@ public class MapControllerInitializeState extends MapControllerState {
 			getMapView().placeSettlement(vertex, user.getColor());
 			MasterController.getSingleton().buildSettlement(new BuildSettlement(user.getIndex(), vertex, true));
 			MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
+			setState(new MapControllerNotTurnState(controller));
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());

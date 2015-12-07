@@ -226,6 +226,10 @@ public class ModelFacade {
 	public static boolean canBuildSettlement(VertexLocation vertLoc, boolean isFree) {
 		Player user = getUserPlayer();
 		
+		if (model.hasMunicipality(vertLoc)) {
+			System.out.println("Municipality is already there");
+		}
+		
 		if (!isWithinBounds(vertLoc)) {
 			System.out.println("OUTOFBOUNDS: " + vertLoc);
 			return false;

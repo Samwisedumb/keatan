@@ -818,9 +818,7 @@ public class ClientModel {
 	 * @author djoshuac
 	 */
 	public boolean isTooCloseToAnotherMunicipality(VertexLocation vertex) {
-		System.out.println("loc=" + vertex);
 		for (VertexLocation adj : getAdjacentVertices(vertex)) {
-			System.out.println("   " + adj);
 			if (hasMunicipality(adj)) {
 				return true;
 			}

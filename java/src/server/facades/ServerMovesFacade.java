@@ -230,7 +230,7 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void sendChat(int gameID, SendChat chat) {
 		// TODO Auto-generated method stub
-		
+		ServerData.getInstance().getGameModel(gameID).sendChat(chat.getPlayerIndex(), chat.getContent());
 	}
 
 	@Override

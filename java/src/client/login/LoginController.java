@@ -196,5 +196,22 @@ public class LoginController extends Controller implements ILoginController {
 	public void update() {
 		// do nothing
 	}
+
+	/**
+	 * For easier gui testing
+	 * @param credentials - user credentials
+	 */
+	public void register(UserCredentials credentials) {
+		try {
+			MasterController.getSingleton().register(credentials);
+			UserInfo user = MasterController.getSingleton().login(credentials);
+
+			ModelFacade.setUserInfo(user);
+			getLoginView().closeModal();				
+			loginAction.execute();
+		} catch (ServerException e) {
+			e.printStackTrace();
+		}
+	}
 }
 

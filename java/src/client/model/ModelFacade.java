@@ -228,6 +228,7 @@ public class ModelFacade {
 		
 		if (model.hasMunicipality(vertLoc)) {
 			System.out.println("Municipality is already there");
+			return false;
 		}
 		
 		if (!isWithinBounds(vertLoc)) {
@@ -323,9 +324,9 @@ public class ModelFacade {
 		
 		if (isDisconnected) { // when we are in the initial setup stage - we want to make sure the placement of the road doesn't force an illegal settlement placement
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
-				if (canBuildSettlement(vertex, true)) {
+				//if (!model.hasMunicipality(vertex) && !model.isTooCloseToAnotherMunicipality(vertex)) {
 					return true;
-				}
+				//}
 			}
 			System.out.println("Forces illegal settlement placement");
 			return false;

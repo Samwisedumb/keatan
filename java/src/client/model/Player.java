@@ -7,7 +7,11 @@ import shared.definitions.ResourceType;
 /**
  * Contains data about a given player
  */
-public class Player {	
+public class Player {
+	public static final int TOTAL_ROADS = 15;
+	public static final int TOTAL_SETTLEMENTS = 5;
+	public static final int TOTAL_CITIES = 4;
+	
 	private String name;
 	private int playerID;
 	private CatanColor color; // We can't avoid being primitively obsessed while satisfying the TA's JSON objects. #swagger
@@ -48,9 +52,9 @@ public class Player {
 		playedDevCard = false;
 		discarded = false;
 		resources = new ResourceList(0,0,0,0,0);
-		roads = 15;
-		settlements = 5;
-		cities = 4;
+		roads = TOTAL_ROADS;
+		settlements = TOTAL_SETTLEMENTS;
+		cities = TOTAL_CITIES;
 		soldiers = 0;
 		monuments = 0;
 		victoryPoints = 0;
@@ -338,5 +342,26 @@ public class Player {
 			this.victoryPoints -= 2;
 			hasLongestRoad = false;
 		}
+	}
+	
+	/**
+	 * @return the number of roads the user has placed
+	 */
+	public int getNumPlacedRoads() {
+		return TOTAL_ROADS - getUnplacedRoads();
+	}
+
+	/**
+	 * @return the number of settlements the user has placed
+	 */
+	public int getNumPlacedSettlements() {
+		return TOTAL_SETTLEMENTS - getUnplacedSettlements();
+	}
+	
+	/**
+	 * @return the number of cities the user has placed
+	 */
+	public int getNumbPlacedCities() {
+		return TOTAL_CITIES - getUnplacedCities();
 	}
 }

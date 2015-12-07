@@ -753,13 +753,34 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	public boolean canEndTurn(int playerIndex, int gameID) {
-		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		System.out.print("End turn: ");
+
+		Status status = thisGame.getTransferModel().getTurnTracker().getStatus();
+		Player turnEnder = thisGame.getPlayer(playerIndex);
 		
-		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+		if (thisGame.getTransferModel().getTurnTracker().getPlayerTurn() != playerIndex) {
+			System.out.println("it's not " + turnEnder.getName() + "'s turn");
 			return false;
 		}
-		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+		
+		if (status == Status.FirstRound) {
+			
+			if (turnEnder.getNumPlacedSettlements() != 1 ||
+					turnEnder.getNumPlacedRoads() != 1) {
+				System.out.println( "invalid first round");
+				return false;
+			}
+		}
+		else if (status == Status.SecondRound) {
+			if (turnEnder.getNumPlacedSettlements() != 2 ||
+					turnEnder.getNumPlacedRoads() != 2) {
+				System.out.println("invalid second round");
+				return false;
+			}
+		}
+		else if (status != Status.Playing) {
+			System.out.println("player still has some things they need to do");
 			return false;
 		}
 		

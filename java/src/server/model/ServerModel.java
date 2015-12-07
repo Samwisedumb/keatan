@@ -1649,5 +1649,18 @@ public class ServerModel {
 	public boolean isWithinBounds(VertexLocation vertex) {
 		return vertices.get(vertex) != null;
 	}
+	
+	/**
+	 * @return the player with the given index<br>
+	 * null if no player corresponds to index
+	 * @param index - the index of the player to get
+	 * @author djoshuac
+	 */
+	public Player getPlayer(int index) {
+		if (index < 0 || index > 3) {
+			return null;
+		}
+		return transfer.getPlayers().get(index);
+	}
 }
 

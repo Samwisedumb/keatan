@@ -111,16 +111,16 @@ public class ClientModel {
 		
 		for (VertexValue vertex : transferModel.getMap().getVertexValues()) {
 			if (vertex.getCity() != null) {
-				cities.put(vertex.getLocation(), vertex.getCity());
+				cities.put(vertex.getLocation().getNormalizedLocation(), vertex.getCity());
 			}
 			else if (vertex.getSettlement() != null) {
-				settlements.put(vertex.getLocation(), vertex.getSettlement());
+				settlements.put(vertex.getLocation().getNormalizedLocation(), vertex.getSettlement());
 			}
 		}
 		
 		for (EdgeValue edge : transferModel.getMap().getEdges()) {
 			if (edge.hasRoad()) {
-				roads.put(edge.getLocation(), edge.getRoad());
+				roads.put(edge.getLocation().getNormalizedLocation(), edge.getRoad());
 			}
 		}
 	}

@@ -558,7 +558,7 @@ public class ServerModel {
 	public void placeRoad(EdgeLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
 				" played a road", playerIndex));
-		edges.get(place).setRoad(new Road(playerIndex, place));
+		edges.get(place.getNormalizedLocation()).setRoad(new Road(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playRoad();
 		
 		if(transfer.getPlayers().get(playerIndex).getPlacedRoads() > transfer.getTurnTracker().getLongestRoadLength()) {
@@ -589,10 +589,66 @@ public class ServerModel {
 	public void placeSettlement(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + 
 				" played a settlement", playerIndex));
-		vertices.get(place).setSettlement(new Settlement(playerIndex, place));
+		vertices.get(place.getNormalizedLocation()).setSettlement(new Settlement(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playSettlement();
 
 		transfer.incrementVersion();
+		
+		if(transfer.getTurnTracker().getStatus() == Status.SecondRound) {
+			secondSettlementClaim(place, playerIndex);
+		}
+	}
+	
+	public void secondSettlementClaim(VertexLocation place, int playerIndex) {
+		
+		VertexDirection direction = place.getDirection();
+		int x = place.getX();
+		int y = place.getY();
+		
+		HexLocation freePlaceOne = new HexLocation(x, y);
+		HexLocation freePlaceTwo = null;
+		HexLocation freePlaceThree = null;
+		
+		switch(direction) {
+		case NorthWest:
+			freePlaceTwo = new HexLocation(x, y + 1);
+			freePlaceThree = new HexLocation(x - 1, y);
+			break;
+		case NorthEast:
+			freePlaceTwo = new HexLocation(x + 1, y + 1);
+			freePlaceThree = new HexLocation(x, y + 1);
+			break;
+		case East:
+			freePlaceTwo = new HexLocation(x + 1, y);
+			freePlaceThree = new HexLocation(x + 1, y + 1);
+			break;
+		case SouthEast:
+			freePlaceTwo = new HexLocation(x, y - 1);
+			freePlaceThree = new HexLocation(x + 1, y);
+			break;
+		case SouthWest:
+			freePlaceTwo = new HexLocation(x - 1, y - 1);
+			freePlaceThree = new HexLocation(x, y - 1);
+			break;
+		case West:
+			freePlaceTwo = new HexLocation(x - 1, y);
+			freePlaceThree = new HexLocation(x - 1, y - 1);
+			break;
+		default:
+			freePlaceTwo = new HexLocation(9, -9);
+			freePlaceThree = new HexLocation (-9, 9);
+			break;
+		}
+		
+		if(hexes.containsKey(freePlaceOne)) {
+			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceOne).getResourceType(), 1);
+		}
+		if(hexes.containsKey(freePlaceTwo)) {
+			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceTwo).getResourceType(), 1);
+		}
+		if(hexes.containsKey(freePlaceThree)) {
+			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceThree).getResourceType(), 1);
+		}
 	}
 	
 	public void payForCity(int playerIndex) {
@@ -605,7 +661,7 @@ public class ServerModel {
 	public void placeCity(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
 				"played a city", playerIndex));
-		vertices.get(place).setCity(new City(playerIndex, place));
+		vertices.get(place.getNormalizedLocation()).setCity(new City(playerIndex, place));
 		transfer.getPlayers().get(playerIndex).playCity();
 	
 		transfer.incrementVersion();

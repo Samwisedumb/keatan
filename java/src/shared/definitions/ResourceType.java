@@ -1,5 +1,7 @@
 package shared.definitions;
 
+import client.resources.ResourceBarElement;
+
 import com.google.gson.annotations.SerializedName;
 
 public enum ResourceType {
@@ -53,6 +55,23 @@ public enum ResourceType {
 			return PortType.WOOD;
 		default:
 			return PortType.THREE;
+		}
+	}
+	
+	public ResourceBarElement getResourceBarElement() {
+		switch (this) {
+		case BRICK:
+			return ResourceBarElement.BRICK;
+		case ORE:
+			return ResourceBarElement.ORE;
+		case SHEEP:
+			return ResourceBarElement.SHEEP;
+		case WHEAT:
+			return ResourceBarElement.WHEAT;
+		case WOOD:
+			return ResourceBarElement.WOOD;
+		default:
+			return null;
 		}
 	}
 }

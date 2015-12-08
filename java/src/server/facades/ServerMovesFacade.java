@@ -333,7 +333,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		else if(status != Status.Playing && status != Status.FirstRound && status != Status.SecondRound) {
 			return false;
 		}
-		else if(thisGame.getVertices().get(vertLoc.getNormalizedLocation()).hasMunicipality() == true) {
+		else if(thisGame.hasMunicipality(vertLoc)) {
 			return false;
 		}
 		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedSettlements() == 0) {
@@ -347,7 +347,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		List<VertexLocation> nearbyVertices = thisGame.getAdjacentVertices(vertLoc);
 		
 		for(VertexLocation point : nearbyVertices) {
-			if(thisGame.getVertices().get(point.getNormalizedLocation()).hasMunicipality() == true) {
+			if(thisGame.hasMunicipality(point)) {
 				return false;
 			}
 		}
@@ -361,7 +361,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		List<EdgeLocation> nearbyEdges = thisGame.getNearbyEdges(vertLoc);
 		
 		for(EdgeLocation face : nearbyEdges) {
-			if(thisGame.getEdges().get(face.getNormalizedLocation()).hasRoad() == true) {
+			if(thisGame.hasRoad(face)) {
 				if(thisGame.getEdges().get(face.getNormalizedLocation()).getRoad().getOwnerIndex() == playerIndex){
 					return true;
 				}

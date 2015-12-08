@@ -72,7 +72,6 @@ public class MapController extends Controller implements IMapController {
 		}
 		
 		getView().placeRobber(ModelFacade.findRobber());
-		getView().placeRobber(new HexLocation(0,0));
 		
 		for (Road r : ModelFacade.getRoads()) {
 			EdgeLocation location = r.getLocation();

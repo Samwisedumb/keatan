@@ -2,10 +2,13 @@ package client.resources;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 
+import shared.definitions.ResourceType;
 import client.base.Controller;
 import client.base.IAction;
+import client.base.MasterController;
+import client.model.ModelFacade;
+import client.model.Player;
 
 
 /**
@@ -74,8 +77,12 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		if (MasterController.getSingleton().hasGameBegun()) {
+			Player user = ModelFacade.getUserPlayer();
+			for (ResourceType r : ResourceType.values()) {
+				getView().setElementAmount(r.getResourceBarElement(), user.getResourceAmount(r));
+			}
+		}
 	}
 
 }

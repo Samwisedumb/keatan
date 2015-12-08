@@ -131,12 +131,23 @@
 					value="lib/gson-2.2.4.jar" />
 			</manifest>
 		</jar>
+
+		<!-- Added the below -->
+ 		<jar jarfile="${java.dist}/test-client.jar" basedir="${java.build}">
+			<manifest>
+				<attribute name="Main-Class" value="TestClient"/>
+				<attribute name="Class-Path" 
+					value="lib/gson-2.2.4.jar" />
+			</manifest>
+		</jar>
+
+
 	</target>
 	
 	<target name="our-client" depends="package" description="compiles, packages, and runs the student client">
 		<java jar="${java.dist}/catan-client.jar" dir="${java.dist}" fork="yes">
-			<arg value="${port}"/>
-			<arg value="${host}"/>
+			<!-- <arg value="${port}"/>
+			<arg value="${host}"/> -->
 			<sysproperty key="com.sun.management.jmxremote" value=""/>
 			<assertions>
 				<enable/>
@@ -152,7 +163,20 @@
 			</assertions>
 		</java>
 	</target>
+
+	
+	<!-- Added the below -->
+	<target name="test-client" depends="package" description="compiles, packages, and runs the student client with stuff">
+		<java jar="${java.dist}/test-client.jar" dir="${java.dist}" fork="yes">
+			<sysproperty key="com.sun.management.jmxremote" value=""/>
+			<arg value="${user}"/>
+			<assertions>
+				<enable/>
+			</assertions>
+		</java>
+	</target>
     
+
     <target name="make-tester-zip" depends="package" description="makes a zip file for your testing team">
         <zip destfile="./tester.zip" basedir="${java.dist}" />
     </target>

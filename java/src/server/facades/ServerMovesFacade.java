@@ -291,7 +291,9 @@ public class ServerMovesFacade implements IMovesFacade {
 		if((status == Status.FirstRound) || (status == Status.SecondRound)) {
 			for (VertexLocation vertex : points) {
 				if (!thisGame.isTooCloseToAnotherMunicipality(vertex)) {
-					return true;
+					if(!thisGame.hasMunicipality(vertex)) {
+						return true;
+					}
 				}
 			}
 			System.out.println("forces illegal move");

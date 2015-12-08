@@ -1,10 +1,7 @@
-package client.main;
-
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import server.ServerCommunicator;
+import shared.transferClasses.UserCredentials;
 import client.base.IAction;
 import client.catan.CatanPanel;
 import client.join.JoinGameController;
@@ -15,36 +12,15 @@ import client.join.PlayerWaitingView;
 import client.join.SelectColorView;
 import client.login.LoginController;
 import client.login.LoginView;
+import client.main.Catan;
 import client.misc.MessageView;
 import client.server.ClientServer;
 import client.server.ServerProxy;
 
-/**
- * Main entry point for the Catan program
- */
-@SuppressWarnings("serial")
-public class Catan extends JFrame
-{
+
+public class TestClient {
+
 	private CatanPanel catanPanel;
-
-	public Catan()
-	{		
-		client.base.OverlayView.setWindow(this);
-
-		this.setTitle("Settlers of Catan");
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		catanPanel = new CatanPanel();
-		this.setContentPane(catanPanel);
-
-		display();
-	}
-
-	private void display()
-	{
-		pack();
-		setVisible(true);
-	}
 
 	//
 	// Main
@@ -65,42 +41,9 @@ public class Catan extends JFrame
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				ServerProxy server;
-				int port;
-				String host;
-				switch (arguments.length) {
-				case 0:
-					server = new ServerProxy();
-					break;
-					
-				case 1:
-					try {
-						port = Integer.parseInt(arguments[0]);
-						server = new ServerProxy(port);
-					}
-					catch (Exception e) {
-						host = arguments[0];
-						server = new ServerProxy(host);
-					}
-					break;
-					
-				case 2:
-					try {
-						port = Integer.parseInt(arguments[0]);
-						host = arguments[1];
-						server = new ServerProxy(host, port);
-					}
-					catch (Exception e) {
-						System.err.println("Invalid Arguments");
-						return;
-					}
-					break;
-					
-				default:
-					System.out.println(arguments.toString());
-					System.err.println("Invalid Arguments");
-					return;
-				}
+				ServerProxy server = new ServerProxy();
+				
+				UserCredentials user = new UserCredentials(arguments[0], "password");
 				
 				new Catan();
 
@@ -147,6 +90,8 @@ public class Catan extends JFrame
 
 				ClientServer.setTargetServer(server);
 				loginController.start();
+				
+				loginController.register(user);
 			}
 		});
 	}

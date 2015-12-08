@@ -1,0 +1,17 @@
+echo "Creating 4 users"
+
+xfce4-terminal -e "ant our-server" &
+sleep 2.5
+
+xfce4-terminal -e "ant test-client -Duser=\"Mike\"" &
+
+sleep 2.5
+
+xfce4-terminal -e "ant test-client -Duser=\"Hillary\"" &
+sleep 2.5
+
+xfce4-terminal -e "ant test-client -Duser=\"Donald\"" &
+sleep 2.5
+
+xfce4-terminal -e "ant test-client -Duser=\"Bernie\"" &
+sleep 2.5

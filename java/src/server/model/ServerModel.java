@@ -641,13 +641,19 @@ public class ServerModel {
 		}
 		
 		if(hexes.containsKey(freePlaceOne)) {
-			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceOne).getResourceType(), 1);
+			if((hexes.get(freePlaceOne).getType() != HexType.DESERT) && (hexes.get(freePlaceOne).getType() != HexType.WATER)) {
+				transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceOne).getResourceType(), 1);
+			}
 		}
 		if(hexes.containsKey(freePlaceTwo)) {
-			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceTwo).getResourceType(), 1);
+			if((hexes.get(freePlaceTwo).getType() != HexType.DESERT) && (hexes.get(freePlaceTwo).getType() != HexType.WATER)) {
+				transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceTwo).getResourceType(), 1);
+			}
 		}
 		if(hexes.containsKey(freePlaceThree)) {
-			transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceThree).getResourceType(), 1);
+			if((hexes.get(freePlaceThree).getType() != HexType.DESERT) && (hexes.get(freePlaceThree).getType() != HexType.WATER)) {
+				transfer.getPlayers().get(playerIndex).addResource(hexes.get(freePlaceThree).getResourceType(), 1);
+			}
 		}
 	}
 	

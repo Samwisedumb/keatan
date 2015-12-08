@@ -132,7 +132,7 @@ public class ResourceBarView extends PanelView implements IResourceBarView
 		cityImage = ImageUtils.loadImage(BUILDING_IMAGE_PATH + "city.png");
 		buyDevCardImage = ImageUtils.loadImage(BUILDING_IMAGE_PATH + "card.jpg");
 		playDevCardImage = ImageUtils.loadImage(BUILDING_IMAGE_PATH + "development_card.jpg");
-		soldierImage = ImageUtils.loadImage(BUILDING_IMAGE_PATH + "soldier.jpg");
+		soldierImage = ImageUtils.loadImage(BUILDING_IMAGE_PATH + "newSoldier.jpg");
 	}
 	
 	private void initializeResources()

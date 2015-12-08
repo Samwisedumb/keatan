@@ -1681,7 +1681,7 @@ public class ServerModel {
 	 * null if location is out of bounds
 	 */
 	public EdgeValue getEdge(EdgeLocation location) {
-		return edges.get(location);
+		return edges.get(location.getNormalizedLocation());
 	}
 
 	/**
@@ -1691,7 +1691,7 @@ public class ServerModel {
 	 * null if location is out of bounds
 	 */
 	public VertexValue getVertex(VertexLocation location) {
-		return vertices.get(location);
+		return vertices.get(location.getNormalizedLocation());
 	}
 	
 	/**
@@ -1700,7 +1700,7 @@ public class ServerModel {
 	 * @author djoshuac
 	 */
 	public boolean isWithinBounds(EdgeLocation edge) {
-		return edges.get(edge) != null;
+		return edges.get(edge.getNormalizedLocation()) != null;
 	}
 	
 	/**
@@ -1709,7 +1709,7 @@ public class ServerModel {
 	 * @author djoshuac
 	 */
 	public boolean isWithinBounds(VertexLocation vertex) {
-		return vertices.get(vertex) != null;
+		return vertices.get(vertex.getNormalizedLocation()) != null;
 	}
 	
 	/**

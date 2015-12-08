@@ -23,6 +23,8 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 		super(view);
 		
 		elementActions = new HashMap<ResourceBarElement, IAction>();
+		
+		ModelFacade.addObserver(this);
 	}
 
 	@Override

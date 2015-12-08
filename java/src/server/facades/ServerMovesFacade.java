@@ -326,21 +326,28 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 
+		System.out.print("Place Settlement: ");
+		
 		Status status = thisGame.getTransferModel().getTurnTracker().getStatus();
 		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			System.out.println("Not their turn");
 			return false;
 		}
 		else if(status != Status.Playing && status != Status.FirstRound && status != Status.SecondRound) {
+			System.out.println("Not a a placable state");
 			return false;
 		}
 		else if(thisGame.hasMunicipality(vertLoc)) {
+			System.out.println("Stuff is already there");
 			return false;
 		}
 		else if(thisGame.getTransferModel().getPlayers().get(playerIndex).getUnplacedSettlements() == 0) {
+			System.out.println("No settlements to place");
 			return false;
 		}
 		
 		if(thisGame.getVertices().containsKey(vertLoc.getNormalizedLocation()) == false) {
+			System.out.println("Out of bounds");
 			return false;
 		}
 		
@@ -348,6 +355,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		for(VertexLocation point : nearbyVertices) {
 			if(thisGame.hasMunicipality(point)) {
+				System.out.println("Too close to other settlement");
 				return false;
 			}
 		}
@@ -355,6 +363,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		ResourceList rList = thisGame.getTransferModel().getPlayers().get(playerIndex).getResources();
 		
 		if((rList.getBrick() == 0 || rList.getSheep() == 0 || rList.getWheat() == 0 || rList.getWood() == 0) && (free == false)) {
+			System.out.println("not enough resources");
 			return false;		
 		}
 		
@@ -367,7 +376,8 @@ public class ServerMovesFacade implements IMovesFacade {
 				}
 			}
 		}
-		
+
+		System.out.println("not adjacent to road");
 		return false;
 	}
 

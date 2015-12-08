@@ -324,9 +324,9 @@ public class ModelFacade {
 		
 		if (isDisconnected) { // when we are in the initial setup stage - we want to make sure the placement of the road doesn't force an illegal settlement placement
 			for (VertexLocation vertex : model.getNearbyVertices(edgeLoc)) {
-				//if (!model.hasMunicipality(vertex) && !model.isTooCloseToAnotherMunicipality(vertex)) {
+				if (!model.hasMunicipality(vertex) && !model.isTooCloseToAnotherMunicipality(vertex)) {
 					return true;
-				//}
+				}
 			}
 			System.out.println("Forces illegal settlement placement");
 			return false;

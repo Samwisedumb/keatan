@@ -779,7 +779,7 @@ public class ServerModel {
 	 */
 	public void addPlayer(CatanColor color, String name, int playerID) {
 		List<Player> players = getTransferModel().getPlayers();
-		players.add(new Player(name, playerID, color, players.size()));
+		players.add(new Player(name, players.size(), color, playerID));
 	}
 	
 	public void discardCards(int playerIndex, ResourceList discardList) {

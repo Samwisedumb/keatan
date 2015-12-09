@@ -162,7 +162,8 @@ public class DiscardController extends Controller implements IDiscardController 
 				showModal();
 			}
 		}
-		else if (ModelFacade.getUserPlayer().hasDiscarded()){
+		else if (ModelFacade.whatStateMightItBe() == Status.Discarding &&
+				ModelFacade.getUserPlayer().hasDiscarded()){
 			int stillDiscardCount = 0;
 			for (Player p : ModelFacade.getPlayers()) {
 				if (!p.hasDiscarded()) {

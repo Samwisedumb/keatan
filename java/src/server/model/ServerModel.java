@@ -54,7 +54,6 @@ public class ServerModel {
 	
 	private int radius;
 	
-	//EVENTUALLY YOU MUST CHANGE THE TRANSFER MODEL! Still needs changing (functions must also do stuff to TransferModel)
 	private TransferModel transfer;
 	
 	public ServerModel(boolean randomHexes, boolean randomChits, boolean randomPorts, String gameName) {
@@ -399,7 +398,6 @@ public class ServerModel {
 		return newEdges;
 	}
 	
-	//RUDIMENTARY!!
 	/**
 	 * Adds vertices to the map of vertices
 	 * @pre there must be a hex newly placed on the map
@@ -469,6 +467,15 @@ public class ServerModel {
 		return newVertices;
 	}
 
+	/**
+	 * Get resources from hexes with chits matching the number roll, or commence discarding and robbery if the player rolls a 7
+	 * @pre It is the current player's turn and the game is in the rolling phase
+	 * @param numberRoll - The roll of the dice
+	 * @param playerIndex - The index of the current player
+	 * @post If numberRoll is 7, then the game enters the discarding phase (if at least one player has more than 7 cards),
+	 * 		 or the robbing phase (if no player has more than 7 cards). Otherwise, each player gets the resources they are entitled to
+	 * 		 and the game enters the playing phase
+	 */
 	public void reapResources(int numberRoll, int playerIndex) {
 		
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + " rolled a " +
@@ -485,8 +492,6 @@ public class ServerModel {
 			transfer.incrementVersion();
 			return;
 		}
-		
-		
 		
 		List<ResourceList> spoils = new ArrayList<ResourceList>();
 		
@@ -541,6 +546,13 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 
+	/**
+	 * Cycle through the players and see if any of them have more than 7 cards. If any do, the game will go to the discard phase
+	 * @pre A player rolled a seven on their turn
+	 * @return false if no player has more than 7 cards, true if otherwise
+	 * @post The game either goes to the discarding phase or skips straight to the robbing phase. If it went to the discard phase,
+	 * 		 any players with 7 or fewer cards are marked as having already discarded, thus exempting them from the discard
+	 */
 	private boolean doesAnyoneDiscard() {
 		
 		boolean someoneDiscards = false;
@@ -557,6 +569,15 @@ public class ServerModel {
 		return someoneDiscards;
 	}
 	
+	/**
+	 * Having calculated how many resources each player is entitled to, see if the bank has enough resources to give each player
+	 * those resources.
+	 * @pre  During the rolling phase, the resources each player is entitled to have been calculated.
+	 * @param bankToll - The total amount of resources the bank has to give out to give each player their resources
+	 * @param spoils - A list of ResourceLists indicating the resources each player is entitled to from the die roll
+	 * 				  (The index in the list correlates to the index of the player in the game)
+	 * @post each player is gets the resources they are entitled, provided the bank has enough
+	 */
 	private void handOutSpoils(ResourceList bankToll, List<ResourceList> spoils) {
 		
 		boolean canBrick = transfer.getBank().hasResource(ResourceType.BRICK, bankToll.getBrick());
@@ -575,6 +596,12 @@ public class ServerModel {
 		
 	}
 	
+	/**
+	 * Pay for a road the player has built
+	 * @pre The player is building a road that is not free
+	 * @param playerIndex - Index of the player building a road
+	 * @post The player pays for the road (loses 1 wood and 1 brick, which are given to the bank)
+	 */
 	public void payForRoad(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WOOD, 1);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
@@ -582,6 +609,14 @@ public class ServerModel {
 		transfer.getBank().setBrick(transfer.getBank().getBrick() + 1);
 	}
 	
+	/**
+	 * The player puts a road on the game map
+	 * @pre It must be the current player's turn, it must be the playing phase, and if the road is not free (e.g. it is the first
+	 * 		two rounds or the player has played a roadBuilding development card), the player must have sufficient resources
+	 * @param place - Where the player is building the road
+	 * @param playerIndex - Index of the current player
+	 * @post The player puts the road on the map, paying the resource cost if the road wasn't free
+	 */
 	public void placeRoad(EdgeLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
 				" played a road", playerIndex));
@@ -602,6 +637,12 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 
+	/**
+	 * Pay for a settlement the player has built
+	 * @pre The player is building a settlement that is not free
+	 * @param playerIndex - Index of the player building a settlement
+	 * @post The player pays for the settlement (loses 1 brick, lumber, wool and grain, which are given to the bank)
+	 */
 	public void payForSettlement(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WOOD, 1);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.BRICK, 1);
@@ -613,6 +654,14 @@ public class ServerModel {
 		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
 	}
 	
+	/**
+	 * The player puts a settlement on the game map
+	 * @pre It must be the current player's turn, it must be the playing phase, and if it is not the first two rounds, the 
+	 * 		player must have sufficient resources (if it is the second, the player also gets resources from the surrounding hexes)
+	 * @param place - Where the player is building the settlement
+	 * @param playerIndex - Index of the player building a settlement
+	 * @post The player puts the settlement on the map, paying the resource cost if the settlement wasn't free
+	 */
 	public void placeSettlement(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + 
 				" played a settlement", playerIndex));
@@ -626,6 +675,14 @@ public class ServerModel {
 		}
 	}
 	
+	/**
+	 * Get the resources from the hexes around the settlement placed in the second round
+	 * @pre it is the current player's turn during the secound round
+	 * @param place - The location of the second settlement
+	 * @param playerIndex - The player who placed it
+	 * @post the player gets resources from the surrounding hexes
+	 * 
+	 */
 	public void secondSettlementClaim(VertexLocation place, int playerIndex) {
 		
 		VertexDirection direction = place.getDirection();
@@ -684,6 +741,12 @@ public class ServerModel {
 		}
 	}
 	
+	/**
+	 * Pay for a city the player has built
+	 * @pre The player is building a city
+	 * @param playerIndex - Index of the player building a city
+	 * @post The player pays for the city (loses 3 ore and 2 grain, which are given to the bank)
+	 */
 	public void payForCity(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.WHEAT, 2);
 		transfer.getPlayers().get(playerIndex).removeResource(ResourceType.ORE, 3);
@@ -691,6 +754,13 @@ public class ServerModel {
 		transfer.getBank().setOre(transfer.getBank().getOre() + 3);
 	}
 	
+	/**
+	 * The player puts a city on the game map
+	 * @pre It must be the current player's turn, it must be the playing phase and the  player must have sufficient resources
+	 * @param place - Where the player is building the city
+	 * @param playerIndex - Index of the player building a city
+	 * @post The player puts the city on the map, getting back the settlement they placed the city over
+	 */
 	public void placeCity(VertexLocation place, int playerIndex) {
 		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() +
 				"played a city", playerIndex));
@@ -700,6 +770,11 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Pay for a dev card
+	 * @pre The player must be buying a devCard
+	 * @param cardBuyer - The player buying the card
+	 * @post The player loses 1 Ore, 1 Sheep, and 1 Wheat, giving those resources to the banks
+	 */
 	public void payForDevCard(Player cardBuyer) {
 		cardBuyer.removeResource(ResourceType.ORE, 1);
 		cardBuyer.removeResource(ResourceType.SHEEP, 1);
@@ -709,6 +784,11 @@ public class ServerModel {
 		transfer.getBank().setWheat(transfer.getBank().getWheat() + 1);
 	}
 	
+	/**Buy a dev card
+	 * @pre It must be the current player's turn, it must be the playing phase and they must be able to afford a dev card
+	 * @param playerIndex - The player who is buying the dev card
+	 * @post the player gets a dev card
+	 */
 	public void buyDevCard(int playerIndex) {
 		Player cardBuyer = transfer.getPlayers().get(playerIndex);
 		
@@ -761,6 +841,11 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Use random number to determine what dev card type a player gets
+	 * @pre the player is buying a dev card
+	 * @return a random number that determines what dev card type a player gets
+	 * @post The dev card is able to be drawn
+	 */
 	private int devDeckDraw() {
 		 
 		//14, 2, 2, 2, 5
@@ -800,15 +885,21 @@ public class ServerModel {
 		}
 	}
 	
-	/**
-	 * @post Adds a player to the game
+	/**Add a player to the game
 	 * @pre number of players currently in game should be less than 4
+	 * @post Adds a player to the game
 	 */
 	public void addPlayer(CatanColor color, String name, int playerID) {
 		List<Player> players = getTransferModel().getPlayers();
 		players.add(new Player(name, players.size(), color, playerID));
 	}
 	
+	/** The player discards cards
+	 * @pre the player must need to discard during the Discarding phase
+	 * @param playerIndex - The player discarded
+	 * @param discardList - The list of cards that need discarding
+	 * @post the player discards the cards, and if all players who have to discard have discarded, go to the robbing phase
+	 */
 	public void discardCards(int playerIndex, ResourceList discardList) {
 		Player discarder = transfer.getPlayers().get(playerIndex);
 		discarder.setDiscarded(true);
@@ -832,6 +923,11 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**See if all players who need to discard cards have discarded cards
+	 * @pre A player must have just discarded cards
+	 * @return true if all players who need to discard have discarded, false if otherwise
+	 * @post the game either waits for more players to discard or goes to the playing phase
+	 */
 	public boolean allDiscarded() {
 		int discarders = 0;
 		for(Player player : transfer.getPlayers()) {
@@ -848,6 +944,13 @@ public class ServerModel {
 		}
 	}
 	
+	/**Rob a player
+	 * @pre it must be the robbing phase
+	 * @param playerIndex - the current player
+	 * @param victimIndex - the player being robbed
+	 * @param robberMove - the new location of the robber
+	 * @post the player gets a resource from the victim, the robber is moved, and the game moves to the building phase
+	 */
 	public void robPlayer(int playerIndex, int victimIndex, HexLocation robberMove) {
 		
 		if((victimIndex == -1) || (victimIndex == playerIndex)) {
@@ -890,6 +993,13 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**
+	 * Determines what resource will be stolen
+	 * @pre somebody is stealing something
+	 * @param victim - the player being stolen from
+	 * @return the resource being stolen
+	 * @post the thing is stolen
+	 */
 	public ResourceType wheelOfSteal(Player victim) {
 		
 		int firstWeight = victim.getResources().getWood();
@@ -927,6 +1037,15 @@ public class ServerModel {
 		}
 	}
 
+	/**
+	 * Trade at a port
+	 * @pre must be the playing phase, must have the necessary resources to get the desired resource
+	 * @param playerIndex - the current player
+	 * @param ratio - the trade ratio
+	 * @param input - the offered resource
+	 * @param output - the desired resouce
+	 * @post the trade is completed
+	 */
 	public void maritimeTrade(int playerIndex, int ratio, ResourceType input, ResourceType output) {
 		transfer.getPlayers().get(playerIndex).removeResource(input, ratio);
 		transfer.getPlayers().get(playerIndex).addResource(output, 1);
@@ -935,11 +1054,26 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Offer to trade with someone
+	 * @pre it must be the playing phase for the current player's turn and
+	 *      each player must have the resources for the offer to be completed
+	 * @param sender - the person offering the trade
+	 * @param receiver - the person to whom the trade is being offered
+	 * @param offer - the offer
+	 * @post the offer is established 
+	 */
 	public void offerTrade(int sender, int receiver, ResourceList offer) {
 		transfer.setTradeOffer(new TradeOffer(sender, receiver, offer));
 		transfer.incrementVersion();
 	}
 	
+	/**Accept or refuse the trade, finishing the exchange of resources or doing nothing
+	 * @pre the player must have been offered a trade 
+	 * @param offerer - the index of the person offering the trade
+	 * @param willAccept - if the person being offered the trade accepts
+	 * @post If the trade is accepted, players exchange resources. If not, nothing happens.
+	 * 		 In both cases the tradeOffer is reset to null
+	 */
 	public void acceptTrade(int offerer, boolean willAccept) {
 		if(willAccept == false) {
 			
@@ -970,12 +1104,29 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/** Play a Road Building Dev Card
+	 * @pre It must be current player's playing phase and they must have a road building dev card and they must not have played
+	 * 		a dev card before on their turn
+	 * @param playerIndex - Index of the current
+	 * @param placeOne - the place of the first road
+	 * @param placeTwo - the place of the second road
+	 * @post the player gets two roads and loses the dev card, and can't play another dev card this turn
+	 */
 	public void roadBuilding(int playerIndex, EdgeLocation placeOne, EdgeLocation placeTwo) {
 		transfer.getPlayers().get(playerIndex).useRoadBuildingCard();
 		placeRoad(placeOne, playerIndex);
 		placeRoad(placeTwo, playerIndex);
 	}
 	
+	/** Play a soldier card
+	 * @ It must be current player's playing phase and they must have a soldier dev card and they must not have played
+	 * 		a dev card before on their turn
+	 * @param playerIndex - the current player
+	 * @param victimIndex - the player being robbed
+	 * @param robberMoves - the new location for the robber
+	 * @post the player gets a soldier card (winning largest army if they have the largest army) and can't play
+	 * 		 another dev card this turn
+	 */
 	public void soldier(int playerIndex, int victimIndex, HexLocation robberMove) {
 		robPlayer(playerIndex, victimIndex, robberMove);
 		
@@ -994,11 +1145,23 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Play monument cards to get enough victory points to win
+	 * @pre The player must have enough monument cards to win and it must be their turn
+	 * @param playerIndex - The current player
+	 * @post the player plays all of their monument cards and gets enough points to win the game
+	 */
 	public void monument(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).useMonumentCards();
 		transfer.incrementVersion();
 	}
 	
+	/**Play a year of plenty card
+	 * @pre it must be the current player's turn and they must not have a played a dev card before
+	 * @param playerIndex - the current player
+	 * @param resourceOne - the first desired resource
+	 * @param resourceTwo - the second desired resource
+	 * @post the player plays the dev card and gets two resources (they cannot play another dev card this turn)
+	 */
 	public void yearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo) {
 		Player luckyPerson = transfer.getPlayers().get(playerIndex);
 		luckyPerson.addResource(resourceOne, 1);
@@ -1009,6 +1172,12 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Play a monopoly card
+	 * @pre it must be the current player's turn and they must not have played a dev card this turn and they must have a monopoly card
+	 * @param playerIndex - the current player
+	 * @param mine - the resource the player wants to take from everyone
+	 * @post the player plays the monopoly card and gets all of the resources of the specified type
+	 */
 	public void monopoly(int playerIndex, ResourceType mine) {
 		List<Player> players = transfer.getPlayers();
 		
@@ -1027,19 +1196,41 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 	
+	/**Send a chat to the chat window
+	 * @pre the player must be in the game
+	 * @param playerIndex - the player sending the message
+	 * @param message - the message
+	 * @post the message is uploaded to the message log
+	 */
 	public void sendChat(int playerIndex, String message) {
 		MessageLine chatMessage = new MessageLine(message, playerIndex);
 		transfer.getChat().addLine(chatMessage);
 		transfer.incrementVersion();
 	}
 	
+	/**End the turn, and see if the current player is winning
+	 * @pre the player must want to end their turn
+	 * @param playerIndex - the current player
+	 * @post the turn ends, passing to the next player. If the current player wins the game is over
+	 */
 	public void endTurn(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).endTurn();
+		for(Player player : transfer.getPlayers()) {
+			if((player.getVictoryPoints()) >= 10 && (player.getIndex() == playerIndex)) {
+				transfer.setWinner(playerIndex);
+			}
+		}
 		transfer.getTurnTracker().endPlayerTurn();
+
 		transfer.incrementVersion();
 	}
 
-
+	/**Gets the two vertices touching the selected edge
+	 * @pre there is an edge and vertices that exists
+	 * @param checkEdge - the edge to find the vertices
+	 * @return the two vertices
+	 * @post 
+	 */
 	public List<VertexLocation> getNearbyVertices(EdgeLocation checkEdge) {
 		
 		int x = checkEdge.getX();

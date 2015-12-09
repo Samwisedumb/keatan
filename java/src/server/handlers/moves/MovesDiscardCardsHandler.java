@@ -40,7 +40,7 @@ public class MovesDiscardCardsHandler extends IHandler {
 			exchange.getResponseBody().write(Converter.toJson(e.getReason()).getBytes());
 		}
 		
-		exchange.close();
+		exchange.getResponseBody().close();
 	}
 
 }

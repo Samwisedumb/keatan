@@ -40,14 +40,12 @@ public class MapControllerThieveryState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		System.out.println("Robber can be placed: " + canPlaceRobber(hexLoc));
+		System.out.println("Robber can be placed: " + ModelFacade.canPlaceRobber(hexLoc));
 		return ModelFacade.canPlaceRobber(hexLoc);
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		System.out.println("Robber can be placed: " + canPlaceRobber(hexLoc));
-		System.out.println(hexLoc);
 		getMapView().placeRobber(hexLoc);
 		if (canPlaceRobber(hexLoc)) {
 			System.out.println("Robber");
@@ -58,6 +56,7 @@ public class MapControllerThieveryState extends MapControllerState {
 			
 			if (candidates.length > 0) {
 				getRobView().setPlayers(candidates);
+				getRobView().showModal();
 			}
 		}
 	}

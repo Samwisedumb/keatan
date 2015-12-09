@@ -6,11 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import server.facades.ServerData;
-import server.model.ServerModel;
 import shared.definitions.EdgeDirection;
 import shared.definitions.ResourceType;
-import shared.definitions.VertexDirection;
 import shared.transferClasses.UserInfo;
 import client.base.MasterController;
 import client.base.Observer;

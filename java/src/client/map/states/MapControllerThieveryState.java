@@ -54,9 +54,21 @@ public class MapControllerThieveryState extends MapControllerState {
 			
 			RobPlayerInfo[] candidates = ModelFacade.getRobbablePlayerInfo();
 			
+			Player user = ModelFacade.getUserPlayer();
 			if (candidates.length > 0) {
 				getRobView().setPlayers(candidates);
 				getRobView().showModal();
+			}
+			else {
+				try {
+					MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
+							-1,
+							ModelFacade.findRobber()));
+				}
+				catch (ServerException e) {
+					System.err.println(e.getReason());
+				}
+				getRobView().closeModal();
 			}
 		}
 	}
@@ -69,6 +81,7 @@ public class MapControllerThieveryState extends MapControllerState {
 				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
 						-1,
 						ModelFacade.findRobber()));
+				getRobView().closeModal();
 			}
 			else {
 				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),

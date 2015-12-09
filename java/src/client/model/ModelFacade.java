@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import shared.definitions.CatanColor;
 import shared.definitions.ResourceType;
 import shared.transferClasses.UserInfo;
 import client.base.MasterController;
 import client.base.Observer;
-import client.communication.LogEntry;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
 
@@ -341,6 +339,18 @@ public class ModelFacade {
 			return false;
 		}
 	}
+	
+	public static boolean canPlaceRobber(HexLocation hexLoc) {
+		if (!isWithinBounds(hexLoc)) {
+			return false;
+		}
+		
+		if (hexLoc.equals(model.getTransferModel().getMap().getRobber())) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	public static boolean canDomesticTrade(TradeOffer offer) {
 		//TODO
@@ -641,6 +651,20 @@ public class ModelFacade {
 	public static boolean isWithinBounds(VertexLocation vertex) {
 		return model.getTransferModel().getMap().getVertexValues().contains(new VertexValue(vertex));
 	}
+
+	/**
+	 * @param hexLoc - hex location to check
+	 * @return true is hex is within the map<br>
+	 * false if hex is without
+	 */
+	private static boolean isWithinBounds(HexLocation hexLoc) {
+		for (Hex hex : model.getTransferModel().getMap().getHexes()) {
+			if (hex.getLocation().equals(hexLoc)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Get the game history for the game
@@ -650,6 +674,16 @@ public class ModelFacade {
 	 */
 	public static MessageList getGameHistory() {
 		return model.getTransferModel().getLog();
+	}
+
+	/**
+	 * Moves the robber to the given location
+	 * @param hexLoc - the location to move thro robber
+	 * @pre the model must be initialized
+	 * @author djoshuac
+	 */
+	public static void moveRobber(HexLocation hexLoc) {
+		model.getTransferModel().getMap().setRobber(hexLoc);
 	}
 }
 

@@ -101,12 +101,13 @@ public class DiscardController extends Controller implements IDiscardController 
 		
 		try {
 			MasterController.getSingleton().discardCards(command);
+			ModelFacade.getUserPlayer().setDiscarded(true);
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());
 		}
 		
-		getDiscardView().closeModal();
+		closeModal();
 	}
 
 	boolean modelIsVisible;
@@ -118,7 +119,7 @@ public class DiscardController extends Controller implements IDiscardController 
 		}
 	}
 	
-	public void closeModel() {
+	public void closeModal() {
 		if (modelIsVisible) {
 			getDiscardView().closeModal();
 			modelIsVisible = false;
@@ -128,7 +129,8 @@ public class DiscardController extends Controller implements IDiscardController 
 	@Override
 	public void update() {
 		if (MasterController.getSingleton().hasGameBegun() &&
-				ModelFacade.whatStateMightItBe() == Status.Discarding) {
+				ModelFacade.whatStateMightItBe() == Status.Discarding &&
+				!ModelFacade.getUserPlayer().hasDiscarded()) {
 			Player user = ModelFacade.getUserPlayer();
 			if (user.needsToDiscard()) {
 				showModal();

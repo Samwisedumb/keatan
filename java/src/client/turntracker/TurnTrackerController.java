@@ -80,10 +80,16 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 				getView().updateGameState("Rolling", false);
 				break;
 			case Discarding:
-				getView().updateGameState("Discarding", false);
+				int numNeedToDiscard = 0;
+				for (Player p : ModelFacade.getPlayers()) {
+					if (p.needsToDiscard()) {
+						numNeedToDiscard++;
+					}
+				}
+				getView().updateGameState(numNeedToDiscard + " Players Discarding", false);
 				break;
 			case Playing:
-				if (user.getIndex() != ModelFacade.whoseTurnIsItAnyway()) {
+				if (user.getIndex() == ModelFacade.whoseTurnIsItAnyway()) {
 					getView().updateGameState("End Turn", true);
 				}
 				else {

@@ -142,4 +142,12 @@ public class ResourceList {
 	public boolean hasEnoughForDevCard() {
 		return wheat > 0 && sheep > 0 && ore > 0;
 	}
+
+	/**
+	 * @return true if there are more than 7 resources in this list<br>
+	 * false if otherwise
+	 */
+	public boolean moreThanSeven() {
+		return brick + ore + sheep + wheat + wood > 7;
+	}
 }

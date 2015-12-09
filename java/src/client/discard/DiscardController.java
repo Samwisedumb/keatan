@@ -7,7 +7,9 @@ import client.base.Controller;
 import client.base.MasterController;
 import client.misc.IWaitView;
 import client.model.ModelFacade;
+import client.model.Player;
 import client.model.ResourceList;
+import client.model.Status;
 
 
 /**
@@ -33,6 +35,10 @@ public class DiscardController extends Controller implements IDiscardController 
 		this.waitView = waitView;
 		
 		theList = new ResourceList(0,0,0,0,0);
+		
+		ModelFacade.addObserver(this);
+		
+		modelIsVisible = false;
 	}
 
 	public IDiscardView getDiscardView() {
@@ -95,18 +101,39 @@ public class DiscardController extends Controller implements IDiscardController 
 		
 		try {
 			MasterController.getSingleton().discardCards(command);
-		} catch (ServerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+		catch (ServerException e) {
+			System.err.println(e.getReason());
 		}
 		
 		getDiscardView().closeModal();
 	}
 
+	boolean modelIsVisible;
+	
+	public void showModal() {
+		if (!modelIsVisible) {
+			getDiscardView().showModal();
+			modelIsVisible = true;
+		}
+	}
+	
+	public void closeModel() {
+		if (modelIsVisible) {
+			getDiscardView().closeModal();
+			modelIsVisible = false;
+		}
+	}
+	
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		if (MasterController.getSingleton().hasGameBegun() &&
+				ModelFacade.whatStateMightItBe() == Status.Discarding) {
+			Player user = ModelFacade.getUserPlayer();
+			if (user.needsToDiscard()) {
+				showModal();
+			}
+		}
 	}
 
 }

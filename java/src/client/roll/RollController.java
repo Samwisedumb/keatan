@@ -32,8 +32,6 @@ public class RollController extends Controller implements IRollController {
 		
 		ModelFacade.addObserver(this);
 		
-		dialogIsVisible = false;
-		
 		rand = new Random();
 	}
 	
@@ -60,30 +58,10 @@ public class RollController extends Controller implements IRollController {
 		catch (ServerException e) {
 			System.out.println("Failed to roll dice: " + e.getReason());
 		}
-		showRollModal();
-	}
-
-	/**
-	 * Shows the model if it isn't already showing
-	 */
-	private void showRollModal() {
-		if (!dialogIsVisible) {
-			dialogIsVisible = true;
-			getResultView().showModal();
-		}
-	}
-
-	/**
-	 * Closes the model if it isn't already closed
-	 */
-	private void closeRollModal() {
-		if (dialogIsVisible) {
-			dialogIsVisible = false;
-			getResultView().showModal();
-		}
+		
+		getResultView().showModal();
 	}
 	
-	private boolean dialogIsVisible;
 	private Random rand;
 	
 	@Override

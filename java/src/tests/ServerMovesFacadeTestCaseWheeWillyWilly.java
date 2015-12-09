@@ -36,11 +36,12 @@ public class ServerMovesFacadeTestCaseWheeWillyWilly {
 		
 		ServerData.getInstance().getGameModel(0).getTransferModel().getTurnTracker().setStatus(Status.Rolling);
 		
-		RollNumber testRoll = new RollNumber(0, 3);
+		RollNumber testRoll = new RollNumber(0, 7);
 		
 		
 		try {
 			ServerMovesFacade.getInstance().rollNumber(0, testRoll);
+			
 		} catch (ServerException e) {
 			System.out.println("PBBBBTH!");
 		}

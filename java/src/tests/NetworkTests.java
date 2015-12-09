@@ -6,9 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import server.ServerCommunicator;
+import shared.definitions.CatanColor;
 import shared.exceptions.ServerException;
 import shared.transferClasses.CreateGameRequest;
 import shared.transferClasses.CreateGameResponse;
+import shared.transferClasses.JoinGameRequest;
 import shared.transferClasses.UserCredentials;
 import client.server.ClientServer;
 import client.server.ServerProxy;
@@ -204,6 +206,14 @@ public class NetworkTests {
 	@Test
 	public void testJoinGame() {
 		
+		JoinGameRequest joinGame = new JoinGameRequest(0, CatanColor.BLUE);
+		
+		try {
+			ClientServer.getSingleton().joinGame(joinGame);
+		}
+		catch(ServerException e) {
+		
+		}
 	}
 	//getModel
 	//addAI

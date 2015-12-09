@@ -471,6 +471,9 @@ public class ServerModel {
 
 	public void reapResources(int numberRoll, int playerIndex) {
 		
+		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + " rolled a " +
+				new Integer(numberRoll).toString(), playerIndex));
+		
 		if(numberRoll == 7) {
 			if(doesAnyoneDiscard()) {
 				transfer.getTurnTracker().setStatus(Status.Discarding);
@@ -484,8 +487,7 @@ public class ServerModel {
 			return;
 		}
 		
-		transfer.getLog().addLine(new MessageLine(transfer.getPlayers().get(playerIndex).getName() + " rolled a " +
-		new Integer(numberRoll).toString(), playerIndex));
+		
 		
 		List<ResourceList> spoils = new ArrayList<ResourceList>();
 		

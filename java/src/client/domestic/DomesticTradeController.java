@@ -1,6 +1,9 @@
 package client.domestic;
 
 import shared.definitions.ResourceType;
+import shared.exceptions.ServerException;
+import shared.transferClasses.AcceptTrade;
+import shared.transferClasses.OfferTrade;
 import client.base.Controller;
 import client.base.MasterController;
 import client.misc.IWaitView;
@@ -8,6 +11,7 @@ import client.model.ModelFacade;
 import client.model.Player;
 import client.model.ResourceList;
 import client.model.Status;
+import client.model.TradeOffer;
 
 
 /**
@@ -22,6 +26,7 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 	//Trade Offer Thing
 	private int target;
 	private ResourceList theList;
+	private boolean waitingForAccept;
 	
 	/**
 	 * DomesticTradeController constructor
@@ -43,7 +48,10 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 		//TOT
 		
 		target = -1;
-		theList = null;
+		theList = new ResourceList(0, 0, 0, 0, 0);
+		waitingForAccept = false;
+		
+		ModelFacade.addObserver(this);
 	}
 	
 	public IDomesticTradeView getTradeView() {
@@ -92,7 +100,18 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 				getTradeOverlay().setPlayerSelectionEnabled(p.getResources().getTotal() > 0);
 			}
 			
+			updateAmounts();
+			
 			getTradeOverlay().showModal();
+		}
+	}
+	
+	private void updateAmounts() {
+		Player user = ModelFacade.getUserPlayer();
+		for (ResourceType r : ResourceType.values()) {
+			getTradeOverlay().setResourceAmountChangeEnabled(r,
+					theList.getResource(r) < user.getResourceAmount(r),
+					theList.getResource(r) > 0);
 		}
 	}
 
@@ -115,7 +134,8 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 			theList.setOre(theList.getOre() - 1);
 			break;
 		}
-		
+
+		updateAmounts();
 		getTradeOverlay().setResourceAmount(resource, "-1");
 	}
 
@@ -138,51 +158,26 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 			theList.setOre(theList.getOre() + 1);
 			break;
 		}
-		
+
+		updateAmounts();
 		getTradeOverlay().setResourceAmount(resource, "1");
 	}
-
+	
 	@Override
 	public void sendTradeOffer() {
+		Player user = ModelFacade.getUserPlayer();
+		OfferTrade offer = new OfferTrade(user.getIndex(), theList, target);
 		
-///*		ResourceList offer = new ResourceList(0,0,0,0,0);
-//		ResourceList request = new ResourceList(0,0,0,0,0);
-//		
-//		if(theList.getWood() >= 0) {
-//			request.setWood(theList.getWood());
-//		}
-//		else {
-//			offer.setWood(Math.abs(theList.getWood()));
-//		}
-//		if(theList.getBrick() >= 0) {
-//			request.setBrick(theList.getBrick());
-//		}
-//		else {
-//			offer.setBrick(Math.abs(theList.getBrick()));
-//		}
-//		if(theList.getSheep() >= 0) {
-//			request.setSheep(theList.getSheep());
-//		}
-//		else {
-//			offer.setSheep(Math.abs(theList.getSheep()));
-//		}
-//		if(theList.getWheat() >= 0) {
-//			request.setWheat(theList.getWheat());
-//		}
-//		else  {
-//			offer.setWheat(Math.abs(theList.getWheat()));
-//		}
-//		if(theList.getOre() >= 0) {
-//			request.setOre(theList.getOre());
-//		}
-//		else {
-//			offer.setOre(Math.abs(theList.getOre()));
-//		}
-//		
-//		state.sendTradeOffer(offer, target, request);
-//		
-//		getTradeOverlay().closeModal();
-////		getWaitOverlay().showModal();
+		try {
+			MasterController.getSingleton().offerTrade(offer);
+			getTradeOverlay().closeModal();
+			getWaitOverlay().showModal();
+			waitingForAccept = true;
+		}
+		catch (ServerException e) {
+			System.out.println(e.getReason());
+			getTradeOverlay().closeModal();
+		}
 	}
 
 	@Override
@@ -262,13 +257,67 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
 	@Override
 	public void acceptTrade(boolean willAccept) {
-
+		TradeOffer offer = ModelFacade.getTradeOffer();
+		
+		int target = offer.getSender();
+		
+		if (willAccept) {
+			try {
+				MasterController.getSingleton().respondToTrade(new AcceptTrade(target, willAccept));
+			}
+			catch (ServerException e) {
+				System.out.println(e.getReason());
+			}
+		}
+		else {
+			try {
+				MasterController.getSingleton().respondToTrade(new AcceptTrade(target, false));
+			}
+			catch (ServerException e) {
+				System.out.println(e.getReason());
+			}
+		}
 		getAcceptOverlay().closeModal();
 	}
 
 	@Override
 	public void update() {
-		
+		if (MasterController.getSingleton().hasGameBegun()) {
+			if (ModelFacade.whatStateMightItBe() == Status.Playing) {
+				Player user = ModelFacade.getUserPlayer();
+				TradeOffer offer = ModelFacade.getTradeOffer();
+				
+				if (ModelFacade.whoseTurnIsItAnyway() == user.getIndex()) {
+					if (waitingForAccept && offer == null) {
+						getWaitOverlay().closeModal();
+						waitingForAccept = false;
+					}
+				}
+				else {
+					if (offer != null && offer.getReceiver() == user.getIndex()) {
+						if (!getAcceptOverlay().isModalShowing()) {
+							Player trader = ModelFacade.getPlayer(offer.getSender());
+							getAcceptOverlay().setPlayerName(trader.getName());
+
+							boolean hasEnough = false;
+							for (ResourceType r : ResourceType.values()) {
+								int offerAmount = offer.getOffer().getResource(r);
+								hasEnough &= user.getResourceAmount(r) + offerAmount > 0;
+								if (offerAmount < 0) {
+									getAcceptOverlay().addGetResource(r, -offerAmount);
+								}
+								else {
+									getAcceptOverlay().addGiveResource(r, offerAmount);
+								}
+							}
+							
+							getAcceptOverlay().setAcceptEnabled(hasEnough);
+							getAcceptOverlay().showModal();
+						}
+					}
+				}
+			}
+		}
 	}
 
 }

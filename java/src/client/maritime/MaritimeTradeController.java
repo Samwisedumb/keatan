@@ -76,8 +76,10 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 		Player user = ModelFacade.getUserPlayer();
 		int ratio = ModelFacade.getTradeRatio(user.getIndex(), give);
 		
+		System.out.println("Trade!");
 		try {
-			MasterController.getSingleton().maritimeTrade(new MaritimeTrade(user.getIndex(), ratio, get, get));
+			MasterController.getSingleton().maritimeTrade(new MaritimeTrade(user.getIndex(), ratio, give, get));
+			System.out.println("Successfully traded");
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());
@@ -129,12 +131,10 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 	public void unsetGetValue() {
 		get = null;
 
-		Player user = ModelFacade.getUserPlayer();
 		List<ResourceType> getOptions = new ArrayList<ResourceType>();
 		
 		for (ResourceType r : ResourceType.values()) {
-			int ratio = ModelFacade.getTradeRatio(user.getIndex(), r);
-			if (user.getResources().getResource(r) >= ratio) {
+			if (ModelFacade.bankHasAtLeast(r, 1)) {
 				getOptions.add(r);
 			}
 		}

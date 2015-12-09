@@ -40,6 +40,7 @@ public class MapControllerThieveryState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
+		System.out.println("Robber can be placed: " + canPlaceRobber(hexLoc));
 		return ModelFacade.canPlaceRobber(hexLoc);
 	}
 

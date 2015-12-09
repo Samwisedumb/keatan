@@ -135,7 +135,7 @@ public class DiscardController extends Controller implements IDiscardController 
 		int numToDiscard = user.getResources().getTotal() / 2;
 		
 		getDiscardView().setDiscardButtonEnabled(numToDiscard == theList.getTotal());
-		getDiscardView().setStateMessage("Discard " + numToDiscard + "/" + theList.getTotal());
+		getDiscardView().setStateMessage("Discard " + theList.getTotal() + "/" +  numToDiscard);
 		
 		for (ResourceType type : ResourceType.values()) {
 			int amount = user.getResourceAmount(type);

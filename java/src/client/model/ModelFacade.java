@@ -2,7 +2,9 @@ package client.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import server.facades.ServerData;
 import server.model.ServerModel;
@@ -733,7 +735,7 @@ public class ModelFacade {
 	 * @return an array of robbable players
 	 */
 	public static RobPlayerInfo[] getRobbablePlayerInfo() {
-		List<RobPlayerInfo> info = new ArrayList<RobPlayerInfo>();
+		Set<RobPlayerInfo> info = new HashSet<RobPlayerInfo>();
 		for (VertexLocation location : findRobber().getVertices()) {
 			if (model.hasMunicipality(location)) {			
 				Player p = getPlayer(model.getMunicipality(location).getOwnerIndex());

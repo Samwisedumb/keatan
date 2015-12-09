@@ -16,6 +16,31 @@ package client.data;
 public class RobPlayerInfo extends PlayerInfo
 {
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + numCards;
+		result = prime * result + getID();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RobPlayerInfo other = (RobPlayerInfo) obj;
+		if (numCards != other.numCards)
+			return false;
+		if (getID() != other.getID())
+			return false;
+		return true;
+	}
+
 	private int numCards;
 	
 	public RobPlayerInfo()

@@ -636,7 +636,6 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	public boolean canDomesticTrade(TradeOffer offer, int gameID) {
-		//TODO
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 		
@@ -721,9 +720,15 @@ public class ServerMovesFacade implements IMovesFacade {
 	}
 
 	public boolean canMaritimeTrade(int playerIndex, ResourceType tradeResource, ResourceType desiredResource, int supposedRatio, int gameID) {
-		//TODO
 		
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
+		
+		if(playerIndex != thisGame.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
 		
 		Player player = thisGame.getTransferModel().getPlayers().get(playerIndex);
 		

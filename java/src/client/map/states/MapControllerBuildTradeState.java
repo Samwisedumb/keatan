@@ -1,10 +1,10 @@
 package client.map.states;
 
-import shared.definitions.PieceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
+import shared.transferClasses.RobPlayer;
 import client.base.MasterController;
 import client.map.IMapController;
 import client.model.EdgeLocation;
@@ -84,19 +84,15 @@ public class MapControllerBuildTradeState extends MapControllerState {
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
 		if (ModelFacade.canPlaceRobber(hexLoc)) {
-			
 			try {
-				
+				MasterController.getSingleton().robPlayer(new RobPlayer(ModelFacade.getUserPlayer().getIndex(),
+						-1,
+						hexLoc));
 			}
 			catch (ServerException e) {
 				System.err.println(e.getReason());
 			}
 		}
-	}
-
-	@Override
-	public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
-		
 	}
 
 	@Override

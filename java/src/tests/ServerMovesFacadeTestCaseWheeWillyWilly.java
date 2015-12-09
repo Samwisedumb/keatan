@@ -11,11 +11,13 @@ import server.facades.ServerData;
 import server.facades.ServerMovesFacade;
 import shared.definitions.CatanColor;
 import shared.definitions.EdgeDirection;
+import shared.definitions.ResourceType;
 import shared.definitions.VertexDirection;
 import shared.exceptions.ServerException;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
 import shared.transferClasses.FinishTurn;
+import shared.transferClasses.MaritimeTrade;
 import shared.transferClasses.RollNumber;
 
 public class ServerMovesFacadeTestCaseWheeWillyWilly {
@@ -46,6 +48,19 @@ public class ServerMovesFacadeTestCaseWheeWillyWilly {
 			System.out.println("PBBBBTH!");
 		}
 		
+		ServerData.getInstance().getGameModel(0).getTransferModel().getTurnTracker().setStatus(Status.Playing);
+		
+		ServerData.getInstance().getGameModel(0).getPlayer(0).addResource(ResourceType.SHEEP, 4);
+		
+		MaritimeTrade trade = new MaritimeTrade(0, 4, ResourceType.SHEEP, ResourceType.WOOD);
+		
+		try {
+			ServerMovesFacade.getInstance().maritimeTrade(0, trade);
+		} catch (ServerException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("PBBBTH!");
+		}
 		
 		FinishTurn testEnd = new FinishTurn(0);
 		

@@ -165,7 +165,7 @@ public class ServerMovesFacade implements IMovesFacade {
 	@Override
 	public void maritimeTrade(int gameID, MaritimeTrade trade) throws ServerException {
 		// TODO Auto-generated method stub
-		if(canMaritimeTrade(trade.getPlayerIndex(), trade.getInputResource(), trade.getOutputResource(), trade.getRatio(), gameID)) {
+		if(canMaritimeTrade(trade.getPlayerIndex(), trade.getInputResource(), trade.getOutputResource(), trade.getRatio(), gameID) == false) {
 			throw new ServerException("You can't trade, mon ami");
 		}
 		ServerData.getInstance().getGameModel(gameID).maritimeTrade(trade.getPlayerIndex(), trade.getRatio(),
@@ -738,13 +738,14 @@ public class ServerMovesFacade implements IMovesFacade {
 		Player player = thisGame.getTransferModel().getPlayers().get(playerIndex);
 		
 		int tradeRatio = getTradeRatio(playerIndex, tradeResource, thisGame);
-	
+		
 		if(supposedRatio != tradeRatio) {
 			return false;
 		}
 		
-		return player.getResources().hasResource(tradeResource, tradeRatio) &&
-				thisGame.getTransferModel().getBank().hasResource(desiredResource, 1);
+		return (player.getResources().hasResource(tradeResource, tradeRatio)) &&
+				(thisGame.getTransferModel().getBank().hasResource(desiredResource, 1));
+		
 	}
 	
 	public int getTradeRatio(int playerIndex, ResourceType tradeResource, ServerModel thisGame) {

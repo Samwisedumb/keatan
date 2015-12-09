@@ -140,7 +140,8 @@ public class DiscardController extends Controller implements IDiscardController 
 		for (ResourceType type : ResourceType.values()) {
 			int amount = user.getResourceAmount(type);
 			int value = theList.getResource(type);
-			
+
+			getDiscardView().setResourceDiscardAmount(type, value);
 			getDiscardView().setResourceMaxAmount(type, amount);
 			
 			getDiscardView().setResourceAmountChangeEnabled(type, value < amount && numToDiscard > theList.getTotal(),

@@ -1278,7 +1278,13 @@ public class ServerModel {
 		
 		return nearbyVertices;
 	}
-	
+
+	/**Get three edges touching the vertex
+	 * @pre the vertex and edges exist
+	 * @param checkVertex the vertex to check
+	 * @return the edges touching the vertex
+	 * @post the three edges
+	 */
 	public List<EdgeLocation> getNearbyEdges(VertexLocation checkVertex) {
 		int x = checkVertex.getX();
 		int y = checkVertex.getY();

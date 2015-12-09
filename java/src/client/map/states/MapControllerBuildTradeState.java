@@ -1,5 +1,6 @@
 package client.map.states;
 
+import shared.definitions.PieceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
@@ -92,6 +93,32 @@ public class MapControllerBuildTradeState extends MapControllerState {
 			catch (ServerException e) {
 				System.err.println(e.getReason());
 			}
+		}
+	}
+	
+	@Override
+	public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
+		if (pieceType == null) {
+			return;
+		}
+		Player user = ModelFacade.getUserPlayer();
+		switch (pieceType) {
+		case ROAD:
+			if (user.getResources().hasEnoughForRoad() && user.getUnplacedRoads() > 0) {
+				getMapView().startDrop(PieceType.ROAD, user.getColor(), true);
+			}
+			break;
+		case SETTLEMENT:
+			if (user.getResources().hasEnoughForSettlement() & user.getUnplacedSettlements() > 0) {
+				getMapView().startDrop(PieceType.SETTLEMENT, user.getColor(), true);
+			}
+			break;
+		case CITY:
+			if (user.getResources().hasEnoughForCity() & user.getUnplacedCities() > 0) {
+				getMapView().startDrop(PieceType.CITY, user.getColor(), true);
+			}
+			break;
+		default:
 		}
 	}
 

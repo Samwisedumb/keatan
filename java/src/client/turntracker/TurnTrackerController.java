@@ -106,6 +106,16 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 				getView().updateGameState("Second Round", false);
 				break;
 			}
+			
+			int winner = ModelFacade.getWinner();
+			if (winner == ModelFacade.whoseTurnIsItAnyway()) {
+				if (winner == user.getIndex()) {
+					getView().updateGameState("You won!", false);
+				}
+				else {
+					getView().updateGameState("You lost!", false);
+				}
+			}
 		}
 	}
 }

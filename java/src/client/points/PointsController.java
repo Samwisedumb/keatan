@@ -46,9 +46,15 @@ public class PointsController extends Controller implements IPointsController {
 			getPointsView().setPoints(ModelFacade.getUserPlayer().getVictoryPoints());
 			
 			int winnerIndex = ModelFacade.getWinner();
-			if (winnerIndex != -1) {
+			if (winnerIndex == ModelFacade.whoseTurnIsItAnyway()) {
 				Player winner = ModelFacade.getPlayerByIndex(winnerIndex);
-				getFinishedView().setWinner(winner.getName(), winnerIndex == ModelFacade.getUserPlayerInfo().getIndex());
+				Player user = ModelFacade.getUserPlayer();
+				if (winnerIndex == user.getIndex()) {
+					getFinishedView().setWinner(user.getName(), true);
+				}
+				else {
+					getFinishedView().setWinner(winner.getName(), false);
+				}
 			}
 		}
 		else {

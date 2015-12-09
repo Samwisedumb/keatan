@@ -364,7 +364,15 @@ public class Player {
 	 * @return the number of cities the user has placed
 	 * @author djoshuac
 	 */
-	public int getNumbPlacedCities() {
+	public int getNumPlacedCities() {
 		return TOTAL_CITIES - getUnplacedCities();
+	}
+	
+	/**
+	 * @return true if the player has more than the limit<br>
+	 * false if the player has less than the limit
+	 */
+	public boolean needsToDiscard() {
+		return resources.moreThanSeven();
 	}
 }

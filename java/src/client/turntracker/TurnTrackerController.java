@@ -3,6 +3,8 @@ package client.turntracker;
 import java.util.List;
 
 import shared.definitions.CatanColor;
+import shared.exceptions.ServerException;
+import shared.transferClasses.FinishTurn;
 import client.base.Controller;
 import client.base.MasterController;
 import client.data.PlayerInfo;
@@ -34,7 +36,12 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 
 	@Override
 	public void endTurn() {
-
+		try {
+			MasterController.getSingleton().finishTurn(new FinishTurn(ModelFacade.getUserPlayer().getIndex()));
+		}
+		catch (ServerException e) {
+			System.err.println(e.getReason());
+		}
 	}
 	
 	boolean playersAreDrawn;
@@ -67,8 +74,32 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 				
 				getView().updatePlayer(p.getIndex(), p.getVictoryPoints(), isThierTurn, hasLargestArmy, hasLongestRoad);
 			}
-
-			getView().updateGameState("", false);
+			
+			switch (ModelFacade.whatStateMightItBe()) {
+			case Rolling:
+				getView().updateGameState("Rolling", false);
+				break;
+			case Discarding:
+				getView().updateGameState("Discarding", false);
+				break;
+			case Playing:
+				if (user.getIndex() != ModelFacade.whoseTurnIsItAnyway()) {
+					getView().updateGameState("End Turn", true);
+				}
+				else {
+					getView().updateGameState("Waiting", false);
+				}
+				break;
+			case Robbing:
+				getView().updateGameState("Robbing", false);
+				break;
+			case FirstRound:
+				getView().updateGameState("First Round", false);
+				break;
+			case SecondRound:
+				getView().updateGameState("Second Round", false);
+				break;
+			}
 		}
 	}
 }

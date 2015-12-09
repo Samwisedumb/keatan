@@ -40,16 +40,12 @@ public class MapControllerThieveryState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		System.out.println("Robber can be placed: " + ModelFacade.canPlaceRobber(hexLoc));
 		return ModelFacade.canPlaceRobber(hexLoc);
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		getMapView().placeRobber(hexLoc);
 		if (canPlaceRobber(hexLoc)) {
-			System.out.println("Robber");
-			
 			ModelFacade.moveRobber(hexLoc);
 			
 			RobPlayerInfo[] candidates = ModelFacade.getRobbablePlayerInfo();
@@ -74,26 +70,17 @@ public class MapControllerThieveryState extends MapControllerState {
 	
 	@Override
 	public void robPlayer(RobPlayerInfo victim) {
-		System.out.println("Rob him");
 		try {
 			Player user = ModelFacade.getUserPlayer();
 			if (victim.getNumCards() == 0) {
-				System.out.println("they didn't have neough cards");
 				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
 						-1,
 						ModelFacade.findRobber()));
-				System.out.println("they didn't have neough cards");
-				getRobView().closeModal();
-				System.out.println("closeit");
 			}
 			else {
-				System.out.println("they had neough cards to steel");
 				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
 						victim.getIndex(),
 						ModelFacade.findRobber()));
-				System.out.println("they had neough cards to steel");
-				getRobView().closeModal();
-				System.out.println("closeit");
 			}
 		}
 		catch (ServerException e) {

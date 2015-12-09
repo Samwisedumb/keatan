@@ -627,7 +627,7 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
-		if(thisPlayer.getResources().getTotalCards() >= 7) {
+		if(thisPlayer.getResources().getTotalCards() <= 7) {
 			thisPlayer.setDiscarded(true);
 			return false;
 		}
@@ -640,7 +640,11 @@ public class ServerMovesFacade implements IMovesFacade {
 		ServerModel thisGame = ServerData.getInstance().getGameModel(gameID);
 		
 		int currentPlayer = thisGame.getTransferModel().getTurnTracker().getPlayerTurn();
-		if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
+		
+		if(thisGame.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(offer.getSender() != currentPlayer && offer.getReceiver() != currentPlayer) {
 			return false;
 		}
 		

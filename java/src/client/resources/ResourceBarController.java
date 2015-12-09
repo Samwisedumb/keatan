@@ -84,6 +84,9 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 			for (ResourceType r : ResourceType.values()) {
 				getView().setElementAmount(r.getResourceBarElement(), user.getResourceAmount(r));
 			}
+			getView().setElementAmount(ResourceBarElement.ROAD, user.getUnplacedRoads());
+			getView().setElementAmount(ResourceBarElement.SETTLEMENT, user.getUnplacedSettlements());
+			getView().setElementAmount(ResourceBarElement.CITY, user.getUnplacedCities());
 		}
 	}
 

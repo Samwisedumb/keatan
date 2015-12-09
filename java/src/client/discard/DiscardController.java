@@ -68,7 +68,8 @@ public class DiscardController extends Controller implements IDiscardController 
 			theList.setOre(theList.getOre() + 1);
 			break;
 		}
-		getDiscardView().setResourceAmountChangeEnabled(resource, true, false);
+		
+		updateDiscardView();
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class DiscardController extends Controller implements IDiscardController 
 			break;
 		}
 		
-		getDiscardView().setResourceAmountChangeEnabled(resource, false, true);
+		updateDiscardView();
 	}
 
 	@Override
@@ -101,12 +102,13 @@ public class DiscardController extends Controller implements IDiscardController 
 		
 		try {
 			MasterController.getSingleton().discardCards(command);
+			ModelFacade.getUserPlayer().setDiscarded(true);
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());
 		}
 		
-		getDiscardView().closeModal();
+		closeModal();
 	}
 
 	boolean modelIsVisible;
@@ -118,18 +120,38 @@ public class DiscardController extends Controller implements IDiscardController 
 		}
 	}
 	
-	public void closeModel() {
+	public void closeModal() {
 		if (modelIsVisible) {
 			getDiscardView().closeModal();
 			modelIsVisible = false;
 		}
 	}
 	
+	public void updateDiscardView() {
+		Player user = ModelFacade.getUserPlayer();
+		getDiscardView().setStateMessage("Discard");
+		int numToDiscard = user.getResources().getTotal() / 2;
+		getDiscardView().setDiscardButtonEnabled(numToDiscard == theList.getTotal());
+		
+		for (ResourceType type : ResourceType.values()) {
+			int amount = user.getResourceAmount(type);
+			int value = theList.getResource(type);
+			
+			getDiscardView().setResourceMaxAmount(type, amount);
+			getDiscardView().setResourceAmountChangeEnabled(type, value == amount || numToDiscard > theList.getTotal(),
+					value != 0);
+		}
+	}
+	
 	@Override
 	public void update() {
 		if (MasterController.getSingleton().hasGameBegun() &&
-				ModelFacade.whatStateMightItBe() == Status.Discarding) {
+				ModelFacade.whatStateMightItBe() == Status.Discarding &&
+				!ModelFacade.getUserPlayer().hasDiscarded()) {
 			Player user = ModelFacade.getUserPlayer();
+
+			updateDiscardView();
+			
 			if (user.needsToDiscard()) {
 				showModal();
 			}

@@ -1,6 +1,10 @@
 package client.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import shared.definitions.EdgeDirection;
+import shared.definitions.VertexDirection;
 
 /**
  * Represents the location of a hex on a hex map
@@ -115,6 +119,17 @@ public class HexLocation {
 	 */
 	public HexLocation convertFromGui() {
 		return new HexLocation(x, -y);
+	}
+
+	/**
+	 * @return the vertex locations adjacent to the hex
+	 */
+	public List<VertexLocation> getVertices() {
+		List<VertexLocation> locations = new ArrayList<VertexLocation>();
+		for (VertexDirection dir : VertexDirection.values()) {
+			locations.add(new VertexLocation(getX(), getY(), dir));
+		}
+		return locations;
 	}
 }
 

@@ -842,6 +842,22 @@ public class ClientModel {
 		}
 		return false;
 	}
+	
+	/**
+	 * Get the municipality at a location
+	 * @param location - the location to get the municipality from
+	 * @return the municipality at that location<br>
+	 * null if none is there
+	 */
+	public Municipality getMunicipality(VertexLocation location) {
+		if (hasCity(location)) {
+			return getCity(location);
+		}
+		else if (hasSettlement(location)) {
+			return getSettlement(location);
+		}
+		return null;
+	}
 }
 
 

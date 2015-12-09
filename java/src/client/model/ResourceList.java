@@ -148,6 +148,32 @@ public class ResourceList {
 	 * false if otherwise
 	 */
 	public boolean moreThanSeven() {
-		return brick + ore + sheep + wheat + wood > 7;
+		return getTotal() > 7;
+	}
+	
+	/**
+	 * @return the number of the given resource type
+	 */
+	public int getResource(ResourceType type) {
+		switch(type) {
+		case WOOD:
+			return getWood();
+		case BRICK:
+			return getBrick();
+		case SHEEP:
+			return getSheep();
+		case WHEAT:
+			return getWheat();
+		case ORE:
+			return getOre();
+		}
+		return -1;
+	}
+	
+	/**
+	 * @return the total number of resources in this list
+	 */
+	public int getTotal() {
+		return brick + ore + sheep + wheat + wood;
 	}
 }

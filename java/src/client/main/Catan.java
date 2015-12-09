@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import server.ServerCommunicator;
 import client.base.IAction;
 import client.catan.CatanPanel;
 import client.join.JoinGameController;

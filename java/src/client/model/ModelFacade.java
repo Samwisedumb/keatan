@@ -692,14 +692,24 @@ public class ModelFacade {
 	 * @pre the model must be initialized
 	 * @return an array of robbable players
 	 */
-	public static RobPlayerInfo getRobbablePlayerInfo() {
+	public static RobPlayerInfo[] getRobbablePlayerInfo() {
+		List<RobPlayerInfo> info = new ArrayList<RobPlayerInfo>();
 		for (VertexLocation location : findRobber().getVertices()) {
-			if (model.hasMunicipality(location)) {
+			if (model.hasMunicipality(location)) {			
+				Player p = getPlayer(model.getMunicipality(location).getOwnerIndex());
 				
+				RobPlayerInfo robInfo = new RobPlayerInfo();
+				robInfo.setColor(p.getColor());
+				robInfo.setID(p.getID());
+				robInfo.setName(p.getName());
+				robInfo.setNumCards(p.getResources().getTotal());
+				robInfo.setPlayerIndex(p.getIndex());
+				
+				info.add(robInfo);
 			}
 		}
 		
-		return null;
+		return (RobPlayerInfo[]) info.toArray();
 	}
 }
 

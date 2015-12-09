@@ -45,8 +45,14 @@ public class MapControllerThieveryState extends MapControllerState {
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
+		
+		System.out.println("Placed RObber");
 		if (canPlaceRobber(hexLoc)) {
 			ModelFacade.moveRobber(hexLoc);
+			
+			RobPlayerInfo candidates = ModelFacade.getRobbablePlayerInfo();
+			
+			getRobView().setPlayers(candidateVictims);
 		}
 	}
 	

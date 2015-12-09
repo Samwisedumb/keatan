@@ -133,7 +133,7 @@ public class DiscardController extends Controller implements IDiscardController 
 				!ModelFacade.getUserPlayer().hasDiscarded()) {
 			Player user = ModelFacade.getUserPlayer();
 
-			getDiscardView().setStateMessage("Poop");
+			getDiscardView().setStateMessage("Discard");
 			int numToDiscard = user.getResources().getTotal() / 2;
 			getDiscardView().setDiscardButtonEnabled(numToDiscard == theList.getTotal());
 			
@@ -142,8 +142,8 @@ public class DiscardController extends Controller implements IDiscardController 
 				int value = theList.getResource(type);
 				
 				getDiscardView().setResourceMaxAmount(type, amount);
-				getDiscardView().setResourceAmountChangeEnabled(type, value != 0,
-						value == amount && numToDiscard > theList.getTotal());
+				getDiscardView().setResourceAmountChangeEnabled(type, value == amount || numToDiscard > theList.getTotal(),
+						value != 0);
 			}
 			
 			if (user.needsToDiscard()) {

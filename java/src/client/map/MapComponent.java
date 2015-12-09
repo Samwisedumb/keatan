@@ -592,7 +592,7 @@ public class MapComponent extends JComponent
 							getController().placeCity(dropVertLoc);
 							break;
 						case ROBBER:
-							getController().placeRobber(dropHexLoc);
+							getController().placeRobber(dropHexLoc.convertFromGui());
 							break;
 						default:
 							assert false;

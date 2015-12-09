@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.List;
 
 import shared.definitions.ResourceType;
+import shared.definitions.VertexDirection;
 import shared.transferClasses.UserInfo;
 import client.base.MasterController;
 import client.base.Observer;
 import client.data.GameInfo;
 import client.data.PlayerInfo;
+import client.data.RobPlayerInfo;
 
 
 public class ModelFacade {
@@ -678,12 +680,26 @@ public class ModelFacade {
 
 	/**
 	 * Moves the robber to the given location
-	 * @param hexLoc - the location to move thro robber
+	 * @param hexLoc - the location to move the robber to
 	 * @pre the model must be initialized
 	 * @author djoshuac
 	 */
 	public static void moveRobber(HexLocation hexLoc) {
 		model.getTransferModel().getMap().setRobber(hexLoc);
+	}
+
+	/**
+	 * @pre the model must be initialized
+	 * @return an array of robbable players
+	 */
+	public static RobPlayerInfo getRobbablePlayerInfo() {
+		for (VertexLocation location : findRobber().getVertices()) {
+			if (model.hasMunicipality(location)) {
+				
+			}
+		}
+		
+		return null;
 	}
 }
 

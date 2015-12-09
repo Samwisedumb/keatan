@@ -58,8 +58,6 @@ public class RollController extends Controller implements IRollController {
 		catch (ServerException e) {
 			System.out.println("Failed to roll dice: " + e.getReason());
 		}
-		
-		getResultView().showModal();
 	}
 	
 	private Random rand;
@@ -71,6 +69,11 @@ public class RollController extends Controller implements IRollController {
 		
 		if (user.getIndex() == ModelFacade.whoseTurnIsItAnyway() && state == Status.Rolling) {
 			rollDice();
+		}
+		
+		if (ModelFacade.whatStateMightItBe() == Status.Playing &&
+				ModelFacade.whoseTurnIsItAnyway() == ModelFacade.getUserPlayer().getIndex()) {
+			getResultView().showModal();
 		}
 	}
 

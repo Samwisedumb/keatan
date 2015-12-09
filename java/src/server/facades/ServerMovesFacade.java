@@ -624,7 +624,7 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
-		if(thisPlayer.getResources().getTotalCards() > 7) {
+		if(thisPlayer.getResources().getTotalCards() >= 7) {
 			thisPlayer.setDiscarded(true);
 			return false;
 		}

@@ -472,7 +472,14 @@ public class ServerModel {
 	public void reapResources(int numberRoll, int playerIndex) {
 		
 		if(numberRoll == 7) {
-			transfer.getTurnTracker().setStatus(Status.Discarding);
+			if(doesAnyoneDiscard()) {
+				transfer.getTurnTracker().setStatus(Status.Discarding);
+			}
+			
+			else {
+				transfer.getTurnTracker().setStatus(Status.Robbing);
+			}
+			
 			transfer.incrementVersion();
 			return;
 		}
@@ -533,6 +540,16 @@ public class ServerModel {
 		transfer.incrementVersion();
 	}
 
+	private boolean doesAnyoneDiscard() {
+		for(Player thisPlayer : transfer.getPlayers()) {
+			if(thisPlayer.getResources().getTotalCards() > 7) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	private void handOutSpoils(ResourceList bankToll, List<ResourceList> spoils) {
 		
 		boolean canBrick = transfer.getBank().hasResource(ResourceType.BRICK, bankToll.getBrick());

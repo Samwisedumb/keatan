@@ -502,7 +502,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		else if(robberMove.equals(thisGame.getRobber())) {
 			return false;
 		}
-		else if(victimIndex != -1) {
+		else if((victimIndex != -1) || (victimIndex == playerIndex)) {
 			if(thisGame.getTransferModel().getPlayers().get(victimIndex).getResources().getTotalCards() == 0) {
 				return false;
 			}
@@ -522,8 +522,8 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
-		if((thisGame.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() +
-				thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonument() == 10)) {
+		if(((thisGame.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() +
+				thisGame.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonument()) == 10)) {
 			return true;
 		}
 		
@@ -629,6 +629,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		if(thisPlayer.getResources().getTotalCards() <= 7) {
 			thisPlayer.setDiscarded(true);
+			thisGame.getTransferModel().incrementVersion();
 			return false;
 		}
 		

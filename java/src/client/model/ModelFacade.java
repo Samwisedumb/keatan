@@ -118,77 +118,6 @@ public class ModelFacade {
 	}
 	
 	/**
-	* @pre ModelFacade must be initialized and must have a current valid model
-	* @param playerIndex - the index of the player in question
-	* @param location - location of hex
-	* @return true if the given player owns a settlement or city adjacent to that location, false if otherwise
-	* @post see return
-	*/
-	public static boolean canProduceResource(int playerIndex, HexLocation location) {
-		//TODO
-		System.err.println("canProduceResources() is unimplemented");
-		return false;
-		/*Hex thisHex = null;
-		Iterator<Entry<HexLocation, Hex>> hexes = model.getHexes().entrySet().iterator();
-		while (hexes.hasNext()) {
-			Entry<HexLocation, Hex> hex = hexes.next();
-			if(hex.getKey().equals(location)){
-				thisHex = hex.getValue();
-			}
-		}
-		
-		int x = thisHex.getLocation().getX();
-		int y = thisHex.getLocation().getY();
-	
-		VertexLocation west = new VertexLocation(x, y, VertexDirection.West);
-		VertexLocation northwest = new VertexLocation(x, y, VertexDirection.NorthWest);
-		VertexLocation northeast = new VertexLocation(x, y, VertexDirection.NorthEast);
-		VertexLocation east = new VertexLocation(x, y, VertexDirection.East);
-		VertexLocation southeast = new VertexLocation(x, y, VertexDirection.SouthEast);
-		VertexLocation southwest = new VertexLocation(x, y, VertexDirection.SouthWest);
-		
-		List<VertexObject> settlements = new ArrayList<VertexObject>();
-		
-		settlements.add(model.getSettlements().get(west.getNormalizedLocation()));
-		settlements.add(model.getSettlements().get(northwest.getNormalizedLocation()));
-		settlements.add(model.getSettlements().get(northeast.getNormalizedLocation()));
-		settlements.add(model.getSettlements().get(east.getNormalizedLocation()));
-		settlements.add(model.getSettlements().get(southeast.getNormalizedLocation()));
-		settlements.add(model.getSettlements().get(southwest.getNormalizedLocation()));
-		
-		List<VertexObject> cities = new ArrayList<VertexObject>();
-		
-		cities.add(model.getCities().get(west.getNormalizedLocation()));
-		cities.add(model.getCities().get(northwest.getNormalizedLocation()));
-		cities.add(model.getCities().get(northeast.getNormalizedLocation()));
-		cities.add(model.getCities().get(east.getNormalizedLocation()));
-		cities.add(model.getCities().get(southeast.getNormalizedLocation()));
-		cities.add(model.getCities().get(southwest.getNormalizedLocation()));
-		
-		for(VertexObject settlement : settlements) {
-			if(settlement != null) {
-				if(settlement.getOwner() == playerIndex) {
-					return true; //HOORAY!
-				}
-			}
-		}
-		
-		for(VertexObject city : cities) {
-			if(city != null) {
-				if(city.getOwner() == playerIndex) {
-					return true; //HOORAY!
-				}
-			}
-		}
-		
-		return false;*/
-	}
-	
-	public static boolean canReceiveResource(int resource_amount, ResourceType resource_type) {
-		return model.getTransferModel().getBank().hasResource(resource_type, resource_amount);
-	}
-	
-	/**
 	 * Returns the transfer model's version, -1 if current transfer model is null
 	 * @returns -1 if no model version yet, otherwise it returns the models version
 	 * @author djoshuac
@@ -510,9 +439,115 @@ public class ModelFacade {
 		
 	}
 	
-	public static boolean canLoseCardsFromDieRoll(int playerIndex) {
-		//TODO
-		System.err.println("canLoseCardsFromDieRoll() is unimplemented");
+	public static boolean canPlaySoldier(int playerIndex, int victimIndex, HexLocation robberMove) {
+		
+		if(playerIndex != model.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(model.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getSoldier() == 0) {
+			return false;
+		}
+		else if(robberMove.equals(findRobber())) {
+			return false;
+		}
+		else if((victimIndex != -1) || (playerIndex == victimIndex)) {
+			if(model.getTransferModel().getPlayers().get(victimIndex).getResources().getTotalCards() == 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static boolean canMonument(int playerIndex) {
+		
+		if(playerIndex != model.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(model.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		if(((model.getTransferModel().getPlayers().get(playerIndex).getVictoryPoints() +
+				model.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonument()) == 10)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean canRoadBuilding(int playerIndex, EdgeLocation placeOne, EdgeLocation placeTwo) {
+	
+		if(playerIndex != model.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(model.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getRoadBuilding() == 0) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).getUnplacedRoads() < 2) {
+			return false;
+		}
+		
+		if(canBuildRoad(placeOne, true, false) == true) {
+			if((canBuildRoad(placeTwo, true, false) == true) ||
+				(model.getAdjacentEdges(placeTwo).contains(placeOne) == true)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean canMonopoly(int playerIndex, ResourceType mine) {
+		
+		if(playerIndex != model.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(model.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).hasPlayedDevCard() == true) {
+			return false;
+		}
+		else if(model.getTransferModel().getPlayers().get(playerIndex).getOldDevCards().getMonopoly() == 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean canYearOfPlenty(int playerIndex, ResourceType resourceOne, ResourceType resourceTwo) {
+		
+		if(playerIndex != model.getTransferModel().getTurnTracker().getPlayerTurn()) {
+			return false;
+		}
+		else if(model.getTransferModel().getTurnTracker().getStatus() != Status.Playing) {
+			return false;
+		}
+		
+		if(resourceOne == resourceTwo) {
+			if(model.getTransferModel().getBank().hasResource(resourceOne, 2)) {
+				return true;
+			}
+		}
+		else if(model.getTransferModel().getBank().hasResource(resourceOne, 1)) {
+			if(model.getTransferModel().getBank().hasResource(resourceTwo, 1)) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	

@@ -9,6 +9,7 @@ import client.base.IAction;
 import client.base.MasterController;
 import client.model.ModelFacade;
 import client.model.Player;
+import client.model.Status;
 
 
 /**
@@ -87,6 +88,17 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 			getView().setElementAmount(ResourceBarElement.ROAD, user.getUnplacedRoads());
 			getView().setElementAmount(ResourceBarElement.SETTLEMENT, user.getUnplacedSettlements());
 			getView().setElementAmount(ResourceBarElement.CITY, user.getUnplacedCities());
+			
+			if (ModelFacade.whatStateMightItBe() == Status.Playing) {
+				getView().setElementEnabled(ResourceBarElement.ROAD, true);
+				getView().setElementEnabled(ResourceBarElement.SETTLEMENT, true);
+				getView().setElementEnabled(ResourceBarElement.CITY, true);
+			}
+			else {
+				getView().setElementEnabled(ResourceBarElement.ROAD, false);
+				getView().setElementEnabled(ResourceBarElement.SETTLEMENT, false);
+				getView().setElementEnabled(ResourceBarElement.CITY, false);
+			}
 		}
 	}
 

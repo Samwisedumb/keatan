@@ -173,6 +173,9 @@ public class DiscardController extends Controller implements IDiscardController 
 			waitView.setMessage("Waiting for " + stillDiscardCount + " players to discard.");
 			showWaitModal();
 		}
+		else {
+			closeWaitModal();
+		}
 	}
 	
 	public void showWaitModal() {

@@ -2,9 +2,9 @@ package client.map.states;
 
 import shared.definitions.PieceType;
 import shared.exceptions.ServerException;
+import shared.transferClasses.BuildCity;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
-import shared.transferClasses.FinishTurn;
 import client.base.MasterController;
 import client.map.IMapController;
 import client.model.EdgeLocation;
@@ -46,7 +46,6 @@ public class MapControllerBuildTradeState extends MapControllerState {
 			
 			try {
 				MasterController.getSingleton().buildRoad(new BuildRoad(user.getIndex(), edgeLoc, false));
-				MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
 			}
 			catch (ServerException e) {
 				System.err.println(e.getReason());
@@ -61,7 +60,6 @@ public class MapControllerBuildTradeState extends MapControllerState {
 			
 			try {
 				MasterController.getSingleton().buildSettlement(new BuildSettlement(user.getIndex(), vertLoc, false));
-				MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
 			}
 			catch (ServerException e) {
 				System.err.println(e.getReason());
@@ -71,12 +69,29 @@ public class MapControllerBuildTradeState extends MapControllerState {
 
 	@Override
 	public void placeCity(VertexLocation vertLoc) {
-		
+		if (ModelFacade.canBuildCity(vertLoc)) {
+			Player user = ModelFacade.getUserPlayer();
+			
+			try {
+				MasterController.getSingleton().buildCity(new BuildCity(user.getIndex(), vertLoc, false));
+			}
+			catch (ServerException e) {
+				System.err.println(e.getReason());
+			}
+		}
 	}
 
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
-		
+		if (ModelFacade.canPlaceRobber(hexLoc)) {
+			
+			try {
+				
+			}
+			catch (ServerException e) {
+				System.err.println(e.getReason());
+			}
+		}
 	}
 
 	@Override

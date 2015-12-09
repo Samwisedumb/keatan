@@ -989,6 +989,7 @@ public class ServerModel {
 		}
 		
 		robber = robberMove;
+		transfer.getMap().setRobber(robberMove);
 		transfer.getTurnTracker().setStatus(Status.Playing);
 		transfer.incrementVersion();
 	}

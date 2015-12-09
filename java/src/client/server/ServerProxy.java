@@ -239,28 +239,28 @@ public class ServerProxy implements IServer {
 	public void roadBuilding(RoadBuilding roadBuilding) throws ServerException {
 		addUserCookieToNextRequest();
 		addGameCookieToNextRequest();
-		communicator.send("/moves/Road_Building", roadBuilding, TransferModel.class);
+		communicator.send("/moves/roadBuilding", roadBuilding, TransferModel.class);
 	}
 
 	@Override
 	public void soldier(Soldier soldier) throws ServerException {
 		addUserCookieToNextRequest();
 		addGameCookieToNextRequest();
-		communicator.send("/moves/Soldier", soldier, TransferModel.class);
+		communicator.send("/moves/soldier", soldier, TransferModel.class);
 	}
 
 	@Override
 	public void monopoly(Monopoly monopoly) throws ServerException {
 		addUserCookieToNextRequest();
 		addGameCookieToNextRequest();
-		communicator.send("/moves/Monopoly", monopoly, TransferModel.class);
+		communicator.send("/moves/monopoly", monopoly, TransferModel.class);
 	}
 
 	@Override
 	public void monument(Monument monument) throws ServerException {
 		addUserCookieToNextRequest();
 		addGameCookieToNextRequest();
-		communicator.send("/moves/Monument", monument, TransferModel.class);
+		communicator.send("/moves/monument", monument, TransferModel.class);
 	}
 
 	@Override

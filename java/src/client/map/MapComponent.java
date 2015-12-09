@@ -1142,7 +1142,7 @@ public class MapComponent extends JComponent
 	
 	private static String getRobberImageFile()
 	{
-		return "images/misc/robber.gif";
+		return "images/misc/newBandit.gif";
 	}
 	
 	private static String getDisallowImageFile()

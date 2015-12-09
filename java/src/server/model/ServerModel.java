@@ -845,34 +845,39 @@ public class ServerModel {
 	
 	public void robPlayer(int playerIndex, int victimIndex, HexLocation robberMove) {
 		
-		Player thief = transfer.getPlayers().get(playerIndex);
-		Player victim = transfer.getPlayers().get(victimIndex);
+		if((victimIndex == -1) || (victimIndex == playerIndex)) {
+			
+		}
+		else {
+			Player thief = transfer.getPlayers().get(playerIndex);
+			Player victim = transfer.getPlayers().get(victimIndex);
 		
-		ResourceType claim = wheelOfSteal(victim);
+			ResourceType claim = wheelOfSteal(victim);
 		
-		switch(claim) {
-		case WOOD:
-			victim.removeResource(ResourceType.WOOD, 1);
-			thief.addResource(ResourceType.WOOD, 1);
-			break;
-		case WHEAT:
-			victim.removeResource(ResourceType.WHEAT, 1);
-			thief.addResource(ResourceType.WHEAT, 1);
-			break;
-		case SHEEP:
-			victim.removeResource(ResourceType.SHEEP, 1);
-			thief.addResource(ResourceType.SHEEP, 1);
-			break;
-		case ORE:
-			victim.removeResource(ResourceType.ORE, 1);
-			thief.addResource(ResourceType.ORE, 1);
-			break;
-		case BRICK:
-			victim.removeResource(ResourceType.BRICK, 1);
-			thief.addResource(ResourceType.BRICK, 1);
-			break;
-		default:
-			break;
+			switch(claim) {
+			case WOOD:
+				victim.removeResource(ResourceType.WOOD, 1);
+				thief.addResource(ResourceType.WOOD, 1);
+				break;
+			case WHEAT:
+				victim.removeResource(ResourceType.WHEAT, 1);
+				thief.addResource(ResourceType.WHEAT, 1);
+				break;
+			case SHEEP:
+				victim.removeResource(ResourceType.SHEEP, 1);
+				thief.addResource(ResourceType.SHEEP, 1);
+				break;
+			case ORE:
+				victim.removeResource(ResourceType.ORE, 1);
+				thief.addResource(ResourceType.ORE, 1);
+				break;
+			case BRICK:
+				victim.removeResource(ResourceType.BRICK, 1);
+				thief.addResource(ResourceType.BRICK, 1);
+				break;
+			default:
+				break;
+			}
 		}
 		
 		robber = robberMove;

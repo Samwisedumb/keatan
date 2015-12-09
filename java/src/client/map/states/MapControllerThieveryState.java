@@ -52,6 +52,7 @@ public class MapControllerThieveryState extends MapControllerState {
 			
 			Player user = ModelFacade.getUserPlayer();
 			if (candidates.length > 0) {
+				getRobView().closeModal();
 				getRobView().setPlayers(candidates);
 				getRobView().showModal();
 			}
@@ -70,6 +71,7 @@ public class MapControllerThieveryState extends MapControllerState {
 	
 	@Override
 	public void robPlayer(RobPlayerInfo victim) {
+		getRobView().closeModal();
 		try {
 			Player user = ModelFacade.getUserPlayer();
 			if (victim.getNumCards() == 0) {

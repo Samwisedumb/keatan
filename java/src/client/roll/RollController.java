@@ -59,7 +59,9 @@ public class RollController extends Controller implements IRollController {
 			System.out.println("Failed to roll dice: " + e.getReason());
 		}
 		
-		getResultView().showModal();
+		if (!getResultView().isModalShowing()) {
+			getResultView().showModal();
+		}
 	}
 	
 	private Random rand;

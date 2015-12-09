@@ -478,7 +478,6 @@ public class ServerModel {
 			if(doesAnyoneDiscard()) {
 				transfer.getTurnTracker().setStatus(Status.Discarding);
 			}
-			
 			else {
 				transfer.getTurnTracker().setStatus(Status.Robbing);
 			}
@@ -543,13 +542,19 @@ public class ServerModel {
 	}
 
 	private boolean doesAnyoneDiscard() {
+		
+		boolean someoneDiscards = false;
+		
 		for(Player thisPlayer : transfer.getPlayers()) {
 			if(thisPlayer.getResources().getTotalCards() > 7) {
-				return true;
+				someoneDiscards = true;
+			}
+			else {
+				thisPlayer.setDiscarded(true);
 			}
 		}
 		
-		return false;
+		return someoneDiscards;
 	}
 	
 	private void handOutSpoils(ResourceList bankToll, List<ResourceList> spoils) {

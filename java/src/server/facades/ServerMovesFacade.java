@@ -619,17 +619,17 @@ public class ServerMovesFacade implements IMovesFacade {
 			return false;
 		}
 		
+		if(thisPlayer.getResources().getTotalCards() <= 7) {
+			thisPlayer.setDiscarded(true);
+			thisGame.getTransferModel().incrementVersion();
+			return false;
+		}
+		
 		if((thisPlayer.getResources().hasResource(ResourceType.BRICK, discardList.getBrick())) == false ||
 		   (thisPlayer.getResources().hasResource(ResourceType.ORE, discardList.getOre()) == false) ||
 		   (thisPlayer.getResources().hasResource(ResourceType.SHEEP, discardList.getSheep()) == false) ||
 		   (thisPlayer.getResources().hasResource(ResourceType.WHEAT, discardList.getWheat()) == false) ||
 		   (thisPlayer.getResources().hasResource(ResourceType.WOOD, discardList.getWood()) == false)) {
-			return false;
-		}
-		
-		if(thisPlayer.getResources().getTotalCards() <= 7) {
-			thisPlayer.setDiscarded(true);
-			thisGame.getTransferModel().incrementVersion();
 			return false;
 		}
 		

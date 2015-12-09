@@ -131,15 +131,23 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 	public void unsetGetValue() {
 		get = null;
 
+		Player user = ModelFacade.getUserPlayer();
+		
 		List<ResourceType> getOptions = new ArrayList<ResourceType>();
+		List<ResourceType> giveOptions = new ArrayList<ResourceType>();
 		
 		for (ResourceType r : ResourceType.values()) {
+			int ratio = ModelFacade.getTradeRatio(user.getIndex(), r);
+			if (user.getResources().getResource(r) >= ratio) {
+				giveOptions.add(r);
+			}
 			if (ModelFacade.bankHasAtLeast(r, 1)) {
 				getOptions.add(r);
 			}
 		}
-
+		
 		getTradeOverlay().showGetOptions(getOptions.toArray(new ResourceType[getOptions.size()]));
+		getTradeOverlay().showGiveOptions(giveOptions.toArray(new ResourceType[giveOptions.size()]));
 		
 		enableTradeIfShould();
 	}
@@ -149,6 +157,8 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 		give = null;
 
 		Player user = ModelFacade.getUserPlayer();
+		
+		List<ResourceType> getOptions = new ArrayList<ResourceType>();
 		List<ResourceType> giveOptions = new ArrayList<ResourceType>();
 		
 		for (ResourceType r : ResourceType.values()) {
@@ -156,8 +166,12 @@ public class MaritimeTradeController extends Controller implements IMaritimeTrad
 			if (user.getResources().getResource(r) >= ratio) {
 				giveOptions.add(r);
 			}
+			if (ModelFacade.bankHasAtLeast(r, 1)) {
+				getOptions.add(r);
+			}
 		}
-
+		
+		getTradeOverlay().showGetOptions(getOptions.toArray(new ResourceType[getOptions.size()]));
 		getTradeOverlay().showGiveOptions(giveOptions.toArray(new ResourceType[giveOptions.size()]));
 		
 		enableTradeIfShould();

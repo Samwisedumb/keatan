@@ -20,9 +20,9 @@ public interface DevCardControllerState {
 	
 	void playMonumentCard();
 	
-	void playRoadBuildCard(EdgeLocation roadOne, EdgeLocation roadTwo);
+	void playRoadBuildCard();
 	
-	void playSoldierCard(int victimIndex, HexLocation location);
+	void playSoldierCard();
 	
 	void playYearOfPlentyCard(ResourceType resourceOne, ResourceType resourceTwo);
 	

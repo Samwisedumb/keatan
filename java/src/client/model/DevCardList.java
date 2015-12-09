@@ -93,7 +93,7 @@ public class DevCardList {
 		case YEAR_OF_PLENTY:
 			return getYearOfPlenty();
 		default:
-				return 0;
+			return 0;
 		}
 	}
 }

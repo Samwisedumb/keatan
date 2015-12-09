@@ -1,13 +1,13 @@
 package client.devcards;
 
-import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
 import client.base.Controller;
 import client.base.IAction;
 import client.devcards.states.DevCardControllerNotYourTurnState;
 import client.devcards.states.DevCardControllerState;
+import client.devcards.states.DevCardControllerYourTurnState;
 import client.model.ModelFacade;
-import client.model.Player;
+import client.model.Status;
 
 
 /**
@@ -57,41 +57,27 @@ public class DevCardController extends Controller implements IDevCardController 
 
 	@Override
 	public void startBuyCard() {
-		
-		getBuyCardView().showModal();
+		state.startBuyCard();
 	}
 
 	@Override
 	public void cancelBuyCard() {
-		
-		getBuyCardView().closeModal();
+		state.cancelBuyCard();
 	}
 
 	@Override
 	public void buyCard() {
-		
 		state.buyCard();
-		
-		getBuyCardView().closeModal();
 	}
 
 	@Override
 	public void startPlayCard() {
-		getPlayCardView().reset();
-		
-		Player user = ModelFacade.getUserPlayer();
-		
-		for (DevCardType type : DevCardType.values()) {
-			
-		}
-		
-		getPlayCardView().showModal();
+		state.startPlayCard();
 	}
 
 	@Override
 	public void cancelPlayCard() {
-		
-		getPlayCardView().closeModal();
+		state.cancelPlayCard();
 	}
 
 	@Override
@@ -106,16 +92,12 @@ public class DevCardController extends Controller implements IDevCardController 
 
 	@Override
 	public void playRoadBuildCard() {
-		
-		roadAction.execute();
+		state.playRoadBuildCard();
 	}
 
 	@Override
 	public void playSoldierCard() {
-		
-		
-		//state.playSoldierCard(victimIndex, location);
-		soldierAction.execute();
+		state.playSoldierCard();
 	}
 
 	@Override
@@ -125,8 +107,21 @@ public class DevCardController extends Controller implements IDevCardController 
 
 	@Override
 	public void update() {
-		
+		if (ModelFacade.whatStateMightItBe() == Status.Playing
+				&& ModelFacade.whoseTurnIsItAnyway() == ModelFacade.getUserPlayer().getIndex()) {
+			setState(new DevCardControllerYourTurnState(this));
+		}
+		else {
+			setState(new DevCardControllerNotYourTurnState());
+		}
 	}
 
+	public IAction getSoldierAction() {
+		return soldierAction;
+	}
+	
+	public IAction getRoadAction() {
+		return roadAction;
+	}
 }
 

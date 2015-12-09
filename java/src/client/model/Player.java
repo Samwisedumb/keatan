@@ -381,7 +381,7 @@ public class Player {
 	 * @param type - the dev card type to get
 	 * @return the number of dev cards of that type that are playable that the player has
 	 */
-	public int getNumPlayable(DevCardType type) {
+	public int getNumPlayableDevCard(DevCardType type) {
 		return oldDevCards.getAmount(type);
 	}
 	
@@ -389,7 +389,19 @@ public class Player {
 	 * @param type - the dev card type to get
 	 * @return the total number of dev cards of the given type
 	 */
-	public int getTOtalCards(DevCardType type) {
+	public int getTotalNumberOfDevCard(DevCardType type) {
 		return oldDevCards.getAmount(type) + newDevCards.getAmount(type);
+	}
+
+	public int getNumPlayableDevCards() {
+		int count = 0;
+		for (DevCardType type : DevCardType.values()) {
+			count += getNumPlayableDevCard(type);
+		}
+		return count;
+	}
+
+	public int getNumPlayedSoldiers() {
+		return getNumSoldiers();
 	}
 }

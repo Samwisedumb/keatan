@@ -3,6 +3,7 @@ package client.resources;
 import java.util.HashMap;
 import java.util.Map;
 
+import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
 import client.base.Controller;
 import client.base.IAction;
@@ -89,11 +90,15 @@ public class ResourceBarController extends Controller implements IResourceBarCon
 			getView().setElementAmount(ResourceBarElement.ROAD, user.getUnplacedRoads());
 			getView().setElementAmount(ResourceBarElement.SETTLEMENT, user.getUnplacedSettlements());
 			getView().setElementAmount(ResourceBarElement.CITY, user.getUnplacedCities());
+			getView().setElementAmount(ResourceBarElement.SOLDIERS, user.getNumPlayedSoldiers());
 			
 			if (ModelFacade.whatStateMightItBe() == Status.Playing) {
 				getView().setElementEnabled(ResourceBarElement.ROAD, true);
 				getView().setElementEnabled(ResourceBarElement.SETTLEMENT, true);
 				getView().setElementEnabled(ResourceBarElement.CITY, true);
+				
+				getView().setElementEnabled(ResourceBarElement.BUY_CARD, user.getResources().hasEnoughForDevCard());
+				getView().setElementEnabled(ResourceBarElement.PLAY_CARD, user.getNumPlayableDevCards() > 0);
 			}
 			else {
 				getView().setElementEnabled(ResourceBarElement.ROAD, false);

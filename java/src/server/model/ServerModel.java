@@ -469,10 +469,11 @@ public class ServerModel {
 		return newVertices;
 	}
 
-	public void getResources(int numberRoll, int playerIndex) {
+	public void reapResources(int numberRoll, int playerIndex) {
 		
 		if(numberRoll == 7) {
 			transfer.getTurnTracker().setStatus(Status.Discarding);
+			transfer.incrementVersion();
 			return;
 		}
 		
@@ -529,6 +530,7 @@ public class ServerModel {
 		handOutSpoils(bankToll, spoils);
 		
 		transfer.getTurnTracker().setStatus(Status.Playing);
+		transfer.incrementVersion();
 	}
 
 	private void handOutSpoils(ResourceList bankToll, List<ResourceList> spoils) {

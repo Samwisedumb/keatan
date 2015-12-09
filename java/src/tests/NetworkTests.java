@@ -100,7 +100,7 @@ public class NetworkTests {
 			ClientServer.getSingleton().register(userCredentials);
 			fail("Should have thrown a user already exists error");
 		} catch (ServerException e) {
-			boolean reasonCheck = e.getReason().equals("Username already exists");
+			boolean reasonCheck = e.getReason().equals("Username is already in use");
 			//assert is doing weird things right here, hence the kludge.
 			if(!reasonCheck) {
 				fail("Wrong exception thrown");
@@ -113,7 +113,7 @@ public class NetworkTests {
 	public void testLogin() {
 		//Set 
 		try {
-			ClientServer.getSingleton().register(new UserCredentials("Test","Test1"));
+			ClientServer.getSingleton().register(new UserCredentials("Pest","Pest1"));
 		} catch (ServerException e1) {
 		}
 
@@ -201,6 +201,10 @@ public class NetworkTests {
 	}
 	
 	//joinGame
+	@Test
+	public void testJoinGame() {
+		
+	}
 	//getModel
 	//addAI
 	//listAITypes

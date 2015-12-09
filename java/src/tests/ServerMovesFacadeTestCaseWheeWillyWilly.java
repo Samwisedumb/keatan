@@ -23,25 +23,15 @@ public class ServerMovesFacadeTestCaseWheeWillyWilly {
 	public void test() {
 		ServerData.getInstance().addPlayer(0, CatanColor.GREEN, "Wibbles", 27);
 		
-		ServerData.getInstance().addPlayer(1, CatanColor.BLUE, "Dibbles", 15);
+		ServerData.getInstance().addPlayer(0, CatanColor.BLUE, "Dibbles", 15);
 		
-		ServerData.getInstance().addPlayer(2, CatanColor.RED, "Fibbles", 74);
+		ServerData.getInstance().addPlayer(0, CatanColor.RED, "Fibbles", 74);
 		
-		ServerData.getInstance().addPlayer(3, CatanColor.PUCE, "Wasbo", 3);
-		
-		
-		
-		BuildRoad testBuildRoad = new BuildRoad(0, new EdgeLocation(1, -1, EdgeDirection.SouthEast), true);
-		BuildSettlement testBuild = new BuildSettlement(0, new VertexLocation(1, -1, VertexDirection.SouthEast), true);
+		ServerData.getInstance().addPlayer(0, CatanColor.PUCE, "Wasbo", 3);
 		
 		
-				
-		try {
-			ServerMovesFacade.getInstance().buildRoad(0, testBuildRoad);
-			ServerMovesFacade.getInstance().buildSettlement(0, testBuild);
-		} catch (ServerException e) {
-			System.out.println("PBBBBTH!");
-		}
+		
+		testFirstRound();
 		
 		ServerData.getInstance().getGameModel(0).getTransferModel().getTurnTracker().setStatus(Status.Rolling);
 		
@@ -53,6 +43,23 @@ public class ServerMovesFacadeTestCaseWheeWillyWilly {
 		} catch (ServerException e) {
 			System.out.println("PBBBBTH!");
 		}
+		
+	}
+	
+	public void testFirstRound() {
+	
+		BuildRoad testBuildRoad = new BuildRoad(0, new EdgeLocation(1, -1, EdgeDirection.SouthEast), true);
+		BuildSettlement testBuild = new BuildSettlement(0, new VertexLocation(1, -1, VertexDirection.SouthEast), true);
+		
+				
+		try {
+			ServerMovesFacade.getInstance().buildRoad(0, testBuildRoad);
+			ServerMovesFacade.getInstance().buildSettlement(0, testBuild);
+		} catch (ServerException e) {
+			System.out.println("PBBBBTH!");
+		}
+		
+		
 		
 	}
 

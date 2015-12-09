@@ -509,7 +509,7 @@ public class ServerModel {
 		}
 		
 		for(VertexLocation vertex : chitVertices) {
-			VertexValue spoilVertex = vertices.get(vertex);
+			VertexValue spoilVertex = vertices.get(vertex.getNormalizedLocation());
 			if(spoilVertex.hasMunicipality() == true) {
 				
 				ResourceType spoilResource = hexes.get(new HexLocation(vertex.getX(), vertex.getY())).getResourceType();

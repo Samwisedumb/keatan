@@ -68,7 +68,7 @@ public class TurnTrackerController extends Controller implements ITurnTrackerCon
 				getView().updatePlayer(p.getIndex(), p.getVictoryPoints(), isThierTurn, hasLargestArmy, hasLongestRoad);
 			}
 
-			getView().updateGameState("", enable);
+			getView().updateGameState("", false);
 		}
 	}
 }

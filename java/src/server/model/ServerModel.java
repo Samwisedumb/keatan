@@ -511,7 +511,6 @@ public class ServerModel {
 		
 		for(VertexLocation vertex : chitVertices) {
 			VertexValue spoilVertex = vertices.get(vertex.getNormalizedLocation());
-			
 			if(spoilVertex.hasMunicipality() == true) {
 				
 				ResourceType spoilResource = hexes.get(new HexLocation(vertex.getX(), vertex.getY())).getResourceType();
@@ -1725,48 +1724,6 @@ public class ServerModel {
 			return null;
 		}
 		return transfer.getPlayers().get(index);
-	}
-
-	/**
-	 * Hands out the resources for the chit number rolled
-	 * @param number - the number rolled
-	 * @author djoshuac
-	 */
-	public void reapResources(int number, int playerIndex) {
-		if (number != 7) {
-			for (Hex hex : hexes.values()) {
-				if (hex.isProductive(number) &&
-						!hex.isLocatedAt(transfer.getMap().getRobber())) {
-					
-					ResourceType resource = hex.getResourceType();
-					HexLocation h = hex.getLocation();
-					
-					for (VertexDirection direction : VertexDirection.values()) {
-						VertexLocation location = new VertexLocation(h.getX(), h.getY(), direction);
-						VertexValue vertex = vertices.get(location.getNormalizedLocation());
-						
-						if (vertex != null && vertex.hasMunicipality()) {
-							Municipality municipality = vertex.getMunicipality();
-							
-							int owner = municipality.getOwnerIndex();
-							int amount = municipality.getResourcesProducedPerRoll();
-							
-							transfer.getPlayers().get(owner).addResource(resource, amount);
-							transfer.getBank().changeResourceAmount(resource, -amount);
-						}
-					}
-				}
-			}
-			transfer.getTurnTracker().setStatus(Status.Playing);
-		}
-		else {
-			transfer.getTurnTracker().setStatus(Status.Discarding);
-		}
-		
-		Player p = getPlayer(playerIndex);
-		transfer.getLog().addLine(new MessageLine(p.getName() + " rolled a " + number, playerIndex));
-		
-		transfer.incrementVersion();
 	}
 }
 

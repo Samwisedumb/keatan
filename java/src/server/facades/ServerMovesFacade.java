@@ -225,7 +225,7 @@ public class ServerMovesFacade implements IMovesFacade {
 		
 		ServerModel game = ServerData.getInstance().getGameModel(gameID);
 		
-		game.reapResources(roll.getNumber(), roll.getPlayerIndex());
+		game.getResources(roll.getNumber(), roll.getPlayerIndex());
 	}
 
 	@Override

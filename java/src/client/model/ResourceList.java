@@ -142,13 +142,4 @@ public class ResourceList {
 	public boolean hasEnoughForDevCard() {
 		return wheat > 0 && sheep > 0 && ore > 0;
 	}
-	
-	public boolean validate() {
-		if (brick < 0 || brick > 24) return false;
-		if (ore < 0 || ore > 24) return false;
-		if (sheep < 0 || sheep > 24) return false;
-		if (wheat < 0 || wheat > 24) return false;
-		if (wood < 0 || wood > 24) return false;
-		return true;
-	}
 }

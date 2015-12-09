@@ -167,4 +167,21 @@ public class VertexValue {
 			return this.settlement.getOwnerIndex();
 		}
 	}
+	
+	/**
+	 * Get the municipality at this location
+	 * @return null if no municipality is at this vertex value<br>
+	 * the municipality if a municipality exists
+	 */
+	public Municipality getMunicipality() {
+		if (getCity() != null) {
+			return getCity();
+		}
+		else if (getSettlement() != null) {
+			return getSettlement();
+		}
+		else {
+			return null;
+		}
+	}
 }

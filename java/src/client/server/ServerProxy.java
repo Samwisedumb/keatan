@@ -204,7 +204,7 @@ public class ServerProxy implements IServer {
 	public void rollDice(RollNumber rollNumber) throws ServerException {
 		addUserCookieToNextRequest();
 		addGameCookieToNextRequest();
-		communicator.send("/moves/rollDice", rollNumber, TransferModel.class);		
+		communicator.send("/moves/rollNumber", rollNumber, TransferModel.class);		
 	}
 
 	@Override

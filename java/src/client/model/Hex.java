@@ -82,4 +82,36 @@ public class Hex {
 	public String toString() {
 		return "Location: " + getLocation() + ", Type: " + getType().name() + ", Number: " + getChitNumber();
 	}
+
+	/**
+	 * See if the hex is at the given location
+	 * @param hexLoc - the location to check
+	 * @return true if the hex is at the given location<br>
+	 * false if otherwise
+	 * @author djoshuac
+	 */
+	public boolean isLocatedAt(HexLocation hexLoc) {
+		if (getLocation().equals(hexLoc)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * See if a hex would produce on the given roll
+	 * @param roll - the number rolled
+	 * @return true if hex would produce<br>
+	 * false if otherwise
+	 */
+	public boolean isProductive(int roll) {
+		if (getType() == HexType.DESERT || getType() == HexType.WATER) {
+			return false;
+		}
+		else if (getChitNumber() != number) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
 }

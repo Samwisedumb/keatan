@@ -1,8 +1,14 @@
 package client.roll;
 
-import java.util.Observable;
+import java.util.Random;
 
+import shared.exceptions.ServerException;
+import shared.transferClasses.RollNumber;
 import client.base.Controller;
+import client.base.MasterController;
+import client.model.ModelFacade;
+import client.model.Player;
+import client.model.Status;
 
 
 /**
@@ -23,6 +29,12 @@ public class RollController extends Controller implements IRollController {
 		super(view);
 		
 		setResultView(resultView);
+		
+		ModelFacade.addObserver(this);
+		
+		dialogIsVisible = false;
+		
+		rand = new Random();
 	}
 	
 	public IRollResultView getResultView() {
@@ -38,14 +50,50 @@ public class RollController extends Controller implements IRollController {
 	
 	@Override
 	public void rollDice() {
-
-		getResultView().showModal();
+		int dice = rand.nextInt(6) + 1;
+		dice += rand.nextInt(6) + 1;
+		
+		getResultView().setRollValue(dice);
+		try {
+			MasterController.getSingleton().rollDice(new RollNumber(ModelFacade.getUserPlayer().getIndex(), dice));
+		}
+		catch (ServerException e) {
+			System.out.println("Failed to roll dice: " + e.getReason());
+		}
+		showRollModal();
 	}
 
+	/**
+	 * Shows the model if it isn't already showing
+	 */
+	private void showRollModal() {
+		if (!dialogIsVisible) {
+			dialogIsVisible = true;
+			getResultView().showModal();
+		}
+	}
+
+	/**
+	 * Closes the model if it isn't already closed
+	 */
+	private void closeRollModal() {
+		if (dialogIsVisible) {
+			dialogIsVisible = false;
+			getResultView().showModal();
+		}
+	}
+	
+	private boolean dialogIsVisible;
+	private Random rand;
+	
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		Status state = ModelFacade.whatStateMightItBe();
+		Player user = ModelFacade.getUserPlayer();		
 		
+		if (user.getIndex() == ModelFacade.whoseTurnIsItAnyway() && state == Status.Rolling) {
+			rollDice();
+		}
 	}
 
 }

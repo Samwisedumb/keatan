@@ -219,12 +219,13 @@ public class ServerMovesFacade implements IMovesFacade {
 
 	@Override
 	public void rollNumber(int gameID, RollNumber roll) throws ServerException {
-		// TODO Auto-generated method stub
 		if(canRoll(roll.getPlayerIndex(), gameID) == false) {
 			throw new ServerException("Can't roll dice now, brother");
 		}
 		
-		ServerData.getInstance().getGameModel(gameID).getResources(roll.getNumber(), roll.getPlayerIndex());
+		ServerModel game = ServerData.getInstance().getGameModel(gameID);
+		
+		game.reapResources(roll.getNumber(), roll.getPlayerIndex());
 	}
 
 	@Override

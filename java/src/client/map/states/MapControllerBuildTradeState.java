@@ -1,8 +1,16 @@
 package client.map.states;
 
+import shared.definitions.PieceType;
+import shared.exceptions.ServerException;
+import shared.transferClasses.BuildRoad;
+import shared.transferClasses.BuildSettlement;
+import shared.transferClasses.FinishTurn;
+import client.base.MasterController;
 import client.map.IMapController;
 import client.model.EdgeLocation;
 import client.model.HexLocation;
+import client.model.ModelFacade;
+import client.model.Player;
 import client.model.VertexLocation;
 
 
@@ -13,26 +21,71 @@ public class MapControllerBuildTradeState extends MapControllerState {
 
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
-		// TODO Auto-generated method stub
-		return false;
+		return ModelFacade.canBuildRoad(edgeLoc, false, false);
 	}
 
 	@Override
 	public boolean canPlaceSettlement(VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
-		return false;
+		return ModelFacade.canBuildSettlement(vertLoc, false);
 	}
 
 	@Override
 	public boolean canPlaceCity(VertexLocation vertLoc) {
-		// TODO Auto-generated method stub
-		return false;
+		return ModelFacade.canBuildCity(vertLoc);
 	}
 
 	@Override
 	public boolean canPlaceRobber(HexLocation hexLoc) {
-		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public void placeRoad(EdgeLocation edgeLoc) {
+		if (ModelFacade.canBuildRoad(edgeLoc, false, false)) {
+			Player user = ModelFacade.getUserPlayer();
+			
+			try {
+				MasterController.getSingleton().buildRoad(new BuildRoad(user.getIndex(), edgeLoc, false));
+				MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
+			}
+			catch (ServerException e) {
+				System.err.println(e.getReason());
+			}
+		}
+	}
 
+	@Override
+	public void placeSettlement(VertexLocation vertLoc) {
+		if (ModelFacade.canBuildSettlement(vertLoc, false)) {
+			Player user = ModelFacade.getUserPlayer();
+			
+			try {
+				MasterController.getSingleton().buildSettlement(new BuildSettlement(user.getIndex(), vertLoc, false));
+				MasterController.getSingleton().finishTurn(new FinishTurn(user.getIndex()));
+			}
+			catch (ServerException e) {
+				System.err.println(e.getReason());
+			}
+		}
+	}
+
+	@Override
+	public void placeCity(VertexLocation vertLoc) {
+		
+	}
+
+	@Override
+	public void placeRobber(HexLocation hexLoc) {
+		
+	}
+
+	@Override
+	public void startMove(PieceType pieceType, boolean isFree, boolean allowDisconnected) {
+		
+	}
+
+	@Override
+	public void cancelMove() {
+		
+	}
 }

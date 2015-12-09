@@ -74,6 +74,7 @@ public class MapControllerThieveryState extends MapControllerState {
 				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
 						victim.getIndex(),
 						ModelFacade.findRobber()));
+				getRobView().closeModal();
 			}
 		}
 		catch (ServerException e) {

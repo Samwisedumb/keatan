@@ -130,7 +130,7 @@ public class ResourceList {
 	 * @author djoshuac
 	 */
 	public boolean hasEnoughForCity() {
-		return wheat > 1 && ore > 3;
+		return wheat > 1 && ore > 2;
 	}
 	
 	/**

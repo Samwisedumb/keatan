@@ -46,6 +46,7 @@ public class MapControllerThieveryState extends MapControllerState {
 	@Override
 	public void placeRobber(HexLocation hexLoc) {
 		System.out.println("Robber can be placed: " + canPlaceRobber(hexLoc));
+		System.out.println(hexLoc);
 		getMapView().placeRobber(hexLoc);
 		if (canPlaceRobber(hexLoc)) {
 			System.out.println("Robber");

@@ -1007,6 +1007,7 @@ public class ServerModel {
 	public void endTurn(int playerIndex) {
 		transfer.getPlayers().get(playerIndex).endTurn();
 		transfer.getTurnTracker().endPlayerTurn();
+		transfer.incrementVersion();
 	}
 
 

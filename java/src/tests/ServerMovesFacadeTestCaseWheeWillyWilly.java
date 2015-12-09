@@ -15,6 +15,7 @@ import shared.definitions.VertexDirection;
 import shared.exceptions.ServerException;
 import shared.transferClasses.BuildRoad;
 import shared.transferClasses.BuildSettlement;
+import shared.transferClasses.FinishTurn;
 import shared.transferClasses.RollNumber;
 
 public class ServerMovesFacadeTestCaseWheeWillyWilly {
@@ -44,6 +45,14 @@ public class ServerMovesFacadeTestCaseWheeWillyWilly {
 			System.out.println("PBBBBTH!");
 		}
 		
+		
+		FinishTurn testEnd = new FinishTurn(0);
+		
+		try {
+			ServerMovesFacade.getInstance().finishTurn(0, testEnd);
+		} catch (ServerException e) {
+			System.out.println("PBBBBTH!");
+		}
 	}
 	
 	public void testFirstRound() {

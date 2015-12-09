@@ -162,21 +162,21 @@ public class DiscardController extends Controller implements IDiscardController 
 				showModal();
 			}
 		}
-		else if (ModelFacade.whatStateMightItBe() == Status.Discarding &&
-				ModelFacade.getUserPlayer().hasDiscarded()){
-			int stillDiscardCount = 0;
-			for (Player p : ModelFacade.getPlayers()) {
-				if (!p.hasDiscarded()) {
-					stillDiscardCount++;
-				}
-			}
-			closeWaitModal();
-			waitView.setMessage("Waiting for " + stillDiscardCount + " players to discard.");
-			showWaitModal();
-		}
-		else {
-			closeWaitModal();
-		}
+//		else if (ModelFacade.whatStateMightItBe() == Status.Discarding &&
+//				ModelFacade.getUserPlayer().hasDiscarded()){
+//			int stillDiscardCount = 0;
+//			for (Player p : ModelFacade.getPlayers()) {
+//				if (!p.hasDiscarded()) {
+//					stillDiscardCount++;
+//				}
+//			}
+//			closeWaitModal();
+//			waitView.setMessage("Waiting for " + stillDiscardCount + " players to discard.");
+//			showWaitModal();
+//		}
+//		else {
+//			closeWaitModal();
+//		}
 	}
 	
 	public void showWaitModal() {

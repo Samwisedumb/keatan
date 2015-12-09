@@ -449,6 +449,9 @@ public class ServerMovesFacade implements IMovesFacade {
 		else if(robberMove.equals(thisGame.getRobber())) {
 			return false;
 		}
+		else if(thisGame.getHexes().containsKey(robberMove) == false) {
+			return false;
+		}
 		else if(victimIndex != -1) {
 			if(thisGame.getTransferModel().getPlayers().get(victimIndex).getResources().getTotalCards() == 0) {
 				return false;

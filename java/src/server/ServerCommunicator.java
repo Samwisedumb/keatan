@@ -133,11 +133,11 @@ public class ServerCommunicator {
 		server.createContext("/moves/discardCards", new MovesDiscardCardsHandler());
 		server.createContext("/moves/robPlayer", new MovesRobPlayerHandler());
 		server.createContext("/moves/buyDevCard", new MovesBuyDevCardHandler());
-		server.createContext("/moves/Year_Of_Plenty", new MovesYearOfPlentyHandler());
-		server.createContext("/moves/Road_Building", new MovesRoadBuildingHandler());
-		server.createContext("/moves/Soldier", new MovesSoldierHandler());
-		server.createContext("/moves/Monopoly", new MovesMonopolyHandler());
-		server.createContext("/moves/Monument", new MovesMonumentHandler());
+		server.createContext("/moves/yearOfPlenty", new MovesYearOfPlentyHandler());
+		server.createContext("/moves/roadBuilding", new MovesRoadBuildingHandler());
+		server.createContext("/moves/soldier", new MovesSoldierHandler());
+		server.createContext("/moves/monopoly", new MovesMonopolyHandler());
+		server.createContext("/moves/monument", new MovesMonumentHandler());
 		server.createContext("/moves/maritimeTrade", new MovesMaritimeTradeHandler());
 		server.createContext("/moves/offerTrade", new MovesOfferTradeHandler());
 		server.createContext("/moves/acceptTrade", new MovesAcceptTradeHandler());

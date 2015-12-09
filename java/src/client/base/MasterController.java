@@ -60,6 +60,8 @@ public class MasterController implements IServer {
 	private boolean gameHasBegun;
 	private MasterController() {
 		gameHasBegun = false;
+		playedSoldierCard = false;
+		playedRoadBuildingCard = false;
 	}
 
 	@Override
@@ -236,5 +238,27 @@ public class MasterController implements IServer {
 	 */
 	public boolean hasGameBegun() {
 		return gameHasBegun;
+	}
+
+	
+	private boolean playedSoldierCard;
+	
+	public void playedSoldierCard(boolean b) {
+		playedSoldierCard = b;
+	}
+	
+	public boolean hasPlayedSoldierCard() {
+		return playedSoldierCard;
+	}
+	
+
+	private boolean playedRoadBuildingCard;
+	
+	public void playedRoadBuildingCard(boolean b) {
+		playedRoadBuildingCard = b;
+	}
+	
+	public boolean hasPlayedRoadBuildingCard() {
+		return playedRoadBuildingCard;
 	}
 }

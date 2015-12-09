@@ -1,8 +1,6 @@
 package client.devcards.states;
 
 import shared.definitions.ResourceType;
-import client.model.EdgeLocation;
-import client.model.HexLocation;
 
 public interface DevCardControllerState {
 

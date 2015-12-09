@@ -1,12 +1,13 @@
 package client.domestic;
 
-import java.util.Observable;
-
 import shared.definitions.ResourceType;
 import client.base.Controller;
-import client.domestic.states.DomesticTradeControllerState;
+import client.base.MasterController;
 import client.misc.IWaitView;
+import client.model.ModelFacade;
+import client.model.Player;
 import client.model.ResourceList;
+import client.model.Status;
 
 
 /**
@@ -21,8 +22,6 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 	//Trade Offer Thing
 	private int target;
 	private ResourceList theList;
-	
-	private DomesticTradeControllerState state;
 	
 	/**
 	 * DomesticTradeController constructor
@@ -78,9 +77,23 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
 	@Override
 	public void startTrade() {
-		theList = new ResourceList(0,0,0,0,0);
-		
-		getTradeOverlay().showModal();
+		Player user = ModelFacade.getUserPlayer();
+		if (ModelFacade.whatStateMightItBe() == Status.Playing &&
+				ModelFacade.whoseTurnIsItAnyway() == user.getIndex()) {
+
+			theList = new ResourceList(0,0,0,0,0);
+			
+			getTradeOverlay().setCancelEnabled(true);
+			getTradeOverlay().setStateMessage("Trade");
+			
+			getTradeOverlay().setPlayers(ModelFacade.getPlayersInfo());
+			
+			for (Player p : ModelFacade.getPlayers()) {
+				getTradeOverlay().setPlayerSelectionEnabled(p.getResources().getTotal() > 0);
+			}
+			
+			getTradeOverlay().showModal();
+		}
 	}
 
 	@Override
@@ -132,47 +145,44 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 	@Override
 	public void sendTradeOffer() {
 		
-/*		ResourceList offer = new ResourceList(0,0,0,0,0);
-		ResourceList request = new ResourceList(0,0,0,0,0);
-		
-		if(theList.getWood() >= 0) {
-			request.setWood(theList.getWood());
-		}
-		else {
-			offer.setWood(Math.abs(theList.getWood()));
-		}
-		if(theList.getBrick() >= 0) {
-			request.setBrick(theList.getBrick());
-		}
-		else {
-			offer.setBrick(Math.abs(theList.getBrick()));
-		}
-		if(theList.getSheep() >= 0) {
-			request.setSheep(theList.getSheep());
-		}
-		else {
-			offer.setSheep(Math.abs(theList.getSheep()));
-		}
-		if(theList.getWheat() >= 0) {
-			request.setWheat(theList.getWheat());
-		}
-		else  {
-			offer.setWheat(Math.abs(theList.getWheat()));
-		}
-		if(theList.getOre() >= 0) {
-			request.setOre(theList.getOre());
-		}
-		else {
-			offer.setOre(Math.abs(theList.getOre()));
-		}
-		
-		state.sendTradeOffer(offer, target, request);
-*/
-		
-		state.sendTradeOffer(theList, target);
-		
-		getTradeOverlay().closeModal();
-//		getWaitOverlay().showModal();
+///*		ResourceList offer = new ResourceList(0,0,0,0,0);
+//		ResourceList request = new ResourceList(0,0,0,0,0);
+//		
+//		if(theList.getWood() >= 0) {
+//			request.setWood(theList.getWood());
+//		}
+//		else {
+//			offer.setWood(Math.abs(theList.getWood()));
+//		}
+//		if(theList.getBrick() >= 0) {
+//			request.setBrick(theList.getBrick());
+//		}
+//		else {
+//			offer.setBrick(Math.abs(theList.getBrick()));
+//		}
+//		if(theList.getSheep() >= 0) {
+//			request.setSheep(theList.getSheep());
+//		}
+//		else {
+//			offer.setSheep(Math.abs(theList.getSheep()));
+//		}
+//		if(theList.getWheat() >= 0) {
+//			request.setWheat(theList.getWheat());
+//		}
+//		else  {
+//			offer.setWheat(Math.abs(theList.getWheat()));
+//		}
+//		if(theList.getOre() >= 0) {
+//			request.setOre(theList.getOre());
+//		}
+//		else {
+//			offer.setOre(Math.abs(theList.getOre()));
+//		}
+//		
+//		state.sendTradeOffer(offer, target, request);
+//		
+//		getTradeOverlay().closeModal();
+////		getWaitOverlay().showModal();
 	}
 
 	@Override
@@ -258,7 +268,6 @@ public class DomesticTradeController extends Controller implements IDomesticTrad
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 

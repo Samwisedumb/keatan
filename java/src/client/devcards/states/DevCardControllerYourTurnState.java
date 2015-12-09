@@ -6,13 +6,9 @@ import shared.exceptions.ServerException;
 import shared.transferClasses.BuyDevCard;
 import shared.transferClasses.Monopoly;
 import shared.transferClasses.Monument;
-import shared.transferClasses.RoadBuilding;
-import shared.transferClasses.Soldier;
 import shared.transferClasses.YearOfPlenty;
 import client.base.MasterController;
 import client.devcards.DevCardController;
-import client.model.EdgeLocation;
-import client.model.HexLocation;
 import client.model.ModelFacade;
 import client.model.Player;
 
@@ -38,7 +34,6 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 
 	@Override
 	public void buyCard() {
-		System.out.println("buy card");
 		BuyDevCard command = new BuyDevCard(ModelFacade.whoseTurnIsItAnyway());
 		try {
 			MasterController.getSingleton().buyDevCard(command);
@@ -46,6 +41,7 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 		catch (ServerException e) {
 			System.out.println(e.getReason());
 		}
+		controller.getPlayCardView().closeModal();
 	}
 
 	@Override
@@ -81,27 +77,19 @@ public class DevCardControllerYourTurnState implements DevCardControllerState {
 	@Override
 	public void playRoadBuildCard() {
 		System.out.println("Road buld card");
+		
+		MasterController.getSingleton().playedRoadBuildingCard(true);
+		
 		controller.getRoadAction().execute();
-//		RoadBuilding command = new RoadBuilding(ModelFacade.whoseTurnIsItAnyway(), roadOne, roadTwo);
-//		try {
-//			MasterController.getSingleton().roadBuilding(command);
-//		}
-//		catch (ServerException e) {
-//			System.out.println(e.getReason());
-//		}
 	}
 
 	@Override
 	public void playSoldierCard() {
 		System.out.println("Solder card");
+		
+		MasterController.getSingleton().playedSoldierCard(true);
+		
 		controller.getSoldierAction().execute();
-//		Soldier command = new Soldier(ModelFacade.whoseTurnIsItAnyway(), victimIndex, location);
-//		try {
-//			MasterController.getSingleton().soldier(command);
-//		}
-//		catch (ServerException e) {
-//			System.out.println(e.getReason());
-//		}
 	}
 
 	@Override

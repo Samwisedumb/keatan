@@ -158,32 +158,26 @@ public class ModelFacade {
 		Player user = getUserPlayer();
 		
 		if (model.hasMunicipality(vertLoc)) {
-			System.out.println("Municipality is already there");
 			return false;
 		}
 		
 		if (!isWithinBounds(vertLoc)) {
-			System.out.println("OUTOFBOUNDS: " + vertLoc);
 			return false;
 		}
 		
 		if (getUserPlayer().getUnplacedSettlements() < 1) {
-			System.out.println("Not enough unplaced settlements");
 			return false;
 		}
 		
 		if (!isFree && !user.getResources().hasEnoughForSettlement()) {
-			System.out.println("Not enough resources");
 			return false;
 		}
 		
 		if (model.isTooCloseToAnotherMunicipality(vertLoc)) {
-			System.out.println("Too close to another municipality: " + vertLoc);
 			return false;
 		}
 		
 		if (!model.isAdjacentToRoadOfPlayer(vertLoc, user)) {
-			System.out.println("Not adjacent to a road owned by user: " + vertLoc);
 			return false;
 		}
 		
@@ -205,7 +199,6 @@ public class ModelFacade {
 		}
 		
 		if (getUserPlayer().getUnplacedCities() < 1) {
-			System.out.println("Not enough unplaced cities");
 			return false;
 		}
 		
@@ -234,22 +227,18 @@ public class ModelFacade {
 		Player user = getUserPlayer();
 
 		if (!isWithinBounds(edgeLoc)) {
-			System.out.println("OUTOFBOUNDS: " + edgeLoc);
 			return false;
 		}
 		
 		if (model.hasRoad(edgeLoc)) {
-			System.out.println("A road already is there");
 			return false;
 		}
 		
 		if (getUserPlayer().getUnplacedRoads() < 1) {
-			System.out.println("No more unplaced roads");
 			return false;
 		}
 		
 		if (!isFree && !user.getResources().hasEnoughForRoad()) {
-			System.out.println("Not enough resources");
 			return false;
 		}
 		
@@ -259,7 +248,6 @@ public class ModelFacade {
 					return true;
 				}
 			}
-			System.out.println("Forces illegal settlement placement");
 			return false;
 		}
 		else { // normally - we want to ensure that the road is adjacent to another road
@@ -268,7 +256,6 @@ public class ModelFacade {
 					return true;
 				}
 			}
-			System.out.println("Not adjacent to road owned by the player");
 			return false;
 		}
 	}
@@ -614,7 +601,6 @@ public class ModelFacade {
 	 * @post each observer is notified
 	 */
 	private static void notifyObserversOfChange() {
-		System.out.println("Notify observers");
 		for (Observer observer : observers) {
 			observer.update();
 		}
@@ -751,6 +737,21 @@ public class ModelFacade {
 	 */
 	public static boolean bankHasAtLeast(ResourceType resource, int amount) {
 		return model.getTransferModel().getBank().getResource(resource) >= amount;
+	}
+
+	public static PlayerInfo[] getPlayersInfo() {
+		List<PlayerInfo> playersInfo = new ArrayList<PlayerInfo>();
+		
+		for (Player p : ModelFacade.getPlayers()) {
+			PlayerInfo info = new PlayerInfo();
+			info.setColor(p.getColor());
+			info.setID(p.getID());
+			info.setName(p.getName());
+			info.setPlayerIndex(p.getIndex());
+			playersInfo.add(info);
+		}
+		
+		return playersInfo.toArray(new PlayerInfo[playersInfo.size()]);
 	}
 }
 

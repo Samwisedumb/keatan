@@ -3,6 +3,7 @@ package client.map.states;
 import shared.definitions.PieceType;
 import shared.exceptions.ServerException;
 import shared.transferClasses.RobPlayer;
+import shared.transferClasses.Soldier;
 import client.base.MasterController;
 import client.data.RobPlayerInfo;
 import client.map.IMapController;
@@ -21,7 +22,11 @@ public class MapControllerThieveryState extends MapControllerState {
 		if (controller.getState().getClass() != this.getClass()) {
 			getMapView().startDrop(PieceType.ROBBER, ModelFacade.getUserPlayer().getColor(), false);
 		}
+		
+		this.controller = controller;
 	}
+	
+	private IMapController controller;
 
 	@Override
 	public boolean canPlaceRoad(EdgeLocation edgeLoc) {
@@ -74,18 +79,41 @@ public class MapControllerThieveryState extends MapControllerState {
 		try {
 			Player user = ModelFacade.getUserPlayer();
 			if (victim.getNumCards() == 0) {
-				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
-						-1,
-						ModelFacade.findRobber()));
+				if (MasterController.getSingleton().hasPlayedSoldierCard()) {
+					MasterController.getSingleton().soldier(new Soldier(user.getIndex(),
+							-1,
+							ModelFacade.findRobber()));
+					controller.setState(new MapControllerBuildTradeState(controller));
+					MasterController.getSingleton().playedSoldierCard(false);
+				}
+				else {
+					MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
+							-1,
+							ModelFacade.findRobber()));
+				}
 			}
 			else {
-				MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
-						victim.getIndex(),
-						ModelFacade.findRobber()));
+				if (MasterController.getSingleton().hasPlayedSoldierCard()) {
+					MasterController.getSingleton().soldier(new Soldier(user.getIndex(),
+							victim.getIndex(),
+							ModelFacade.findRobber()));
+					controller.setState(new MapControllerBuildTradeState(controller));
+					MasterController.getSingleton().playedSoldierCard(false);
+				}
+				else {
+					MasterController.getSingleton().robPlayer(new RobPlayer(user.getIndex(),
+							victim.getIndex(),
+							ModelFacade.findRobber()));
+				}
 			}
 		}
 		catch (ServerException e) {
 			System.err.println(e.getReason());
 		}
+	}
+	
+	@Override
+	public void playSoldierCard() {
+		
 	}
 }

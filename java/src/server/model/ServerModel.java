@@ -1053,6 +1053,7 @@ public class ServerModel {
 		transfer.getBank().changeResourceAmount(input, ratio);
 		transfer.getBank().changeResourceAmount(output, -1);
 		transfer.incrementVersion();
+		System.out.println(playerIndex + " " + ratio + " " + input + " " + output);
 	}
 	
 	/**Offer to trade with someone

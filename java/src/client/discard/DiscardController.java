@@ -38,7 +38,8 @@ public class DiscardController extends Controller implements IDiscardController 
 		
 		ModelFacade.addObserver(this);
 		
-		modelIsVisible = false;
+		modalIsVisible = false;
+		waitModalIsVisible = false;
 	}
 
 	public IDiscardView getDiscardView() {
@@ -111,34 +112,38 @@ public class DiscardController extends Controller implements IDiscardController 
 		closeModal();
 	}
 
-	boolean modelIsVisible;
+	boolean modalIsVisible;
+	boolean waitModalIsVisible;
 	
 	public void showModal() {
-		if (!modelIsVisible) {
+		if (!modalIsVisible) {
 			getDiscardView().showModal();
-			modelIsVisible = true;
+			modalIsVisible = true;
 		}
 	}
 	
 	public void closeModal() {
-		if (modelIsVisible) {
+		if (modalIsVisible) {
 			getDiscardView().closeModal();
-			modelIsVisible = false;
+			modalIsVisible = false;
 		}
 	}
 	
 	public void updateDiscardView() {
 		Player user = ModelFacade.getUserPlayer();
-		getDiscardView().setStateMessage("Discard");
+		
 		int numToDiscard = user.getResources().getTotal() / 2;
+		
 		getDiscardView().setDiscardButtonEnabled(numToDiscard == theList.getTotal());
+		getDiscardView().setStateMessage("Discard " + numToDiscard + "/" + theList.getTotal());
 		
 		for (ResourceType type : ResourceType.values()) {
 			int amount = user.getResourceAmount(type);
 			int value = theList.getResource(type);
 			
 			getDiscardView().setResourceMaxAmount(type, amount);
-			getDiscardView().setResourceAmountChangeEnabled(type, value == amount || numToDiscard > theList.getTotal(),
+			
+			getDiscardView().setResourceAmountChangeEnabled(type, value < amount && numToDiscard > theList.getTotal(),
 					value != 0);
 		}
 	}
@@ -156,7 +161,31 @@ public class DiscardController extends Controller implements IDiscardController 
 				showModal();
 			}
 		}
+		else if (ModelFacade.getUserPlayer().hasDiscarded()){
+			int stillDiscardCount = 0;
+			for (Player p : ModelFacade.getPlayers()) {
+				if (!p.hasDiscarded()) {
+					stillDiscardCount++;
+				}
+			}
+			closeWaitModal();
+			waitView.setMessage("Waiting for " + stillDiscardCount + " players to discard.");
+			showWaitModal();
+		}
+	}
+	
+	public void showWaitModal() {
+		if (!waitModalIsVisible) {
+			getWaitView().showModal();
+			waitModalIsVisible = true;
+		}
 	}
 
+	public void closeWaitModal() {
+		if (waitModalIsVisible) {
+			getWaitView().closeModal();
+			waitModalIsVisible = false;
+		}
+	}
 }
 

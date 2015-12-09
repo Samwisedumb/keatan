@@ -390,19 +390,8 @@ public class ModelFacade {
 			
 			for (VertexLocation vertex : model.getNearbyVertices(relativeEdge)) {
 				
-				if(model.hasSettlement(vertex)) {
-					if(model.getSettlement(vertex).getOwnerIndex() == playerIndex) {
-						if (ratio == 4 && port.getRatio() == 3) {
-							ratio = 3;
-						}
-						else if (tradeResource == port.getPortResource()){
-							return 2;
-						}
-					}
-				}
-				
-				else if(model.hasCity(vertex)) {
-					if(model.getCity(vertex).getOwnerIndex() == playerIndex) {
+				if(model.hasMunicipality(vertex)) {
+					if(model.getMunicipality(vertex).getOwnerIndex() == playerIndex) {
 						if (ratio == 4 && port.getRatio() == 3) {
 							ratio = 3;
 						}
@@ -751,6 +740,17 @@ public class ModelFacade {
 		}
 		
 		return info.toArray(new RobPlayerInfo[info.size()]);
+	}
+
+	/**
+	 * See if bank has a given resource
+	 * @param resource - the resource to check
+	 * @param amount - the amount to have at least as much as
+	 * @return true if the bank has at least the given amount of resource<br>
+	 * false if otherwise
+	 */
+	public static boolean bankHasAtLeast(ResourceType resource, int amount) {
+		return model.getTransferModel().getBank().getResource(resource) >= amount;
 	}
 }
 

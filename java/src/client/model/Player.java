@@ -2,6 +2,7 @@ package client.model;
 
 import client.data.PlayerInfo;
 import shared.definitions.CatanColor;
+import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
 
 /**
@@ -374,5 +375,21 @@ public class Player {
 	 */
 	public boolean needsToDiscard() {
 		return resources.moreThanSeven();
+	}
+	
+	/**
+	 * @param type - the dev card type to get
+	 * @return the number of dev cards of that type that are playable that the player has
+	 */
+	public int getNumPlayable(DevCardType type) {
+		return oldDevCards.getAmount(type);
+	}
+	
+	/**
+	 * @param type - the dev card type to get
+	 * @return the total number of dev cards of the given type
+	 */
+	public int getTOtalCards(DevCardType type) {
+		return oldDevCards.getAmount(type) + newDevCards.getAmount(type);
 	}
 }

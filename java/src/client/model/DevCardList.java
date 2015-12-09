@@ -1,5 +1,7 @@
 package client.model;
 
+import shared.definitions.DevCardType;
+
 /**
  * Contains a list of development cards
  */
@@ -69,5 +71,29 @@ public class DevCardList {
 		if (soldier < 0 || soldier > 14) return false;
 		if (yearOfPlenty < 0 || yearOfPlenty > 2) return false;
 		return true;
+	}
+
+	/**
+	 * @param type - the type to get the number of dev cards in this list
+	 * @return the number of dev cards of the given type
+	 */
+	public int getAmount(DevCardType type) {
+		if (type == null) {
+			return 0;
+		}
+		switch (type) {
+		case MONOPOLY:
+			return getMonopoly();
+		case MONUMENT:
+			return getMonument();
+		case ROAD_BUILD:
+			return getRoadBuilding();
+		case SOLDIER:
+			return getSoldier();
+		case YEAR_OF_PLENTY:
+			return getYearOfPlenty();
+		default:
+				return 0;
+		}
 	}
 }

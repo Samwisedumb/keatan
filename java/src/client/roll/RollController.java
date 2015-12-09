@@ -33,6 +33,8 @@ public class RollController extends Controller implements IRollController {
 		ModelFacade.addObserver(this);
 		
 		rand = new Random();
+		
+		dice = -1;
 	}
 	
 	public IRollResultView getResultView() {
@@ -46,9 +48,11 @@ public class RollController extends Controller implements IRollController {
 		return (IRollView)getView();
 	}
 	
+	int dice;
+	
 	@Override
 	public void rollDice() {
-		int dice = rand.nextInt(6) + 1;
+		dice = rand.nextInt(6) + 1;
 		dice += rand.nextInt(6) + 1;
 		
 		getResultView().setRollValue(dice);
@@ -72,7 +76,9 @@ public class RollController extends Controller implements IRollController {
 		}
 		
 		if (ModelFacade.whatStateMightItBe() == Status.Playing &&
-				ModelFacade.whoseTurnIsItAnyway() == ModelFacade.getUserPlayer().getIndex()) {
+				ModelFacade.whoseTurnIsItAnyway() == ModelFacade.getUserPlayer().getIndex() &&
+				(dice != 7 && dice != -1)) {
+			dice = -1;
 			getResultView().showModal();
 		}
 	}

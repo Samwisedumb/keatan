@@ -1,11 +1,13 @@
 package client.devcards;
 
-import java.util.Observable;
-
+import shared.definitions.DevCardType;
 import shared.definitions.ResourceType;
 import client.base.Controller;
 import client.base.IAction;
+import client.devcards.states.DevCardControllerNotYourTurnState;
 import client.devcards.states.DevCardControllerState;
+import client.model.ModelFacade;
+import client.model.Player;
 
 
 /**
@@ -35,6 +37,14 @@ public class DevCardController extends Controller implements IDevCardController 
 		this.buyCardView = buyCardView;
 		this.soldierAction = soldierAction;
 		this.roadAction = roadAction;
+		
+		ModelFacade.addObserver(this);
+		
+		setState(new DevCardControllerNotYourTurnState());
+	}
+	
+	private void setState(DevCardControllerState state) {
+		this.state = state;
 	}
 
 	public IPlayDevCardView getPlayCardView() {
@@ -67,13 +77,20 @@ public class DevCardController extends Controller implements IDevCardController 
 
 	@Override
 	public void startPlayCard() {
+		getPlayCardView().reset();
+		
+		Player user = ModelFacade.getUserPlayer();
+		
+		for (DevCardType type : DevCardType.values()) {
+			
+		}
 		
 		getPlayCardView().showModal();
 	}
 
 	@Override
 	public void cancelPlayCard() {
-
+		
 		getPlayCardView().closeModal();
 	}
 
@@ -108,7 +125,6 @@ public class DevCardController extends Controller implements IDevCardController 
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 

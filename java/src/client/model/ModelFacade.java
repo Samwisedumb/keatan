@@ -705,7 +705,9 @@ public class ModelFacade {
 				robInfo.setNumCards(p.getResources().getTotal());
 				robInfo.setPlayerIndex(p.getIndex());
 				
-				info.add(robInfo);
+				if (p.getIndex() != getUserPlayer().getIndex()) { // don't rob self
+					info.add(robInfo);
+				}
 			}
 		}
 		

@@ -753,6 +753,10 @@ public class ModelFacade {
 		
 		return playersInfo.toArray(new PlayerInfo[playersInfo.size()]);
 	}
+
+	public static TradeOffer getTradeOffer() {
+		return model.getTransferModel().getTradeOffer();
+	}
 }
 
 
